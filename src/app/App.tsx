@@ -197,17 +197,19 @@ function App() {
     });
   };
 
-  const beginSession = () => {
+  const beginSession = (includeUserMessage = true) => {
     if (!['summary', 'summaryReady', 'summaryAnswered'].includes(stage)) return;
     setStage('session');
     setRecordingActive(true);
     setSessionPaused(false);
-    appendChat({
-      id: `user-begin-${Date.now()}`,
-      kind: 'user',
-      content: 'Begin Session',
-      timestamp: '07:53 PM',
-    });
+    if (includeUserMessage) {
+      appendChat({
+        id: `user-begin-${Date.now()}`,
+        kind: 'user',
+        content: 'Begin Session',
+        timestamp: '07:53 PM',
+      });
+    }
     appendChat({
       id: `eva-begin-${Date.now()}`,
       kind: 'eva',
@@ -257,7 +259,7 @@ function App() {
       normalized === 'begin session'
     ) {
       appendChat({ id: `user-begin-chat-${Date.now()}`, kind: 'user', content: text, timestamp: '07:53 PM' });
-      beginSession();
+      beginSession(false);
       return;
     }
 
@@ -870,7 +872,7 @@ function RightPane(props: {
 
   if (stage === 'summary' || stage === 'summaryCustomizing' || stage === 'summaryReady' || stage === 'summaryAnswered') {
     return (
-      <div className="relative h-full overflow-y-auto px-8 py-8">
+      <div className={`relative h-full px-8 py-8 ${referralOpen ? 'overflow-hidden' : 'overflow-y-auto'}`}>
         <SummarySurface
           disabledActions={topSetupVisible}
           topSetupVisible={topSetupVisible}
@@ -1247,7 +1249,7 @@ function SoapSurface({
 }) {
   const showRecordingControls = stage === 'session' || stage === 'sessionAccepted';
   const showGeneratedSoap = showHighlight || stage === 'sessionAccepted' || stage === 'sessionStopped';
-  const subjectiveEditable = stage === 'session' || stage === 'sessionAccepted' || stage === 'sessionStopped';
+  const subjectiveEditable = stage === 'session' || stage === 'sessionAccepted';
 
   return (
     <div className="space-y-4">
@@ -1270,6 +1272,9 @@ function SoapSurface({
           )}
         </div>
       </div>
+
+      <PatientDataCard />
+      <IntakeSummaryStrip />
 
       <div className="rounded-[22px] border border-[#ececf5] bg-white">
         <div className="flex items-center justify-between border-b border-[#ececf5] px-5 py-4">
@@ -1532,6 +1537,55 @@ function SoapSurface({
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function PatientDataCard() {
+  const patientDetails = [
+    ['Dominance', 'Right hand dominant'],
+    ['Occupation', 'Retired schoolteacher'],
+    ['Visit', '1 of 12 - Initial Evaluation - Week 0'],
+    ['Living situation', 'Lives alone'],
+    ['Payer', 'Medicare Part B'],
+    ['Activity level prior to injury', 'Moderate. Gardening, cooking, light housework.'],
+    ['Referring physician', 'Orthopedic surgeon. Arthroscopic rotator cuff repair performed 10 weeks prior to initial evaluation.'],
+    ['Primary Diagnosis', 'M75.11, Complete rotator cuff tear, right shoulder, not specified as traumatic'],
+    ['Secondary Diagnosis', 'M79.621, Pain in right upper arm, post-surgical'],
+  ];
+
+  return (
+    <div className="rounded-[22px] border border-[#e1e4f0] bg-white px-5 py-4">
+      <div className="mb-4 flex items-center gap-3">
+        <img src={imgPatient} alt="Diane M" className="h-12 w-12 rounded-xl object-cover" />
+        <div>
+          <p className="text-[18px] font-semibold text-[#23283d]">Diane M</p>
+          <p className="text-[13px] text-[#616982]">Age - 65 | Female</p>
+        </div>
+      </div>
+
+      <div className="grid gap-x-8 gap-y-3 text-[13px] leading-5 text-[#3f465f] lg:grid-cols-2">
+        {patientDetails.map(([label, value], index) => (
+          <div key={label} className={index >= 5 ? 'lg:col-span-2' : ''}>
+            <span className="font-semibold text-[#252b3f]">{label}: </span>
+            <span className={label === 'Dominance' || label === 'Visit' ? 'text-[#118860]' : ''}>{value}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        <span className="rounded-full bg-[#f1efff] px-3 py-1.5 text-[12px] font-semibold text-[#4f3ee8]">12 visits authorized</span>
+        <span className="rounded-full bg-[#f1efff] px-3 py-1.5 text-[12px] font-semibold text-[#4f3ee8]">GP Modifier pre-loaded</span>
+      </div>
+    </div>
+  );
+}
+
+function IntakeSummaryStrip() {
+  return (
+    <div className="rounded-lg border border-[#7de6ad] bg-[#dcfbea] px-4 py-3 text-[13px] leading-5 text-[#25506b]">
+      <span className="font-semibold text-[#1f5f76]">From Intake</span>
+      <div>Injury: Post-surgical brachial plexus (C5-C6) | Pain: 7/10 | Symptoms: Tingling (ring + little finger)</div>
     </div>
   );
 }
