@@ -81,9 +81,9 @@ function buildMessages(phase: DemoPhase, showSessionWidget: boolean): ChatMessag
 
   list.push(
     {
-      id: 'user-open-summer',
+      id: 'user-open-summary',
       type: 'user-bubble',
-      content: 'Open patient Summer',
+      content: 'Open patient summary',
       timestamp: '07:53 PM',
     },
     {
@@ -273,7 +273,7 @@ export default function App() {
     (text: string) => {
       const n = norm(text);
 
-      if (phase === 'welcome' && n === 'open patient summer') {
+      if (phase === 'welcome' && n === 'open patient summary') {
         setPhase('patientSummary');
         return;
       }
