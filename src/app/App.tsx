@@ -827,6 +827,7 @@ function RightPane(props: {
   onChiefComplaintFocus: (focused: boolean) => void;
   onSelectMention: (value: string) => void;
 }) {
+  const soapScrollRef = useRef<HTMLDivElement | null>(null);
   const {
     stage,
     referralOpen,
@@ -886,27 +887,30 @@ function RightPane(props: {
   }
 
   return (
-    <div className="h-full overflow-y-auto px-8 py-6">
-      <SoapSurface
-        stage={stage}
-        recordingActive={recordingActive}
-        sessionPaused={sessionPaused}
-        sessionSeconds={sessionSeconds}
-        showHighlight={showHighlight}
-        sleepTableVisible={sleepTableVisible}
-        sleepDisturbanceAccepted={sleepDisturbanceAccepted}
-        chiefComplaint={chiefComplaint}
-        chiefComplaintFocused={chiefComplaintFocused}
-        mentionVisible={mentionVisible}
-        leftPanelCollapsed={leftPanelCollapsed}
-        onSleepPosition={onSleepPosition}
-        onAcceptSleep={onAcceptSleep}
-        onPause={onPause}
-        onStop={onStop}
-        onChiefComplaintChange={onChiefComplaintChange}
-        onChiefComplaintFocus={onChiefComplaintFocus}
-        onSelectMention={onSelectMention}
-      />
+    <div ref={soapScrollRef} className="h-full overflow-y-auto px-8 py-6">
+      <div className="min-h-full rounded-[22px] border border-[#f0f1f7] bg-white p-6 shadow-[0_12px_32px_rgba(60,66,124,0.04)]">
+        <SoapSurface
+          stage={stage}
+          recordingActive={recordingActive}
+          sessionPaused={sessionPaused}
+          sessionSeconds={sessionSeconds}
+          showHighlight={showHighlight}
+          sleepTableVisible={sleepTableVisible}
+          sleepDisturbanceAccepted={sleepDisturbanceAccepted}
+          chiefComplaint={chiefComplaint}
+          chiefComplaintFocused={chiefComplaintFocused}
+          mentionVisible={mentionVisible}
+          leftPanelCollapsed={leftPanelCollapsed}
+          onSleepPosition={onSleepPosition}
+          onAcceptSleep={onAcceptSleep}
+          onPause={onPause}
+          onStop={onStop}
+          onChiefComplaintChange={onChiefComplaintChange}
+          onChiefComplaintFocus={onChiefComplaintFocus}
+          onSelectMention={onSelectMention}
+          scrollContainerRef={soapScrollRef}
+        />
+      </div>
     </div>
   );
 }
@@ -1227,6 +1231,7 @@ function SoapSurface({
   onChiefComplaintChange,
   onChiefComplaintFocus,
   onSelectMention,
+  scrollContainerRef,
 }: {
   stage: WorkflowStage;
   recordingActive: boolean;
@@ -1246,14 +1251,73 @@ function SoapSurface({
   onChiefComplaintChange: (value: string) => void;
   onChiefComplaintFocus: (focused: boolean) => void;
   onSelectMention: (value: string) => void;
+  scrollContainerRef: React.RefObject<HTMLDivElement | null>;
 }) {
   const showRecordingControls = stage === 'session' || stage === 'sessionAccepted';
   const showGeneratedSoap = showHighlight || stage === 'sessionAccepted' || stage === 'sessionStopped';
   const subjectiveEditable = stage === 'session' || stage === 'sessionAccepted';
+  const [activeSoapSection, setActiveSoapSection] = useState('subjective');
+  const subjectiveRef = useRef<HTMLDivElement | null>(null);
+  const objectiveRef = useRef<HTMLDivElement | null>(null);
+  const assessmentRef = useRef<HTMLDivElement | null>(null);
+  const planRef = useRef<HTMLDivElement | null>(null);
+  const billingRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollToSection = (section: string, sectionRef: React.RefObject<HTMLDivElement | null>) => {
+    setActiveSoapSection(section);
+    sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer) return;
+
+    const updateActiveSection = () => {
+      const sectionOffset = scrollContainer.getBoundingClientRect().top + 32;
+      const sectionRefs = [
+        ['subjective', subjectiveRef],
+        ['objective', objectiveRef],
+        ['assessment', assessmentRef],
+        ...(showGeneratedSoap
+          ? [
+              ['plan', planRef],
+              ['billing', billingRef],
+            ]
+          : []),
+      ] as const;
+
+      let activeSection = sectionRefs[0][0];
+      sectionRefs.forEach(([section, sectionRef]) => {
+        const element = sectionRef.current;
+        if (element && element.getBoundingClientRect().top <= sectionOffset) {
+          activeSection = section;
+        }
+      });
+      setActiveSoapSection(activeSection);
+    };
+
+    updateActiveSection();
+    scrollContainer.addEventListener('scroll', updateActiveSection, { passive: true });
+    window.addEventListener('resize', updateActiveSection);
+    return () => {
+      scrollContainer.removeEventListener('scroll', updateActiveSection);
+      window.removeEventListener('resize', updateActiveSection);
+    };
+  }, [scrollContainerRef, showGeneratedSoap]);
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between rounded-[22px] border border-[#ececf5] bg-white px-5 py-4">
+    <div className="relative space-y-4 pr-10">
+      <SoapSectionNav
+        showPlanSections={showGeneratedSoap}
+        activeSection={activeSoapSection}
+        onSubjective={() => scrollToSection('subjective', subjectiveRef)}
+        onObjective={() => scrollToSection('objective', objectiveRef)}
+        onAssessment={() => scrollToSection('assessment', assessmentRef)}
+        onPlan={() => scrollToSection('plan', planRef)}
+        onBilling={() => scrollToSection('billing', billingRef)}
+      />
+
+      <div className="flex items-center justify-between rounded-[22px] bg-white px-5 py-4">
         <h2 className="text-[30px] font-semibold tracking-tight text-[#262b40]">SOAP Note</h2>
         <div className="flex items-center gap-3">
           <div className="rounded-full border border-[#f0d8d8] px-4 py-1.5 text-[13px] font-semibold text-[#d75448]">
@@ -1276,7 +1340,7 @@ function SoapSurface({
       <PatientDataCard />
       <IntakeSummaryStrip />
 
-      <div className="rounded-[22px] border border-[#ececf5] bg-white">
+      <div ref={subjectiveRef} className="scroll-mt-6 rounded-[22px] border border-[#ececf5] bg-white">
         <div className="flex items-center justify-between border-b border-[#ececf5] px-5 py-4">
           <div className="flex items-center gap-3">
             <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#6a61f1] text-[13px] font-semibold text-white">S</div>
@@ -1379,128 +1443,136 @@ function SoapSurface({
         </div>
       </div>
 
-      <SoapSectionCard letter="O" title="Objective">
-        {showGeneratedSoap ? (
-          <div className="space-y-6">
-            <SuggestionRow items={['Add PROM measurements', 'MMT — Rotator cuff', 'Special Tests', 'Posterior capsule tightness']} />
-            <InfoBlock label="Incision">
-              2 cm thin slit-like scar is present on the anterior and posterior part of the shoulder. Scar looks pale, thin and well healed.
-            </InfoBlock>
-            <InfoBlock label="Shoulder ROM Table — Right Side">
-              <ClinicalTable
-                title="AROM and PROM: Shoulder Joint"
-                headers={['Measure', 'AROM Right', 'PROM Right', 'AROM Left', 'PROM Left']}
-                rows={[
-                  ['Flexion', '68°', '85°', 'WFL', 'WFL'],
-                  ['Abduction', '54°', '70°', 'WFL', 'WFL'],
-                  ['External Rotation', '22°', '35°', 'WFL', 'WFL'],
-                  ['End feel', 'N/A', 'Firm, consistent with early posterior capsule tightness', 'N/A', 'Soft, normal'],
-                  ['DASH score', '72 (severe disability)', 'N/A', 'N/A', 'N/A'],
-                  ['Penn Shoulder Score', '28/100 (severe dysfunction)', 'N/A', 'N/A', 'N/A'],
-                ]}
-              />
-            </InfoBlock>
-            <InfoBlock label="Strength Test">
-              <ClinicalTable
-                title="Strength Test"
-                headers={['Muscle', 'Movement', 'MMT Right', 'MMT Left', 'Interpretation']}
-                rows={[
-                  ['Supraspinatus', 'Abduction 0-15° (Empty Can position)', '2/5', '5/5', 'Right: full range in gravity eliminated position only. Left: normal strength.'],
-                  ['Infraspinatus', 'External Rotation', '3/5', '5/5', 'Right: can lift against gravity without resistance. Left: normal strength.'],
-                  ['Teres Minor', 'External Rotation', '3/5', '5/5', 'Right: can lift against gravity without resistance. Left: normal strength.'],
-                  ['Subscapularis', 'Internal Rotation', '4/5', '5/5', 'Right: full range against gravity with minimal resistance. Left: normal strength.'],
-                ]}
-              />
-            </InfoBlock>
-            <InfoBlock label="Outcome Measures">
-              <ClinicalTable
-                title="Outcome Measures"
-                headers={['Measure', 'Score', 'Interpretation']}
-                rows={[
-                  ['DASH score', '72', 'Severe disability'],
-                  ['Penn Shoulder Score', '28/100', 'Severe dysfunction'],
-                ]}
-              />
-            </InfoBlock>
-          </div>
-        ) : (
-          <InfoBlock label="No Input"> </InfoBlock>
-        )}
-      </SoapSectionCard>
+      <div ref={objectiveRef} className="scroll-mt-6">
+        <SoapSectionCard letter="O" title="Objective">
+          {showGeneratedSoap ? (
+            <div className="space-y-6">
+              <SuggestionRow items={['Add PROM measurements', 'MMT — Rotator cuff', 'Special Tests', 'Posterior capsule tightness']} />
+              <InfoBlock label="Incision">
+                2 cm thin slit-like scar is present on the anterior and posterior part of the shoulder. Scar looks pale, thin and well healed.
+              </InfoBlock>
+              <InfoBlock label="Shoulder ROM Table — Right Side">
+                <ClinicalTable
+                  title="AROM and PROM: Shoulder Joint"
+                  headers={['Measure', 'AROM Right', 'PROM Right', 'AROM Left', 'PROM Left']}
+                  rows={[
+                    ['Flexion', '68°', '85°', 'WFL', 'WFL'],
+                    ['Abduction', '54°', '70°', 'WFL', 'WFL'],
+                    ['External Rotation', '22°', '35°', 'WFL', 'WFL'],
+                    ['End feel', 'N/A', 'Firm, consistent with early posterior capsule tightness', 'N/A', 'Soft, normal'],
+                    ['DASH score', '72 (severe disability)', 'N/A', 'N/A', 'N/A'],
+                    ['Penn Shoulder Score', '28/100 (severe dysfunction)', 'N/A', 'N/A', 'N/A'],
+                  ]}
+                />
+              </InfoBlock>
+              <InfoBlock label="Strength Test">
+                <ClinicalTable
+                  title="Strength Test"
+                  headers={['Muscle', 'Movement', 'MMT Right', 'MMT Left', 'Interpretation']}
+                  rows={[
+                    ['Supraspinatus', 'Abduction 0-15° (Empty Can position)', '2/5', '5/5', 'Right: full range in gravity eliminated position only. Left: normal strength.'],
+                    ['Infraspinatus', 'External Rotation', '3/5', '5/5', 'Right: can lift against gravity without resistance. Left: normal strength.'],
+                    ['Teres Minor', 'External Rotation', '3/5', '5/5', 'Right: can lift against gravity without resistance. Left: normal strength.'],
+                    ['Subscapularis', 'Internal Rotation', '4/5', '5/5', 'Right: full range against gravity with minimal resistance. Left: normal strength.'],
+                  ]}
+                />
+              </InfoBlock>
+              <InfoBlock label="Outcome Measures">
+                <ClinicalTable
+                  title="Outcome Measures"
+                  headers={['Measure', 'Score', 'Interpretation']}
+                  rows={[
+                    ['DASH score', '72', 'Severe disability'],
+                    ['Penn Shoulder Score', '28/100', 'Severe dysfunction'],
+                  ]}
+                />
+              </InfoBlock>
+            </div>
+          ) : (
+            <InfoBlock label="No Input"> </InfoBlock>
+          )}
+        </SoapSectionCard>
+      </div>
 
-      <SoapSectionCard letter="A" title="Assessment">
-        {showGeneratedSoap && (
-          <SuggestionRow items={['Healing phase classification', 'Medicare audit readiness', 'Compliance risk flag']} />
-        )}
-        <InfoBlock label="Diagnosis">M75.11, Complete rotator cuff tear, right shoulder, not specified as traumatic.</InfoBlock>
-        {showGeneratedSoap && (
-          <InfoBlock label="Rehabilitation Potential">
-            Patient presents with significant post-surgical ROM deficits and pain consistent with status post arthroscopic
-            rotator cuff repair. Prognosis is good given patient motivation and absence of complicating comorbidities.
-            Functional limitations impact ADLs and prior level of function.
-          </InfoBlock>
-        )}
-      </SoapSectionCard>
+      <div ref={assessmentRef} className="scroll-mt-6">
+        <SoapSectionCard letter="A" title="Assessment">
+          {showGeneratedSoap && (
+            <SuggestionRow items={['Healing phase classification', 'Medicare audit readiness', 'Compliance risk flag']} />
+          )}
+          <InfoBlock label="Diagnosis">M75.11, Complete rotator cuff tear, right shoulder, not specified as traumatic.</InfoBlock>
+          {showGeneratedSoap && (
+            <InfoBlock label="Rehabilitation Potential">
+              Patient presents with significant post-surgical ROM deficits and pain consistent with status post arthroscopic
+              rotator cuff repair. Prognosis is good given patient motivation and absence of complicating comorbidities.
+              Functional limitations impact ADLs and prior level of function.
+            </InfoBlock>
+          )}
+        </SoapSectionCard>
+      </div>
 
       {showGeneratedSoap && (
         <>
-          <SoapSectionCard letter="P" title="Plan">
-            <SuggestionRow items={['Healing phase classification', 'Medicare audit readiness', 'Compliance risk flag']} />
-            <InfoBlock label="Goals Established">
-              <GoalText title="Shoulder Flexion (Right ROM)">
-                Diane will demonstrate improved active right shoulder flexion from 68° to 150° within 12 visits to allow
-                overhead reach into kitchen cabinets and return to gardening without pain limitation.
-              </GoalText>
-              <GoalText title="Shoulder Abduction (Right ROM)">
-                Diane will demonstrate improved active right shoulder abduction from 54° to 140° within 12 visits to support
-                bilateral overhead reaching for daily household tasks.
-              </GoalText>
-              <GoalText title="Shoulder External Rotation (Right ROM)">
-                Diane will demonstrate improved active right shoulder external rotation from 22° to 60° within 12 visits to
-                enable functional reaching and independent dressing with her dominant arm.
-              </GoalText>
-              <GoalText title="Pain with Movement">
-                Diane will report decreased pain with movement from 8/10 to ≤2/10 within 12 visits to allow full participation
-                in her home exercise program and daily activities.
-              </GoalText>
-              <GoalText title="DASH Score">
-                Diane will demonstrate an improved DASH score from 72 to ≤30 within 12 visits, reflecting reduced disability
-                and return toward prior level of function for home and gardening tasks.
-              </GoalText>
-              <GoalText title="Functional Outcome">
-                Diane will progress from unable to independent with overhead reaching for kitchen tasks and light gardening
-                within 12 visits, without pain or compensatory movement patterns.
-              </GoalText>
-              <GoalText title="Rotator Cuff Strength (Right)">
-                Diane will improve right rotator cuff strength to 4+/5 or greater across all planes within 12 visits, sufficient
-                to perform overhead reaching and gardening without substitution patterns or fatigue.
-              </GoalText>
-            </InfoBlock>
-            <InfoBlock label="Interventions Planned">
-              Progressive ROM, posterior capsule mobilization, progressive resisted strengthening, neuromuscular re-education,
-              HEP instruction.
-            </InfoBlock>
-            <div>
-              <p className="mb-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#adb2c7]">Visit Frequency</p>
-              <div className="flex gap-3">
-                <DetailPill label="Frequency" value="2x per week" />
-                <DetailPill label="Duration" value="6 weeks (12 visits)" />
+          <div ref={planRef} className="scroll-mt-6">
+            <SoapSectionCard letter="P" title="Plan">
+              <SuggestionRow items={['Healing phase classification', 'Medicare audit readiness', 'Compliance risk flag']} />
+              <InfoBlock label="Goals Established">
+                <GoalText title="Shoulder Flexion (Right ROM)">
+                  Diane will demonstrate improved active right shoulder flexion from 68° to 150° within 12 visits to allow
+                  overhead reach into kitchen cabinets and return to gardening without pain limitation.
+                </GoalText>
+                <GoalText title="Shoulder Abduction (Right ROM)">
+                  Diane will demonstrate improved active right shoulder abduction from 54° to 140° within 12 visits to support
+                  bilateral overhead reaching for daily household tasks.
+                </GoalText>
+                <GoalText title="Shoulder External Rotation (Right ROM)">
+                  Diane will demonstrate improved active right shoulder external rotation from 22° to 60° within 12 visits to
+                  enable functional reaching and independent dressing with her dominant arm.
+                </GoalText>
+                <GoalText title="Pain with Movement">
+                  Diane will report decreased pain with movement from 8/10 to ≤2/10 within 12 visits to allow full participation
+                  in her home exercise program and daily activities.
+                </GoalText>
+                <GoalText title="DASH Score">
+                  Diane will demonstrate an improved DASH score from 72 to ≤30 within 12 visits, reflecting reduced disability
+                  and return toward prior level of function for home and gardening tasks.
+                </GoalText>
+                <GoalText title="Functional Outcome">
+                  Diane will progress from unable to independent with overhead reaching for kitchen tasks and light gardening
+                  within 12 visits, without pain or compensatory movement patterns.
+                </GoalText>
+                <GoalText title="Rotator Cuff Strength (Right)">
+                  Diane will improve right rotator cuff strength to 4+/5 or greater across all planes within 12 visits, sufficient
+                  to perform overhead reaching and gardening without substitution patterns or fatigue.
+                </GoalText>
+              </InfoBlock>
+              <InfoBlock label="Interventions Planned">
+                Progressive ROM, posterior capsule mobilization, progressive resisted strengthening, neuromuscular re-education,
+                HEP instruction.
+              </InfoBlock>
+              <div>
+                <p className="mb-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#adb2c7]">Visit Frequency</p>
+                <div className="flex gap-3">
+                  <DetailPill label="Frequency" value="2x per week" />
+                  <DetailPill label="Duration" value="6 weeks (12 visits)" />
+                </div>
               </div>
-            </div>
-          </SoapSectionCard>
+            </SoapSectionCard>
+          </div>
 
-          <SoapSectionCard letter="P" title="Billing">
-            <ClinicalTable
-              title="Suggested CPT Codes"
-              headers={['CPT Code', 'Type', 'Description', 'Unit Duration']}
-              rows={[
-                ['97163', 'Untimed (serve-based)', 'Physical therapy evaluation, high complexity', '1 unit regardless of time'],
-                ['97163', 'Timed (15-minute units)', 'Therapeutic exercise', '1 unit per 15 minutes (minimum 8 minutes to bill 1 unit)'],
-                ['97163', 'Untimed (serve-based)', 'Physical therapy evaluation, high complexity', '1 unit regardless of time'],
-                ['97163', 'Timed (15-minute units)', 'Self care and home management training', '1 unit per 15 minutes (minimum 8 minutes to bill 1 unit)'],
-              ]}
-            />
-          </SoapSectionCard>
+          <div ref={billingRef} className="scroll-mt-6">
+            <SoapSectionCard letter="C" title="Billing">
+              <ClinicalTable
+                title="Suggested CPT Codes"
+                headers={['CPT Code', 'Type', 'Description', 'Unit Duration']}
+                rows={[
+                  ['97163', 'Untimed (serve-based)', 'Physical therapy evaluation, high complexity', '1 unit regardless of time'],
+                  ['97163', 'Timed (15-minute units)', 'Therapeutic exercise', '1 unit per 15 minutes (minimum 8 minutes to bill 1 unit)'],
+                  ['97163', 'Untimed (serve-based)', 'Physical therapy evaluation, high complexity', '1 unit regardless of time'],
+                  ['97163', 'Timed (15-minute units)', 'Self care and home management training', '1 unit per 15 minutes (minimum 8 minutes to bill 1 unit)'],
+                ]}
+              />
+            </SoapSectionCard>
+          </div>
         </>
       )}
 
@@ -1537,6 +1609,59 @@ function SoapSurface({
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function SoapSectionNav({
+  showPlanSections,
+  activeSection,
+  onSubjective,
+  onObjective,
+  onAssessment,
+  onPlan,
+  onBilling,
+}: {
+  showPlanSections: boolean;
+  activeSection: string;
+  onSubjective: () => void;
+  onObjective: () => void;
+  onAssessment: () => void;
+  onPlan: () => void;
+  onBilling: () => void;
+}) {
+  const items = [
+    { id: 'subjective', label: 'S', title: 'Subjective', onClick: onSubjective },
+    { id: 'objective', label: 'O', title: 'Objective', onClick: onObjective },
+    { id: 'assessment', label: 'A', title: 'Assessment', onClick: onAssessment },
+    ...(showPlanSections
+      ? [
+          { id: 'plan', label: 'P', title: 'Plan', onClick: onPlan },
+          { id: 'billing', label: 'C', title: 'Billing codes', onClick: onBilling },
+        ]
+      : []),
+  ];
+
+  return (
+    <div className="sticky top-4 z-10 float-right -mr-9 ml-3 flex w-7 flex-col items-center gap-3 px-1 py-2">
+      <span className="text-[9px] font-semibold uppercase text-[#b1b7c9] [writing-mode:vertical-rl]">SOAP</span>
+      {items.map((item) => (
+        <button
+          key={item.id}
+          type="button"
+          onClick={item.onClick}
+          title={item.title}
+          aria-label={`Go to ${item.title}`}
+          aria-current={activeSection === item.id ? 'true' : undefined}
+          className={`flex h-6 w-6 items-center justify-center rounded-md text-[11px] font-semibold transition-colors ${
+            activeSection === item.id
+              ? 'bg-[#6a61f1] text-white shadow-[0_6px_12px_rgba(106,97,241,0.24)]'
+              : 'bg-transparent text-[#8f96ad] hover:bg-[#f2f0ff] hover:text-[#5b49f3]'
+          }`}
+        >
+          {item.label}
+        </button>
+      ))}
     </div>
   );
 }
