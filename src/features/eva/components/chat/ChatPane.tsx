@@ -1,16 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { History, MessageCircle, Send } from 'lucide-react';
 import type { ChatItem, WorkflowStage } from '../../types';
-import type { CtaHintId } from '../../utils/ctaHints';
-import { CTA_HINT, ctaHighlightClass } from '../../utils/ctaHints';
+import { CTA_HINT, chatChipLabelToCtaHint, ctaHighlightClass } from '../../utils/ctaHints';
 import { AudioControls } from '../audio/AudioControls';
 import { ChatBubble } from './ChatBubble';
-
-function suggestionToCtaHint(label: string): CtaHintId | null {
-  if (label === 'Open pre visit summary') return CTA_HINT.OPEN_PREVISIT_SUMMARY;
-  if (label === 'Begin Session') return CTA_HINT.BEGIN_SESSION;
-  return null;
-}
 
 export function ChatPane({
   chatItems,
@@ -79,7 +72,7 @@ export function ChatPane({
       <div className="mt-[20px]">
         <div className="mb-[12px] flex flex-wrap gap-[8px]">
           {suggestions.map((label) => {
-            const hint = suggestionToCtaHint(label);
+            const hint = chatChipLabelToCtaHint(label);
             const isCta = hint !== null && ctaHints.has(hint);
             return (
               <button

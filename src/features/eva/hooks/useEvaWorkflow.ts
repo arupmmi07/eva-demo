@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ChatItem, HeaderMode, PanelMode, WorkflowStage } from '../types';
 import { EVA_TIMESTAMP, FINAL_CLARIFICATION, INITIAL_CHIEF_COMPLAINT } from '../constants';
-import { getActiveCtaHints } from '../utils/ctaHints';
+import { COMORBIDITIES_CHIP, getActiveCtaHints, getChatSuggestionChips } from '../utils/ctaHints';
 import { normalizeText } from '../utils/format';
 
 const initialChat: ChatItem[] = [
@@ -29,7 +29,6 @@ export function useEvaWorkflow() {
   const [sleepDisturbanceAccepted, setSleepDisturbanceAccepted] = useState(false);
   const [chiefComplaint, setChiefComplaint] = useState(INITIAL_CHIEF_COMPLAINT);
   const [chiefComplaintFocused, setChiefComplaintFocused] = useState(false);
-  const [mentionVisible, setMentionVisible] = useState(false);
   const [clarificationApplied, setClarificationApplied] = useState(false);
   const [panelMode, setPanelMode] = useState<PanelMode>('both');
   const highlightTimerRef = useRef<number | null>(null);
@@ -60,18 +59,29 @@ export function useEvaWorkflow() {
     };
   }, [stage, recordingActive, showHighlight]);
 
-  const suggestionButtons = useMemo(() => {
-    if (stage === 'dashboard') {
-      return [
-        'Open pre visit summary',
-        'Show me patient list',
-        'Open patient profile',
-        'Show pending notes',
-        'Check flagged cases',
-      ];
-    }
-    return ['Begin Session', 'Show allergies'];
-  }, [stage]);
+  const suggestionButtons = useMemo(
+    () =>
+      getChatSuggestionChips({
+        stage,
+        referralOpen,
+        topSetupVisible,
+        recordingActive,
+        sessionPaused,
+        showHighlight,
+        sleepTableVisible,
+        sleepDisturbanceAccepted,
+      }),
+    [
+      stage,
+      referralOpen,
+      topSetupVisible,
+      recordingActive,
+      sessionPaused,
+      showHighlight,
+      sleepTableVisible,
+      sleepDisturbanceAccepted,
+    ],
+  );
 
   const ctaHints = useMemo(
     () =>
@@ -231,9 +241,55 @@ export function useEvaWorkflow() {
 
     if (
       ['summary', 'summaryCustomizing', 'summaryReady', 'summaryAnswered'].includes(stage) &&
-      normalized === 'any comorbidities i should be aware of?'
+      normalized === normalizeText(COMORBIDITIES_CHIP)
     ) {
       answerComorbidities();
+      return;
+    }
+
+    if (normalized === 'view referral document' && ['summary', 'summaryReady', 'summaryAnswered'].includes(stage) && !referralOpen) {
+      setReferralOpen(true);
+      return;
+    }
+
+    if (normalized === 'close referral' && referralOpen) {
+      closeReferral();
+      return;
+    }
+
+    if (normalized === 'save as default' && stage === 'summaryCustomizing' && topSetupVisible) {
+      resolveCustomization();
+      return;
+    }
+
+    if (normalized === 'add sleep disturbance' && stage === 'session' && recordingActive && showHighlight && !sleepTableVisible) {
+      setSleepTableVisible(true);
+      return;
+    }
+
+    if (normalized === 'accept sleep details' && sleepTableVisible) {
+      acceptSleepSuggestion();
+      return;
+    }
+
+    if (normalized === 'stop session' && (stage === 'session' || stage === 'sessionAccepted') && recordingActive) {
+      stopSession();
+      return;
+    }
+
+    if (normalized === 'review & finalise' && stage === 'sessionStopped' && reviewEnabled) {
+      finalizeReview();
+      return;
+    }
+
+    if (stage === 'finalized' && normalized === 'share with patient') {
+      appendChat({ id: `user-share-type-${Date.now()}`, kind: 'user', content: text, timestamp: '07:53 PM' });
+      appendChat({
+        id: `eva-share-type-${Date.now()}`,
+        kind: 'eva',
+        content: 'Opening share options for the patient portal.',
+        timestamp: EVA_TIMESTAMP,
+      });
       return;
     }
 
@@ -270,17 +326,65 @@ export function useEvaWorkflow() {
     }
     if (label === 'Begin Session') {
       beginSession();
+      return;
     }
+    if (label === 'View referral document') {
+      setReferralOpen(true);
+      return;
+    }
+    if (label === 'Close referral') {
+      closeReferral();
+      return;
+    }
+    if (label === 'Save as Default') {
+      resolveCustomization();
+      return;
+    }
+    if (label === COMORBIDITIES_CHIP) {
+      answerComorbidities();
+      return;
+    }
+    if (label === 'Add sleep disturbance') {
+      setSleepTableVisible(true);
+      return;
+    }
+    if (label === 'Accept sleep details') {
+      acceptSleepSuggestion();
+      return;
+    }
+    if (label === 'Stop session') {
+      stopSession();
+      return;
+    }
+    if (label === 'Review & Finalise') {
+      finalizeReview();
+      return;
+    }
+    if (label === 'Share with patient') {
+      appendChat({ id: `user-share-${Date.now()}`, kind: 'user', content: label, timestamp: '07:53 PM' });
+      appendChat({
+        id: `eva-share-${Date.now()}`,
+        kind: 'eva',
+        content: 'Opening share options for the patient portal.',
+        timestamp: EVA_TIMESTAMP,
+      });
+      return;
+    }
+    submitChat(label);
   };
+
+  const mentionVisible = chiefComplaint.includes('@');
 
   const handleChiefComplaintChange = (value: string) => {
     setChiefComplaint(value);
-    setMentionVisible(value.includes('@'));
   };
 
   const insertMention = (value: string) => {
     setChiefComplaint((prev) => prev.replace(/@[^ ]*$/, value));
-    setMentionVisible(false);
+  };
+
+  const dismissClinicalTags = () => {
+    setChiefComplaint((prev) => prev.replace(/@[^ ]*$/, ''));
   };
 
   return {
@@ -321,6 +425,7 @@ export function useEvaWorkflow() {
     togglePause,
     handleChiefComplaintChange,
     insertMention,
+    dismissClinicalTags,
     leftPanelCollapsed: panelMode === 'rightOnly',
     ctaHints,
   };
