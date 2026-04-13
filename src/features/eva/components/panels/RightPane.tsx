@@ -33,6 +33,7 @@ export function RightPane({
   onChiefComplaintChange,
   onChiefComplaintFocus,
   onSelectMention,
+  onDismissClinicalTags,
   ctaHints,
 }: {
   stage: WorkflowStage;
@@ -60,6 +61,7 @@ export function RightPane({
   onChiefComplaintChange: (value: string) => void;
   onChiefComplaintFocus: (focused: boolean) => void;
   onSelectMention: (value: string) => void;
+  onDismissClinicalTags: () => void;
   ctaHints: ReadonlySet<CtaHintId>;
 }) {
   const soapScrollRef = useRef<HTMLDivElement | null>(null);
@@ -121,6 +123,7 @@ export function RightPane({
           onChiefComplaintChange={onChiefComplaintChange}
           onChiefComplaintFocus={onChiefComplaintFocus}
           onSelectMention={onSelectMention}
+          onDismissClinicalTags={onDismissClinicalTags}
           scrollContainerRef={soapScrollRef}
           ctaHints={ctaHints}
         />

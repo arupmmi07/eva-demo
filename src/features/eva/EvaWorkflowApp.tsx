@@ -79,6 +79,7 @@ export function EvaWorkflowApp() {
                   onChiefComplaintChange={workflow.handleChiefComplaintChange}
                   onChiefComplaintFocus={workflow.setChiefComplaintFocused}
                   onSelectMention={workflow.insertMention}
+                  onDismissClinicalTags={workflow.dismissClinicalTags}
                   ctaHints={workflow.ctaHints}
                 />
               </section>

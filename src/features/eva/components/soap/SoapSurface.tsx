@@ -42,6 +42,7 @@ export function SoapSurface({
   onChiefComplaintChange,
   onChiefComplaintFocus,
   onSelectMention,
+  onDismissClinicalTags,
   scrollContainerRef,
   ctaHints,
 }: {
@@ -63,6 +64,7 @@ export function SoapSurface({
   onChiefComplaintChange: (value: string) => void;
   onChiefComplaintFocus: (focused: boolean) => void;
   onSelectMention: (value: string) => void;
+  onDismissClinicalTags: () => void;
   scrollContainerRef: RefObject<HTMLDivElement | null>;
   ctaHints: ReadonlySet<CtaHintId>;
 }) {
@@ -252,6 +254,7 @@ export function SoapSurface({
             onChange={onChiefComplaintChange}
             onFocusChange={onChiefComplaintFocus}
             onSelectMention={onSelectMention}
+            onDismissClinicalTags={onDismissClinicalTags}
           />
 
           <div>

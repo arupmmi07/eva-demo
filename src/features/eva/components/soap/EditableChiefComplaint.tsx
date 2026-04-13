@@ -1,11 +1,4 @@
-import { ArrowRight } from 'lucide-react';
-
-const MENTION_OPTIONS = [
-  'Medial joint line tenderness',
-  'Right knee flexion',
-  'Left knee flexion',
-  'Knee extension',
-] as const;
+import { ClinicalTagsMenu } from './ClinicalTagsMenu';
 
 export function EditableChiefComplaint({
   label,
@@ -16,6 +9,7 @@ export function EditableChiefComplaint({
   onChange,
   onFocusChange,
   onSelectMention,
+  onDismissClinicalTags,
 }: {
   label: string;
   value: string;
@@ -25,6 +19,7 @@ export function EditableChiefComplaint({
   onChange: (value: string) => void;
   onFocusChange: (focused: boolean) => void;
   onSelectMention: (value: string) => void;
+  onDismissClinicalTags: () => void;
 }) {
   return (
     <div className="relative" data-name="EditableChiefComplaint">
@@ -44,6 +39,9 @@ export function EditableChiefComplaint({
             onBlur={() => window.setTimeout(() => onFocusChange(false), 120)}
             className="min-h-[58px] w-full resize-none border-none bg-transparent font-['Inter',sans-serif] text-[14px] font-normal leading-[28px] text-[var(--ds-text-primary)] outline-none"
             aria-label={label}
+            aria-controls={mentionVisible ? 'clinical-tags-listbox' : undefined}
+            aria-expanded={mentionVisible}
+            aria-autocomplete="list"
           />
           <p className="font-['Inter',sans-serif] text-[11px] leading-[16px] text-[var(--ds-text-secondary)]">Type `@` to insert a clinical tag.</p>
         </div>
@@ -52,22 +50,7 @@ export function EditableChiefComplaint({
       )}
 
       {editable && mentionVisible && (
-        <div className="absolute left-0 top-[98px] z-10 w-[250px] rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] p-[8px] shadow-[var(--ds-shadow-card)]">
-          {MENTION_OPTIONS.map((option) => (
-            <button
-              key={option}
-              type="button"
-              onMouseDown={(event) => {
-                event.preventDefault();
-                onSelectMention(option);
-              }}
-              className="flex w-full items-center justify-between rounded-[var(--ds-radius-card)] px-[12px] py-[8px] text-left font-['Inter',sans-serif] text-[13px] leading-[20px] text-[var(--ds-text-primary)] hover:bg-[var(--ds-bg-accent-purple)] hover:text-[var(--ds-primary-action)]"
-            >
-              {option}
-              <ArrowRight className="size-[12px]" strokeWidth={1.5} aria-hidden />
-            </button>
-          ))}
-        </div>
+        <ClinicalTagsMenu open={mentionVisible} onSelect={onSelectMention} onDismiss={onDismissClinicalTags} />
       )}
     </div>
   );
