@@ -15,7 +15,7 @@ function FinalSection({
   return (
     <div
       data-name="FinalSection"
-      className="rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] p-[24px] shadow-[var(--ds-shadow-card)]"
+      className="rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] p-[15px] shadow-[var(--ds-shadow-card)]"
     >
       <div className="mb-[20px] flex items-center justify-between">
         <div className="flex items-center gap-[12px]">
@@ -50,8 +50,8 @@ function FinalSection({
 
 export function FinalizedSurface({ clarificationApplied }: { clarificationApplied: boolean }) {
   return (
-    <div data-name="FinalizedSurface" className="space-y-[20px] px-[32px] py-[32px]">
-      <div className="rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] p-[24px] shadow-[var(--ds-shadow-card)]">
+    <div data-name="FinalizedSurface" className="space-y-[20px] px-3 py-3">
+      <div className="rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] p-[15px] shadow-[var(--ds-shadow-card)]">
         <div className="flex items-center justify-between gap-[24px]">
           <div className="flex items-center gap-[20px]">
             <div className="flex size-[56px] items-center justify-center rounded-[var(--ds-radius-card)] bg-[var(--ds-success-bg)] text-[var(--ds-success)]">

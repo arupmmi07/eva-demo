@@ -19,6 +19,7 @@ export function EvaWorkflowApp() {
         <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
           <TopHeader
             mode={workflow.headerMode}
+            title={workflow.headerTitle}
             saveDraftEnabled={workflow.saveDraftEnabled}
             reviewEnabled={workflow.reviewEnabled}
             onFinalize={workflow.finalizeReview}
@@ -37,22 +38,33 @@ export function EvaWorkflowApp() {
                     : 'grid-cols-[0px_minmax(0,1fr)]'
               }`}
             >
-              <section className="relative min-h-0 min-w-0 overflow-hidden border-r border-[var(--ds-border)] bg-[var(--ds-bg-primary)]">
+              <section
+                className={`relative flex h-full min-h-0 min-w-0 flex-col overflow-hidden border-r ${
+                  workflow.stage === 'scheduler'
+                    ? 'border-[rgba(0,9,50,0.1)] bg-[#eef2f7]'
+                    : 'border-[var(--ds-border)] bg-[var(--ds-bg-primary)]'
+                }`}
+              >
                 <ChatPane
                   chatItems={workflow.chatItems}
                   chatInput={workflow.chatInput}
                   onInputChange={workflow.setChatInput}
                   onSubmit={workflow.submitChat}
                   onQuickAction={workflow.selectSuggestion}
-                  suggestions={workflow.suggestionButtons}
                   stage={workflow.stage}
                   sessionSeconds={workflow.sessionSeconds}
                   onOpenSummary={workflow.openSummaryFromUser}
+                  onSchedulerViewUnconfirmed={() => workflow.expandSchedulerPanel('unconfirmed')}
+                  onSchedulerViewNoShow={() => workflow.expandSchedulerPanel('potentialNoShow')}
                   ctaHints={workflow.ctaHints}
                 />
               </section>
 
-              <section className="relative min-h-0 min-w-0 overflow-hidden bg-[var(--ds-bg-secondary)]">
+              <section
+                className={`relative min-h-0 min-w-0 overflow-hidden ${
+                  workflow.stage === 'scheduler' ? 'bg-[#fafbfc]' : 'bg-[var(--ds-bg-secondary)]'
+                }`}
+              >
                 <RightPane
                   stage={workflow.stage}
                   referralOpen={workflow.referralOpen}
@@ -68,6 +80,15 @@ export function EvaWorkflowApp() {
                   mentionVisible={workflow.mentionVisible}
                   clarificationApplied={workflow.clarificationApplied}
                   leftPanelCollapsed={workflow.leftPanelCollapsed}
+                  schedulerExpanded={workflow.schedulerPanel}
+                  schedulerReminders={workflow.schedulerReminders}
+                  schedulerSamMoved={workflow.schedulerSamMoved}
+                  schedulerGoodNews={workflow.schedulerGoodNews}
+                  schedulerToasts={workflow.schedulerToasts}
+                  onSchedulerExpand={workflow.expandSchedulerPanel}
+                  onSchedulerResend={workflow.resendSchedulerReminder}
+                  onSchedulerMarkSamNoShow={workflow.markSamNoShow}
+                  onSchedulerDismissToast={workflow.dismissSchedulerToast}
                   onOpenSummary={workflow.openSummaryFromUser}
                   onOpenReferral={() => workflow.setReferralOpen(true)}
                   onCloseReferral={workflow.closeReferral}

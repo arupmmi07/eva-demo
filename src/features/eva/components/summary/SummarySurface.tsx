@@ -21,7 +21,7 @@ export function SummarySurface({
 }) {
   return (
     <div data-name="SummarySurface" className="space-y-[20px]">
-      <div className="rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] p-[20px] shadow-[var(--ds-shadow-card)]">
+      <div className="rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] p-[15px] shadow-[var(--ds-shadow-card)]">
         <div className="mb-[20px] flex items-start justify-between gap-[16px]">
           <div>
             <h2 className="font-['Inter',sans-serif] text-[28px] font-semibold leading-[36px] tracking-tight text-[var(--ds-text-primary)]">

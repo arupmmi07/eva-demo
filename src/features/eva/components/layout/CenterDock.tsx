@@ -62,7 +62,7 @@ export function CenterDock({
       role="toolbar"
       aria-label="Panel layout"
     >
-      <div className="flex flex-col gap-[4px] rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] p-[8px] shadow-[var(--ds-shadow-card)]">
+      <div className="flex flex-col gap-[4px] rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] p-1 shadow-[var(--ds-shadow-card)]">
         <PanelToggleButton
           label="Collapse right panel"
           active={panelMode === 'leftOnly'}

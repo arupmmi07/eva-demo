@@ -1,23 +1,59 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { ChatItem, HeaderMode, PanelMode, WorkflowStage } from '../types';
+import type { ChatItem, HeaderMode, PanelMode, SchedulerExpandedPanel, WorkflowStage } from '../types';
 import { EVA_TIMESTAMP, FINAL_CLARIFICATION, INITIAL_CHIEF_COMPLAINT } from '../constants';
+import {
+  SC1_EVA_MESSAGE,
+  SC2_EVA_REPLY,
+  SC4_GOOD_NEWS,
+  SC6_SAM_MOVED,
+  SC7_SCHEDULE_CHANGES,
+  SC9_NEW_PATIENT,
+  MOVE_SAM_PREFIX,
+} from '../constants/schedulerCopy';
+import type { UnconfirmedId } from '../scheduler/schedulerData';
 import { COMORBIDITIES_CHIP, getActiveCtaHints, getChatSuggestionChips } from '../utils/ctaHints';
 import { normalizeText } from '../utils/format';
 
-const initialChat: ChatItem[] = [
+const SCHEDULER_SC1_CHIP_LABELS = [
+  'Get updates from the weekend',
+  'Request confirmations',
+  'View details of unconfirmed',
+] as const;
+
+const SCHEDULER_SAM_DECISION_CHIP_LABELS = ['Move Sam to Potential No-show', 'Keep Sam as Unconfirmed'] as const;
+
+/** Matches typed / pasted “today’s” (ASCII or typographic apostrophe) and optional trailing `?`. */
+const NEW_PATIENT_BRIEF_PHRASES = ["Brief me about today's new patient", 'Brief me about todays new patient'] as const;
+
+function normalizeSchedulerUserPhrase(raw: string) {
+  return normalizeText(
+    raw
+      .replace(/[\u2018\u2019\u201B\u2032]/g, "'")
+      .replace(/\?+\s*$/u, '')
+      .trim(),
+  );
+}
+
+function isNewPatientBriefQuery(raw: string) {
+  const n = normalizeSchedulerUserPhrase(raw);
+  return NEW_PATIENT_BRIEF_PHRASES.some((p) => n === normalizeSchedulerUserPhrase(p));
+}
+
+const schedulerInitialChat: ChatItem[] = [
+  { id: 'sc1', kind: 'eva', content: SC1_EVA_MESSAGE, timestamp: '07:47 am' },
+  { id: 'c-un', kind: 'cascade-unconfirmed-card', timestamp: '07:47 am' },
+  { id: 'c-ns', kind: 'cascade-noshow-card', timestamp: '07:47 am' },
   {
-    id: 'welcome',
-    kind: 'eva',
-    content:
-      'Hi Dr. Maya — you have 6 patients today. 4 follow ups, and 2 evals. Diane is your next patient',
-    timestamp: EVA_TIMESTAMP,
+    id: 'sc1-chips',
+    kind: 'suggestion-chips',
+    suggestionLabels: [...SCHEDULER_SC1_CHIP_LABELS],
+    timestamp: '07:47 am',
   },
-  { id: 'patient-card', kind: 'patient-card', timestamp: EVA_TIMESTAMP },
 ];
 
 export function useEvaWorkflow() {
-  const [stage, setStage] = useState<WorkflowStage>('dashboard');
-  const [chatItems, setChatItems] = useState<ChatItem[]>(initialChat);
+  const [stage, setStage] = useState<WorkflowStage>('scheduler');
+  const [chatItems, setChatItems] = useState<ChatItem[]>(schedulerInitialChat);
   const [chatInput, setChatInput] = useState('');
   const [referralOpen, setReferralOpen] = useState(false);
   const [topSetupVisible, setTopSetupVisible] = useState(false);
@@ -32,6 +68,21 @@ export function useEvaWorkflow() {
   const [clarificationApplied, setClarificationApplied] = useState(false);
   const [panelMode, setPanelMode] = useState<PanelMode>('both');
   const highlightTimerRef = useRef<number | null>(null);
+
+  const [schedulerPanel, setSchedulerPanel] = useState<SchedulerExpandedPanel>('none');
+  const [schedulerReminders, setSchedulerReminders] = useState<Record<UnconfirmedId, boolean>>({
+    angela: false,
+    maria: false,
+    sam: false,
+  });
+  const [schedulerSamMoved, setSchedulerSamMoved] = useState(false);
+  const [schedulerGoodNews, setSchedulerGoodNews] = useState(false);
+  const [schedulerToasts, setSchedulerToasts] = useState<
+    { id: string; title: string; body: string }[]
+  >([]);
+  const unconfirmedDetailsReplyShownRef = useRef(false);
+  const scheduleDetailsReplyShownRef = useRef(false);
+  const samMovedRef = useRef(false);
 
   const headerMode: HeaderMode = useMemo(() => {
     if (stage === 'summaryCustomizing') return 'setup';
@@ -59,19 +110,11 @@ export function useEvaWorkflow() {
     };
   }, [stage, recordingActive, showHighlight]);
 
-  const suggestionButtons = useMemo(
-    () =>
-      getChatSuggestionChips({
-        stage,
-        referralOpen,
-        topSetupVisible,
-        recordingActive,
-        sessionPaused,
-        showHighlight,
-        sleepTableVisible,
-        sleepDisturbanceAccepted,
-      }),
-    [
+  const suggestionButtons = useMemo(() => {
+    if (stage === 'scheduler') {
+      return [];
+    }
+    return getChatSuggestionChips({
       stage,
       referralOpen,
       topSetupVisible,
@@ -80,8 +123,54 @@ export function useEvaWorkflow() {
       showHighlight,
       sleepTableVisible,
       sleepDisturbanceAccepted,
-    ],
-  );
+      schedulerGoodNews,
+      schedulerSamMoved,
+    });
+  }, [
+    stage,
+    referralOpen,
+    topSetupVisible,
+    recordingActive,
+    sessionPaused,
+    showHighlight,
+    sleepTableVisible,
+    sleepDisturbanceAccepted,
+    schedulerGoodNews,
+    schedulerSamMoved,
+  ]);
+
+  const suggestionButtonsKey = useMemo(() => suggestionButtons.join('\u0001'), [suggestionButtons]);
+
+  /** Keep suggestion chips in the scrollable transcript (not pinned above the composer). */
+  useEffect(() => {
+    if (stage === 'scheduler') return;
+    if (suggestionButtons.length === 0) return;
+    setChatItems((prev) => {
+      const last = prev[prev.length - 1];
+      if (last?.kind === 'suggestion-chips') {
+        const prevKey = (last.suggestionLabels ?? []).join('\u0001');
+        if (prevKey === suggestionButtonsKey) return prev;
+        return [
+          ...prev.slice(0, -1),
+          {
+            id: `suggest-${Date.now()}`,
+            kind: 'suggestion-chips',
+            suggestionLabels: [...suggestionButtons],
+            timestamp: last.timestamp ?? EVA_TIMESTAMP,
+          },
+        ];
+      }
+      return [
+        ...prev,
+        {
+          id: `suggest-${Date.now()}`,
+          kind: 'suggestion-chips',
+          suggestionLabels: [...suggestionButtons],
+          timestamp: EVA_TIMESTAMP,
+        },
+      ];
+    });
+  }, [stage, suggestionButtonsKey, suggestionButtons]);
 
   const ctaHints = useMemo(
     () =>
@@ -94,6 +183,8 @@ export function useEvaWorkflow() {
         showHighlight,
         sleepTableVisible,
         sleepDisturbanceAccepted,
+        schedulerGoodNews,
+        schedulerSamMoved,
       }),
     [
       stage,
@@ -104,6 +195,8 @@ export function useEvaWorkflow() {
       showHighlight,
       sleepTableVisible,
       sleepDisturbanceAccepted,
+      schedulerGoodNews,
+      schedulerSamMoved,
     ],
   );
 
@@ -114,33 +207,140 @@ export function useEvaWorkflow() {
     setChatItems((prev) => [...prev, item]);
   };
 
-  const openSummary = () => {
-    if (stage !== 'dashboard') return;
-    setStage('summary');
+  const handleSchedulerExpand = (panel: SchedulerExpandedPanel) => {
+    setSchedulerPanel(panel);
+    if (panel === 'unconfirmed' && !unconfirmedDetailsReplyShownRef.current) {
+      unconfirmedDetailsReplyShownRef.current = true;
+      appendChat({
+        id: `eva-sc2-${Date.now()}`,
+        kind: 'eva',
+        content: SC2_EVA_REPLY,
+        timestamp: '07:48 am',
+      });
+    }
+    if (panel === 'scheduleChanges') {
+      appendScheduleChangesEvaOnce();
+    }
+  };
+
+  const appendScheduleChangesEvaOnce = () => {
+    if (scheduleDetailsReplyShownRef.current) return;
+    scheduleDetailsReplyShownRef.current = true;
     appendChat({
+      id: `eva-sc7-${Date.now()}`,
+      kind: 'eva',
+      content: SC7_SCHEDULE_CHANGES,
+      timestamp: '07:49 am',
+    });
+    appendChat({
+      id: `sc7-newpt-chips-${Date.now()}`,
+      kind: 'suggestion-chips',
+      suggestionLabels: [NEW_PATIENT_BRIEF_PHRASES[0]],
+      timestamp: '07:49 am',
+    });
+  };
+
+  const appendScheduleReplyOnly = () => {
+    appendScheduleChangesEvaOnce();
+  };
+
+  const markSamNoShow = () => {
+    if (samMovedRef.current) return;
+    samMovedRef.current = true;
+    setSchedulerSamMoved(true);
+    setSchedulerPanel('potentialNoShow');
+    appendChat({
+      id: `eva-sc6-${Date.now()}`,
+      kind: 'eva',
+      content: SC6_SAM_MOVED,
+      timestamp: '07:49 am',
+    });
+  };
+
+  const { angela: remAngela, maria: remMaria, sam: remSam } = schedulerReminders;
+  const allSchedulerRemindersSent = remAngela && remMaria && remSam;
+
+  useEffect(() => {
+    if (stage !== 'scheduler' || schedulerSamMoved || schedulerGoodNews) return;
+    if (!allSchedulerRemindersSent) return;
+    const timer = window.setTimeout(() => {
+      setSchedulerGoodNews(true);
+      setSchedulerToasts([
+        {
+          id: 'toast-angela',
+          title: 'Angela Wu',
+          body: 'Confirmed her appointment. 10 AM with Dr. Kumar. 1 min ago.',
+        },
+        {
+          id: 'toast-maria',
+          title: 'Maria Santos',
+          body: 'Confirmed her appointment. 1:00 PM with Dr. Aris. 1 min ago.',
+        },
+      ]);
+      setChatItems((prev) => [
+        ...prev,
+        {
+          id: `eva-sc4-${Date.now()}`,
+          kind: 'eva',
+          content: SC4_GOOD_NEWS,
+          timestamp: '07:48 am',
+        },
+        {
+          id: `sc4-chips-${Date.now()}`,
+          kind: 'suggestion-chips',
+          suggestionLabels: [...SCHEDULER_SAM_DECISION_CHIP_LABELS],
+          timestamp: '07:48 am',
+        },
+      ]);
+    }, 10_000);
+    return () => window.clearTimeout(timer);
+  }, [stage, schedulerSamMoved, schedulerGoodNews, allSchedulerRemindersSent]);
+
+  const resendSchedulerReminder = (id: UnconfirmedId) => {
+    setSchedulerReminders((prev) => ({ ...prev, [id]: true }));
+  };
+
+  const dismissSchedulerToast = (id: string) => {
+    setSchedulerToasts((prev) => prev.filter((t) => t.id !== id));
+  };
+
+  const openSummary = (opts?: { userMessage?: ChatItem }) => {
+    if (!['dashboard', 'scheduler', 'summary'].includes(stage)) return;
+
+    const insightItem: ChatItem = {
       id: `insight-${Date.now()}`,
       kind: 'insight',
       timestamp: EVA_TIMESTAMP,
       content:
         "I've pulled these insights from Diane's pre-visit surveys.\n\nHigh Fear-Avoidance: Patient may require extra verbal cueing and reassurance during PROM to manage protective guarding.\nSource: pre-eval survey TSK-11\n\nGoal Mismatch: Patient expects to return to high-level gardening within 6 weeks, but current DASH score suggests significant functional deficit. Recommend setting intermediate 'micro-goals' to manage expectations.\n\nWould you like to start the session or review intake?",
-    });
-    appendChat({
+    };
+    const evaItem: ChatItem = {
       id: `eva-summary-${Date.now()}`,
       kind: 'eva',
       timestamp: EVA_TIMESTAMP,
       content:
         'Sure let me bring Diane M profile before we start the session. You can check her profile right here →',
-    });
+    };
+    const user = opts?.userMessage;
+
+    if (stage === 'scheduler') {
+      setSchedulerPanel('none');
+    }
+    /** Always extend the transcript — do not replace history when opening Patient Summary. */
+    setChatItems((prev) => [...prev, ...(user ? [user] : []), insightItem, evaItem]);
+    setStage('summary');
   };
 
   const openSummaryFromUser = () => {
-    appendChat({
-      id: `user-open-summary-${Date.now()}`,
-      kind: 'user',
-      content: 'Open pre visit summary',
-      timestamp: '07:53 PM',
+    if (!['dashboard', 'scheduler', 'summary'].includes(stage)) return;
+    openSummary({
+      userMessage: {
+        id: `user-open-summary-${Date.now()}`,
+        kind: 'user',
+        content: 'Open pre visit summary',
+        timestamp: '07:53 PM',
+      },
     });
-    openSummary();
   };
 
   const closeReferral = () => {
@@ -224,9 +424,56 @@ export function useEvaWorkflow() {
     setChatInput('');
     const normalized = normalizeText(text);
 
+    if (stage === 'scheduler') {
+      if (normalized === 'open pre visit summary') {
+        openSummaryFromUser();
+        return;
+      }
+
+      appendChat({ id: `user-${Date.now()}`, kind: 'user', content: text, timestamp: '07:48 am' });
+
+      const unconfirmedPhrase = normalizeText('Give me more details about the Unconfirmed Appointments');
+      const schedulePhrase = normalizeText('Give me an update on schedule changes for the next 72 hrs');
+      const moveSamNorm = normalizeText(MOVE_SAM_PREFIX);
+
+      if (normalized === unconfirmedPhrase || normalized === normalizeText('View details of unconfirmed')) {
+        handleSchedulerExpand('unconfirmed');
+        return;
+      }
+      if (normalized === schedulePhrase) {
+        handleSchedulerExpand('scheduleChanges');
+        return;
+      }
+      if (isNewPatientBriefQuery(text)) {
+        appendChat({
+          id: `eva-sc9-${Date.now()}`,
+          kind: 'eva',
+          content: SC9_NEW_PATIENT,
+          timestamp: '07:49 am',
+        });
+        return;
+      }
+      if (normalized.startsWith(moveSamNorm)) {
+        markSamNoShow();
+        if (normalized.includes('weekend') || normalized.includes('schedule')) {
+          appendScheduleReplyOnly();
+        }
+        return;
+      }
+
+      appendChat({
+        id: `eva-sched-fallback-${Date.now()}`,
+        kind: 'eva',
+        content: "I'm on it — tell me if you'd like schedule, patients, or confirmations next.",
+        timestamp: '07:48 am',
+      });
+      return;
+    }
+
     if ((stage === 'dashboard' || stage === 'summary') && normalized === 'open pre visit summary') {
-      appendChat({ id: `user-open-${Date.now()}`, kind: 'user', content: text, timestamp: '07:53 PM' });
-      openSummary();
+      openSummary({
+        userMessage: { id: `user-open-${Date.now()}`, kind: 'user', content: text, timestamp: '07:53 PM' },
+      });
       return;
     }
 
@@ -319,7 +566,61 @@ export function useEvaWorkflow() {
     setSessionPaused((prev) => !prev);
   };
 
+  const appendUserChipEcho = (content: string, timestamp: '07:48 am' | '07:53 PM' = '07:53 PM') => {
+    appendChat({
+      id: `user-chip-${Date.now()}`,
+      kind: 'user',
+      content,
+      timestamp,
+    });
+  };
+
   const selectSuggestion = (label: string) => {
+    if (stage === 'scheduler') {
+      appendUserChipEcho(label, '07:48 am');
+      if (label === 'View details of unconfirmed') {
+        handleSchedulerExpand('unconfirmed');
+        return;
+      }
+      if (label === 'Get updates from the weekend') {
+        handleSchedulerExpand('scheduleChanges');
+        return;
+      }
+      if (label === NEW_PATIENT_BRIEF_PHRASES[0]) {
+        appendChat({
+          id: `eva-sc9-${Date.now()}`,
+          kind: 'eva',
+          content: SC9_NEW_PATIENT,
+          timestamp: '07:49 am',
+        });
+        return;
+      }
+      if (label === 'Request confirmations') {
+        appendChat({
+          id: `eva-req-${Date.now()}`,
+          kind: 'eva',
+          content:
+            "I've sent confirmation requests to the unconfirmed appointments. I'll notify you if anything changes.",
+          timestamp: '07:48 am',
+        });
+        return;
+      }
+      if (label === 'Move Sam to Potential No-show') {
+        markSamNoShow();
+        return;
+      }
+      if (label === 'Keep Sam as Unconfirmed') {
+        appendChat({
+          id: `eva-keep-sam-${Date.now()}`,
+          kind: 'eva',
+          content: "Understood — I'll keep Sam Greene on the unconfirmed list for now.",
+          timestamp: '07:48 am',
+        });
+        return;
+      }
+      return;
+    }
+
     if (label === 'Open pre visit summary') {
       openSummaryFromUser();
       return;
@@ -329,14 +630,17 @@ export function useEvaWorkflow() {
       return;
     }
     if (label === 'View referral document') {
+      appendUserChipEcho(label);
       setReferralOpen(true);
       return;
     }
     if (label === 'Close referral') {
+      appendUserChipEcho(label);
       closeReferral();
       return;
     }
     if (label === 'Save as Default') {
+      appendUserChipEcho(label);
       resolveCustomization();
       return;
     }
@@ -345,18 +649,22 @@ export function useEvaWorkflow() {
       return;
     }
     if (label === 'Add sleep disturbance') {
+      appendUserChipEcho(label);
       setSleepTableVisible(true);
       return;
     }
     if (label === 'Accept sleep details') {
+      appendUserChipEcho(label);
       acceptSleepSuggestion();
       return;
     }
     if (label === 'Stop session') {
+      appendUserChipEcho(label);
       stopSession();
       return;
     }
     if (label === 'Review & Finalise') {
+      appendUserChipEcho(label);
       finalizeReview();
       return;
     }
@@ -428,5 +736,15 @@ export function useEvaWorkflow() {
     dismissClinicalTags,
     leftPanelCollapsed: panelMode === 'rightOnly',
     ctaHints,
+    schedulerPanel,
+    schedulerReminders,
+    schedulerSamMoved,
+    schedulerGoodNews,
+    schedulerToasts,
+    expandSchedulerPanel: handleSchedulerExpand,
+    resendSchedulerReminder,
+    markSamNoShow,
+    dismissSchedulerToast,
+    headerTitle: stage === 'scheduler' ? 'Cascade Orthopedics' : 'My Dashboard',
   };
 }
