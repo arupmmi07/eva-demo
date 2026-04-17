@@ -7,8 +7,8 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "vite build --configLoader runner",
-    "dev": "vite --configLoader runner",
+    "build": "vite build",
+    "dev": "vite",
     "typecheck": "tsc --noEmit",
     "start": "serve dist -s -l ${PORT:-4173}"
   },

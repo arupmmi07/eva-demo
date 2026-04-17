@@ -1,10 +1,4 @@
-# Render Blueprint — serves the Vite build with SPA fallback so /moment2, /moment3, etc. resolve correctly.
-# Apply from the Render Dashboard (Blueprint / Infrastructure as Code) or recreate the service from this file.
-# If you keep a Static Site instead of this web service: add Redirects/Rewrites → Rewrite source "/*" to "/index.html".
-services:
-  - type: web
-    name: eva-demo
-    runtime: node
-    plan: free
-    buildCommand: npm install && npm run build
-    startCommand: npm start
+routes:
+  - type: rewrite
+    source: /*
+    destination: /index.html
