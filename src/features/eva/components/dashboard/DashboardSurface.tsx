@@ -73,8 +73,8 @@ export function DashboardSurface({
     <div data-name="DashboardSurface" className="flex min-h-full items-start justify-center px-[40px] py-[36px]">
       <div className="w-full max-w-[430px] space-y-[20px]">
         <DashboardCard
-          icon={<img src={imgPatient} alt="Diane M" className="size-[32px] rounded-[var(--ds-radius-card)] object-cover" />}
-          title="Your First Patient Diane M"
+          icon={<img src={imgPatient} alt="Sarah Chen" className="size-[32px] rounded-[var(--ds-radius-card)] object-cover" />}
+          title="Your First Patient Sarah Chen"
           subtitle="Initial Eval"
           action="Open pre-visit summary"
           onAction={onOpenSummary}

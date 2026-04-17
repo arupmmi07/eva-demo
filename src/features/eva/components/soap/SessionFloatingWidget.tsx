@@ -1,4 +1,5 @@
 import { ArrowRight, Send } from 'lucide-react';
+import { EvaLogo } from '../icons/EvaLogo';
 import { formatSessionClock } from '../../utils/format';
 import { AudioControls } from '../audio/AudioControls';
 
@@ -30,8 +31,8 @@ export function SessionFloatingWidget({ sessionSeconds }: { sessionSeconds: numb
         </div>
       </div>
       <div className="flex items-center gap-[12px] px-[16px] py-[12px] text-[var(--ds-text-secondary)]">
-        <div className="flex size-[32px] items-center justify-center rounded-full bg-[var(--ds-bg-accent-purple)] text-[12px] text-[var(--ds-primary-action)]">
-          ✦
+        <div className="flex size-[32px] items-center justify-center rounded-full bg-[var(--ds-bg-accent-purple)] text-[var(--ds-primary-action)]">
+          <EvaLogo className="size-[14px]" decorative />
         </div>
         <span className="flex-1 font-['Inter',sans-serif] text-[13px] leading-[20px]">Ask eva,,</span>
         <AudioControls size="sm" gap="sm" />

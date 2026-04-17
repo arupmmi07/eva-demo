@@ -42,8 +42,10 @@
   --ds-header-min-height: 64px;
   --ds-rail-width: 64px;
 
-  --ds-cta-ring: var(--ds-primary-action);
-  --ds-cta-glow: rgba(78, 55, 246, 0.35);
+  /* Guided-demo CTA outline + pulse (all moments / workflow) */
+  --ds-cta-highlight: #5164f4;
+  --ds-cta-ring: var(--ds-cta-highlight);
+  --ds-cta-glow: rgb(81 100 244 / 0.35);
 }
 
 @keyframes ds-cta-pulse-ring {
@@ -52,13 +54,13 @@
     box-shadow:
       0 0 0 2px var(--ds-bg-primary),
       0 0 0 4px var(--ds-cta-glow),
-      0 0 20px rgba(78, 55, 246, 0.25);
+      0 0 20px rgb(81 100 244 / 0.25);
   }
   50% {
     box-shadow:
       0 0 0 2px var(--ds-bg-primary),
-      0 0 0 6px rgba(78, 55, 246, 0.45),
-      0 0 28px rgba(78, 55, 246, 0.35);
+      0 0 0 6px rgb(81 100 244 / 0.45),
+      0 0 28px rgb(81 100 244 / 0.35);
   }
 }
 

@@ -16,9 +16,9 @@ export function PatientDataCard() {
   return (
     <div data-name="PatientDataCard" className="rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] px-[20px] py-[16px] shadow-[var(--ds-shadow-card)]">
       <div className="mb-[16px] flex items-center gap-[12px]">
-        <img src={imgPatient} alt="Diane M" className="size-[48px] rounded-[var(--ds-radius-card)] object-cover" />
+        <img src={imgPatient} alt="Sarah Chen" className="size-[48px] rounded-[var(--ds-radius-card)] object-cover" />
         <div>
-          <p className="font-['Inter',sans-serif] text-[18px] font-semibold leading-[28px] text-[var(--ds-text-primary)]">Diane M</p>
+          <p className="font-['Inter',sans-serif] text-[18px] font-semibold leading-[28px] text-[var(--ds-text-primary)]">Sarah Chen</p>
           <p className="font-['Inter',sans-serif] text-[13px] leading-[20px] text-[var(--ds-text-secondary)]">Age - 65 | Female</p>
         </div>
       </div>

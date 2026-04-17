@@ -1,4 +1,5 @@
 import { Bell, ChevronDown, Search } from 'lucide-react';
+import type { MomentId } from '@/moments/momentTypes';
 import type { HeaderMode } from '../../types';
 import type { CtaHintId } from '../../utils/ctaHints';
 import { CTA_HINT, ctaHighlightClass } from '../../utils/ctaHints';
@@ -12,6 +13,8 @@ export function TopHeader({
   setupVisible,
   onSetupResolve,
   ctaHints,
+  figmaTopNav = true,
+  momentId,
 }: {
   mode: HeaderMode;
   title?: string;
@@ -21,35 +24,45 @@ export function TopHeader({
   setupVisible: boolean;
   onSetupResolve: () => void;
   ctaHints: ReadonlySet<CtaHintId>;
+  /** `figma-make-moment3` Headerv2: 18px title, bell + profile pill. */
+  figmaTopNav?: boolean;
+  /** Clinician moment (moment2) uses a distinct header profile name. */
+  momentId?: MomentId;
 }) {
-  const isCascade = title === 'Cascade Orthopedics';
+  const isCascade = title.includes('Cascade Orthopedics');
+  const profileName = momentId === 'moment2' ? 'Lena Park' : 'Maya Jones';
+  const profileInitials = momentId === 'moment2' ? 'LP' : 'MJ';
 
   const btnBase =
     "rounded-[var(--ds-radius-button)] px-[12px] py-[8px] font-['Inter',sans-serif] text-[12px] font-medium leading-[18px] transition-opacity disabled:opacity-45";
   const btnGhost = `${btnBase} border border-[var(--ds-border)] text-[var(--ds-text-secondary)]`;
   const btnPrimary = `${btnBase} bg-[var(--ds-primary-action)] font-semibold text-white`;
 
+  /** Headerv2 uses the full workspace line (e.g. clinician / front-desk suffixes). */
+  const headerPrimaryTitle = title;
+
   return (
     <header
       data-name="TopHeader"
-      className={`flex min-h-[var(--ds-header-min-height)] shrink-0 items-center justify-between border-b bg-[var(--ds-bg-primary)] px-4 ${
-        isCascade ? 'border-[rgba(0,9,50,0.1)]' : 'border-[var(--ds-border)]'
+      className={`flex shrink-0 items-center justify-between border-b bg-white ${
+        figmaTopNav
+          ? 'min-h-[64px] border-[rgba(0,9,50,0.12)] px-10 py-1'
+          : `min-h-[var(--ds-header-min-height)] bg-[var(--ds-bg-primary)] px-4 ${isCascade ? 'border-[rgba(0,9,50,0.1)]' : 'border-[var(--ds-border)]'}`
       }`}
     >
-      <div className="flex items-center gap-[8px]">
-        <div
-          className={`flex size-8 items-center justify-center rounded-lg text-white ${
-            isCascade ? 'bg-slate-900' : 'rounded-[var(--ds-radius-card)] bg-[var(--ds-primary-action)]'
-          }`}
-        >
-          <span className="font-['Inter',sans-serif] text-[11px] font-semibold leading-none">//</span>
-        </div>
-        <span className="font-['Inter',sans-serif] text-[14px] font-semibold leading-[20px] text-[var(--ds-text-primary)]">
-          {title}
-        </span>
+      <div className={`flex min-w-0 items-center ${figmaTopNav ? 'flex-1' : 'gap-2'}`}>
+        {figmaTopNav ? (
+          <p className="truncate font-['Inter',sans-serif] text-[18px] font-medium leading-6 tracking-[-0.04px] text-[#020617]">
+            {headerPrimaryTitle}
+          </p>
+        ) : (
+          <span className="font-['Inter',sans-serif] text-[14px] font-semibold leading-[20px] text-[var(--ds-text-primary)]">
+            {title}
+          </span>
+        )}
       </div>
 
-      <div className="flex items-center gap-[8px]">
+      <div className={`flex shrink-0 items-center ${figmaTopNav ? 'gap-6' : 'gap-2'}`}>
         {setupVisible && mode === 'setup' && (
           <>
             <button type="button" className={btnGhost} onClick={onSetupResolve}>
@@ -100,7 +113,7 @@ export function TopHeader({
           </button>
         )}
 
-        {isCascade && mode === 'default' && (
+        {!figmaTopNav && isCascade && mode === 'default' && (
           <>
             <button
               type="button"
@@ -120,13 +133,40 @@ export function TopHeader({
           </>
         )}
 
-        <button
-          type="button"
-          className="flex size-[32px] items-center justify-center rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] text-[var(--ds-text-secondary)]"
-          aria-label="Notifications"
-        >
-          <Bell className="size-[16px]" strokeWidth={1.5} aria-hidden />
-        </button>
+        {figmaTopNav && mode === 'default' ? (
+          <>
+            <button
+              type="button"
+              className="flex size-5 items-center justify-center rounded-lg text-[#64748b] transition hover:bg-slate-50"
+              aria-label="Notifications"
+            >
+              <Bell className="size-5" strokeWidth={1.25} aria-hidden />
+            </button>
+            <button
+              type="button"
+              className="relative inline-flex items-center gap-2 rounded-xl border border-[rgba(0,0,51,0.06)] bg-[#f7f9ff] py-1 pl-1 pr-2 transition hover:bg-[#eef2ff]"
+            >
+              <span
+                className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#dbe4ff] text-[11px] font-semibold leading-none text-[#1e3a5f]"
+                aria-hidden
+              >
+                {profileInitials}
+              </span>
+              <span className="hidden font-['Inter',sans-serif] text-[14px] font-medium leading-5 text-[#020617] sm:inline">
+                {profileName}
+              </span>
+              <ChevronDown className="size-4 shrink-0 text-[#64748b]" strokeWidth={1.25} aria-hidden />
+            </button>
+          </>
+        ) : (
+          <button
+            type="button"
+            className="flex size-[32px] items-center justify-center rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] text-[var(--ds-text-secondary)]"
+            aria-label="Notifications"
+          >
+            <Bell className="size-[16px]" strokeWidth={1.5} aria-hidden />
+          </button>
+        )}
       </div>
     </header>
   );

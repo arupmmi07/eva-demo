@@ -5,16 +5,33 @@ export type AudioControlsSize = 'sm' | 'md';
 export function AudioControls({
   size = 'md',
   gap = 'md',
+  variant = 'full',
   className = '',
 }: {
   size?: AudioControlsSize;
   /** Spacing between mic / play / gauge */
   gap?: 'sm' | 'md';
+  /** `micOnly` matches figma workspace composer (mic + send only). */
+  variant?: 'full' | 'micOnly';
   className?: string;
 }) {
   const iconClass = size === 'sm' ? 'size-[14px]' : 'size-[16px]';
   const gapClass = gap === 'sm' ? 'gap-[12px]' : 'gap-[16px]';
   const stroke = 1.5;
+
+  if (variant === 'micOnly') {
+    return (
+      <div data-name="AudioControls" className={`flex items-center text-[#64748b] ${className}`}>
+        <button
+          type="button"
+          className="flex size-8 shrink-0 items-center justify-center rounded-[12px] p-0 transition hover:bg-black/5"
+          aria-label="Voice input"
+        >
+          <Mic className="size-4" strokeWidth={1.25} aria-hidden />
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div

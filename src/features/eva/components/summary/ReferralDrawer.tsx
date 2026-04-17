@@ -31,7 +31,7 @@ export function ReferralDrawer({ onClose, ctaHints }: { onClose: () => void; cta
         </div>
 
         <div className="grid grid-cols-3 gap-[24px] font-['Inter',sans-serif] text-[12px] leading-[18px]">
-          <SummaryFact label="Patient Name" value="Diane M" />
+          <SummaryFact label="Patient Name" value="Sarah Chen" />
           <SummaryFact label="MRN" value="104992-8" />
           <SummaryFact label="Date of Birth" value="04/22/1985" />
         </div>

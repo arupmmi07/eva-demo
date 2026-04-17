@@ -1,18 +1,26 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { MomentId } from '@/moments/momentTypes';
+import { getMomentUiConfig } from '@/moments/momentConfig';
+import { getInitialChatItems } from '@/moments/initialChats';
 import type { ChatItem, HeaderMode, PanelMode, SchedulerExpandedPanel, WorkflowStage } from '../types';
 import { EVA_TIMESTAMP, FINAL_CLARIFICATION, INITIAL_CHIEF_COMPLAINT } from '../constants';
 import {
-  SC1_EVA_MESSAGE,
   SC2_EVA_REPLY,
   SC4_GOOD_NEWS,
   SC6_SAM_MOVED,
-  SC7_SCHEDULE_CHANGES,
+  SC7_SCHEDULE_CHANGES_CHAT_FIELDS,
   SC9_NEW_PATIENT,
   MOVE_SAM_PREFIX,
 } from '../constants/schedulerCopy';
 import type { UnconfirmedId } from '../scheduler/schedulerData';
+import type { SchedulerToast } from '../scheduler/SchedulerRightPane';
 import { COMORBIDITIES_CHIP, getActiveCtaHints, getChatSuggestionChips } from '../utils/ctaHints';
 import { normalizeText } from '../utils/format';
+import { MOMENT3_CHECK_IN_CHIP } from '@/moments/moment3Copy';
+
+/** Moment 2 — user free-text; matched with `normalizeText`. */
+const M2_SLEEPING_POSITION_REMINDER_QUERY =
+  'I have a question about sleeping position that I want to explore in person. Remind me to ask later in the session with Sarah.';
 
 const SCHEDULER_SC1_CHIP_LABELS = [
   'Get updates from the weekend',
@@ -39,21 +47,10 @@ function isNewPatientBriefQuery(raw: string) {
   return NEW_PATIENT_BRIEF_PHRASES.some((p) => n === normalizeSchedulerUserPhrase(p));
 }
 
-const schedulerInitialChat: ChatItem[] = [
-  { id: 'sc1', kind: 'eva', content: SC1_EVA_MESSAGE, timestamp: '07:47 am' },
-  { id: 'c-un', kind: 'cascade-unconfirmed-card', timestamp: '07:47 am' },
-  { id: 'c-ns', kind: 'cascade-noshow-card', timestamp: '07:47 am' },
-  {
-    id: 'sc1-chips',
-    kind: 'suggestion-chips',
-    suggestionLabels: [...SCHEDULER_SC1_CHIP_LABELS],
-    timestamp: '07:47 am',
-  },
-];
-
-export function useEvaWorkflow() {
-  const [stage, setStage] = useState<WorkflowStage>('scheduler');
-  const [chatItems, setChatItems] = useState<ChatItem[]>(schedulerInitialChat);
+export function useEvaWorkflow({ momentId }: { momentId: MomentId }) {
+  const momentUi = useMemo(() => getMomentUiConfig(momentId), [momentId]);
+  const [stage, setStage] = useState<WorkflowStage>(momentUi.initialStage);
+  const [chatItems, setChatItems] = useState<ChatItem[]>(() => getInitialChatItems(momentId));
   const [chatInput, setChatInput] = useState('');
   const [referralOpen, setReferralOpen] = useState(false);
   const [topSetupVisible, setTopSetupVisible] = useState(false);
@@ -77,12 +74,13 @@ export function useEvaWorkflow() {
   });
   const [schedulerSamMoved, setSchedulerSamMoved] = useState(false);
   const [schedulerGoodNews, setSchedulerGoodNews] = useState(false);
-  const [schedulerToasts, setSchedulerToasts] = useState<
-    { id: string; title: string; body: string }[]
-  >([]);
+  const [schedulerToasts, setSchedulerToasts] = useState<SchedulerToast[]>([]);
+  const [m3CheckInInvoiceOpen, setM3CheckInInvoiceOpen] = useState(false);
+  const [m3InvoiceInstanceKey, setM3InvoiceInstanceKey] = useState(0);
   const unconfirmedDetailsReplyShownRef = useRef(false);
   const scheduleDetailsReplyShownRef = useRef(false);
   const samMovedRef = useRef(false);
+  const schedulerToastTimersRef = useRef<Map<string, number>>(new Map());
 
   const headerMode: HeaderMode = useMemo(() => {
     if (stage === 'summaryCustomizing') return 'setup';
@@ -207,6 +205,51 @@ export function useEvaWorkflow() {
     setChatItems((prev) => [...prev, item]);
   };
 
+  const openM3CheckIn = (options?: { withUserEcho?: boolean }) => {
+    if (momentId !== 'moment3') return;
+    if (m3CheckInInvoiceOpen) return;
+    if (options?.withUserEcho) {
+      appendChat({
+        id: `user-m3-panel-${Date.now()}`,
+        kind: 'user',
+        content: MOMENT3_CHECK_IN_CHIP,
+        timestamp: '07:47 am',
+      });
+    }
+    setM3CheckInInvoiceOpen(true);
+    setM3InvoiceInstanceKey((k) => k + 1);
+    appendChat({
+      id: `eva-m3-open-${Date.now()}`,
+      kind: 'eva',
+      content:
+        "I've opened Sarah Chen's copay on the right ($25). Select the Visa card on file, then tap Collect $25.00. After payment clears, use Complete Checkin when it unlocks.",
+      timestamp: '07:47 am',
+    });
+  };
+
+  const completeM3CheckIn = () => {
+    if (momentId !== 'moment3') return;
+    setM3CheckInInvoiceOpen(false);
+    appendChat({
+      id: `eva-m3-done-${Date.now()}`,
+      kind: 'eva',
+      content: 'Check-in is complete. Sarah Chen is ready for the clinical team.',
+      timestamp: '07:47 am',
+    });
+    if (stage === 'scheduler') {
+      setSchedulerToasts((prev) => [
+        ...prev,
+        {
+          id: `m3-checkin-${Date.now()}`,
+          patientName: 'Sarah Chen',
+          scheduleLine: '9 AM with Dr. Park',
+          relativeTime: '1 min ago',
+          headlineOverride: 'Sarah Chen checked in',
+        },
+      ]);
+    }
+  };
+
   const handleSchedulerExpand = (panel: SchedulerExpandedPanel) => {
     setSchedulerPanel(panel);
     if (panel === 'unconfirmed' && !unconfirmedDetailsReplyShownRef.current) {
@@ -229,7 +272,7 @@ export function useEvaWorkflow() {
     appendChat({
       id: `eva-sc7-${Date.now()}`,
       kind: 'eva',
-      content: SC7_SCHEDULE_CHANGES,
+      ...SC7_SCHEDULE_CHANGES_CHAT_FIELDS,
       timestamp: '07:49 am',
     });
     appendChat({
@@ -261,6 +304,7 @@ export function useEvaWorkflow() {
   const allSchedulerRemindersSent = remAngela && remMaria && remSam;
 
   useEffect(() => {
+    if (momentId !== 'moment1') return;
     if (stage !== 'scheduler' || schedulerSamMoved || schedulerGoodNews) return;
     if (!allSchedulerRemindersSent) return;
     const timer = window.setTimeout(() => {
@@ -268,13 +312,15 @@ export function useEvaWorkflow() {
       setSchedulerToasts([
         {
           id: 'toast-angela',
-          title: 'Angela Wu',
-          body: 'Confirmed her appointment. 10 AM with Dr. Kumar. 1 min ago.',
+          patientName: 'Angela Wu',
+          scheduleLine: '10 AM with Dr. Kumar',
+          relativeTime: '1 min ago',
         },
         {
           id: 'toast-maria',
-          title: 'Maria Santos',
-          body: 'Confirmed her appointment. 1:00 PM with Dr. Aris. 1 min ago.',
+          patientName: 'Maria Santos',
+          scheduleLine: '1:00 PM with Dr. Aris',
+          relativeTime: '1 min ago',
         },
       ]);
       setChatItems((prev) => [
@@ -294,7 +340,7 @@ export function useEvaWorkflow() {
       ]);
     }, 10_000);
     return () => window.clearTimeout(timer);
-  }, [stage, schedulerSamMoved, schedulerGoodNews, allSchedulerRemindersSent]);
+  }, [momentId, stage, schedulerSamMoved, schedulerGoodNews, allSchedulerRemindersSent]);
 
   const resendSchedulerReminder = (id: UnconfirmedId) => {
     setSchedulerReminders((prev) => ({ ...prev, [id]: true }));
@@ -304,6 +350,34 @@ export function useEvaWorkflow() {
     setSchedulerToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
+  useEffect(() => {
+    const map = schedulerToastTimersRef.current;
+    const idsPresent = new Set(schedulerToasts.map((t) => t.id));
+
+    for (const [id, handle] of [...map.entries()]) {
+      if (!idsPresent.has(id)) {
+        window.clearTimeout(handle);
+        map.delete(id);
+      }
+    }
+
+    for (const t of schedulerToasts) {
+      if (map.has(t.id)) continue;
+      const handle = window.setTimeout(() => {
+        map.delete(t.id);
+        setSchedulerToasts((prev) => prev.filter((x) => x.id !== t.id));
+      }, 5_000);
+      map.set(t.id, handle);
+    }
+  }, [schedulerToasts]);
+
+  useEffect(() => {
+    return () => {
+      schedulerToastTimersRef.current.forEach((h) => window.clearTimeout(h));
+      schedulerToastTimersRef.current.clear();
+    };
+  }, []);
+
   const openSummary = (opts?: { userMessage?: ChatItem }) => {
     if (!['dashboard', 'scheduler', 'summary'].includes(stage)) return;
 
@@ -312,14 +386,14 @@ export function useEvaWorkflow() {
       kind: 'insight',
       timestamp: EVA_TIMESTAMP,
       content:
-        "I've pulled these insights from Diane's pre-visit surveys.\n\nHigh Fear-Avoidance: Patient may require extra verbal cueing and reassurance during PROM to manage protective guarding.\nSource: pre-eval survey TSK-11\n\nGoal Mismatch: Patient expects to return to high-level gardening within 6 weeks, but current DASH score suggests significant functional deficit. Recommend setting intermediate 'micro-goals' to manage expectations.\n\nWould you like to start the session or review intake?",
+        "I've pulled these insights from Sarah's pre-visit surveys.\n\nHigh Fear-Avoidance: Patient may require extra verbal cueing and reassurance during PROM to manage protective guarding.\nSource: pre-eval survey TSK-11\n\nGoal Mismatch: Patient expects to return to high-level gardening within 6 weeks, but current DASH score suggests significant functional deficit. Recommend setting intermediate 'micro-goals' to manage expectations.\n\nWould you like to start the session or review intake?",
     };
     const evaItem: ChatItem = {
       id: `eva-summary-${Date.now()}`,
       kind: 'eva',
       timestamp: EVA_TIMESTAMP,
       content:
-        'Sure let me bring Diane M profile before we start the session. You can check her profile right here →',
+        'Sure let me bring Sarah Chen profile before we start the session. You can check her profile right here →',
     };
     const user = opts?.userMessage;
 
@@ -425,6 +499,12 @@ export function useEvaWorkflow() {
     const normalized = normalizeText(text);
 
     if (stage === 'scheduler') {
+      if (momentId === 'moment3' && (normalized === 'check in' || normalized === normalizeText(MOMENT3_CHECK_IN_CHIP))) {
+        appendChat({ id: `user-m3-${Date.now()}`, kind: 'user', content: text, timestamp: '07:47 am' });
+        openM3CheckIn();
+        return;
+      }
+
       if (normalized === 'open pre visit summary') {
         openSummaryFromUser();
         return;
@@ -558,6 +638,23 @@ export function useEvaWorkflow() {
       return;
     }
 
+    if (momentId === 'moment2' && normalized === normalizeText(M2_SLEEPING_POSITION_REMINDER_QUERY)) {
+      appendChat({ id: `user-m2-sleep-${Date.now()}`, kind: 'user', content: text, timestamp: '07:53 PM' });
+      appendChat({
+        id: `eva-m2-sleep-${Date.now()}`,
+        kind: 'eva',
+        content: 'Noted. Will remind you about asking the question about sleeping position later.',
+        timestamp: EVA_TIMESTAMP,
+      });
+      appendChat({
+        id: `m2-reminder-card-${Date.now()}`,
+        kind: 'inline-reminder-card',
+        content: 'Ask Sarah Chen about Sleeping Position',
+        timestamp: EVA_TIMESTAMP,
+      });
+      return;
+    }
+
     appendChat({ id: `user-generic-${Date.now()}`, kind: 'user', content: text, timestamp: '07:53 PM' });
   };
 
@@ -683,6 +780,11 @@ export function useEvaWorkflow() {
 
   const mentionVisible = chiefComplaint.includes('@');
 
+  const shellSchedulerChrome = momentUi.shellSchedulerChrome || stage === 'scheduler';
+
+  /** Match `figma-make-moment3` Headerv2: workspace title at every stage. */
+  const headerTitle = momentUi.workspaceTitle;
+
   const handleChiefComplaintChange = (value: string) => {
     setChiefComplaint(value);
   };
@@ -745,6 +847,13 @@ export function useEvaWorkflow() {
     resendSchedulerReminder,
     markSamNoShow,
     dismissSchedulerToast,
-    headerTitle: stage === 'scheduler' ? 'Cascade Orthopedics' : 'My Dashboard',
+    headerTitle,
+    momentUi,
+    shellSchedulerChrome,
+    momentId,
+    m3CheckInInvoiceOpen,
+    m3InvoiceInstanceKey,
+    openM3CheckIn,
+    completeM3CheckIn,
   };
 }

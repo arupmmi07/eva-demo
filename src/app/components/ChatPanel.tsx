@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { Mic, Timer, SlidersHorizontal, Send, Maximize2, List, Sparkles, Wand2, History } from 'lucide-react';
+import { EvaLogo } from '@/features/eva/components/icons/EvaLogo';
 import { ChatMessage, DemoPhase } from '../types';
 import imgPatient from 'figma:asset/454e804c0c0a65927356b922ba37d88ac95d6327.png';
 
@@ -22,9 +23,7 @@ function EvaLabel() {
         className="w-4 h-4 rounded-full flex items-center justify-center shrink-0"
         style={{ background: 'linear-gradient(135deg, #615fff 0%, #7f22fe 100%)' }}
       >
-        <svg width="9" height="9" viewBox="0 0 12 12" fill="none">
-          <path d="M6 1L7.5 4.5L11 6L7.5 7.5L6 11L4.5 7.5L1 6L4.5 4.5L6 1Z" fill="white" strokeWidth="0" />
-        </svg>
+        <EvaLogo className="h-[9px] w-[9px] text-white" decorative />
       </div>
       <span className="text-[8px] font-semibold text-[#90a1b9] tracking-widest uppercase">Eva</span>
     </div>
@@ -35,10 +34,10 @@ function PatientCard() {
   return (
     <div className="bg-white border border-[#e2e8f0] rounded-2xl p-4 mt-2 max-w-[420px]">
       <div className="flex items-start gap-3">
-        <img src={imgPatient} alt="Diane M" className="w-8 h-8 rounded-lg object-cover shrink-0" />
+        <img src={imgPatient} alt="Sarah Chen" className="w-8 h-8 rounded-lg object-cover shrink-0" />
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
-            <span className="text-[14px] font-semibold text-[#181818]">Diane M</span>
+            <span className="text-[14px] font-semibold text-[#181818]">Sarah Chen</span>
             <span className="text-[10px] text-[#155dfc] bg-[#eff6ff] border border-[#dbeafe] px-2 py-0.5 rounded">
               Checked in
             </span>

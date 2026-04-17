@@ -19,6 +19,10 @@ export type ChatKind =
   | 'prompt'
   | 'cascade-unconfirmed-card'
   | 'cascade-noshow-card'
+  /** Moment3: Sarah Chen check-in row card (not a suggestion chip). */
+  | 'new-patient-checkin-card'
+  /** Moment2: “New Reminder” row under Eva (bell + line + View all). */
+  | 'inline-reminder-card'
   /** Inline “Suggested actions” chips; scrolls with the thread (scheduler + main workflow). */
   | 'suggestion-chips';
 
@@ -40,6 +44,10 @@ export interface ChatItem {
   id: string;
   kind: ChatKind;
   content?: string;
+  /**
+   * When true, `content` is trusted HTML (e.g. `<b>` from app copy). Rendered only for Eva bubbles.
+   */
+  contentIsHtml?: boolean;
   timestamp?: string;
   /** Required when `kind === 'suggestion-chips'`. */
   suggestionLabels?: string[];

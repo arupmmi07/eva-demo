@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react';
 
-export function Tag({ children, tone }: { children: ReactNode; tone: 'amber' | 'purple' | 'rose' | 'green' | 'slate' }) {
+export function Tag({ children, tone }: { children: ReactNode; tone: 'amber' | 'purple' | 'rose' | 'green' | 'slate' | 'blue' }) {
   const styles = {
     amber: 'bg-[#fff4d8] text-[#ca8a04]',
     purple: 'bg-[var(--ds-bg-accent-purple)] text-[var(--ds-primary-action)]',
     rose: 'bg-[var(--ds-danger-soft-bg)] text-[var(--ds-danger)]',
     green: 'bg-[var(--ds-success-bg)] text-[var(--ds-success)]',
     slate: 'bg-[var(--ds-badge-bg)] text-[var(--ds-badge-text)]',
+    blue: 'border border-[#bfdbfe] bg-[#eff6ff] text-[#1d4ed8]',
   } as const;
   return (
     <span

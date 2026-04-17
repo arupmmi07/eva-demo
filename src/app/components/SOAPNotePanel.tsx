@@ -154,14 +154,14 @@ export function SOAPNotePanel({ variant, sessionSeconds, recordingActive }: SOAP
             <div className="relative">
               <img
                 src={imgPatient}
-                alt="Diane M"
+                alt="Sarah Chen"
                 className="w-12 h-12 rounded-xl object-cover border border-[#f1f5f9]"
               />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-2">
                 <div>
-                  <h3 className="text-[14px] font-semibold text-[#1d293d]">Diane M</h3>
+                  <h3 className="text-[14px] font-semibold text-[#1d293d]">Sarah Chen</h3>
                   <p className="text-[11px] text-[#90a1b9]">Age · 58 | Female</p>
                 </div>
                 <ChevronDown size={16} className="text-[#90a1b9] shrink-0" />

@@ -1,8 +1,16 @@
-/** Day grid for Cascade scheduler (April 2026 storyline). */
+/** Day grid for Cascade scheduler (April 2026) — matches Figma PoV calendar content. */
 
-export const SCHEDULER_DOCTORS = ['Dr. Arushi Kumar', 'Dr. Aris J.', 'Dr. Park'] as const;
+export const SCHEDULER_DOCTORS = [
+  { fullName: 'Dr. Arushi Kumar', initials: 'AK' },
+  { fullName: 'Dr. Aris J.', initials: 'AJ' },
+  { fullName: 'Dr. Park', initials: 'JB' },
+] as const;
 
-export type AppointmentTone = 'validated' | 'copay' | 'evaluation' | 'overdue';
+/** Top-right pill on each card. */
+export type ClinicalTag = 'follow-up' | 'evaluation';
+
+/** Card chrome + bottom status line (Validated / Co-Pay Due / Overdue Balance). */
+export type StatusKind = 'validated' | 'copay' | 'overdue';
 
 export interface CalendarAppointment {
   id: string;
@@ -11,116 +19,114 @@ export interface CalendarAppointment {
   durationMin: number;
   doctorIndex: 0 | 1 | 2;
   patient: string;
-  visitType: string;
-  tags: string[];
-  tone: AppointmentTone;
+  clinicalTag: ClinicalTag;
+  statusKind: StatusKind;
 }
 
 /** Visible window: 7:00 AM – 12:30 PM (330 min). */
 export const CALENDAR_RANGE_MIN = 330;
 
-/** Current time marker (07:47). */
+/** Current time marker (07:47 AM). */
 export const NOW_FROM_7_MIN = 47;
 
+export const STATUS_LINE_LABEL: Record<StatusKind, string> = {
+  validated: 'Validated',
+  copay: 'Co-Pay Due',
+  overdue: 'Overdue Balance',
+};
+
+/**
+ * Appointments per Figma (times ~7:30 / 8:15 / 9:15 / 10:15; columns AK / AJ / JB).
+ */
 export const CALENDAR_APPOINTMENTS: CalendarAppointment[] = [
   {
-    id: 'a1',
-    startFrom7: 60,
+    id: 'anna',
+    startFrom7: 30,
     durationMin: 45,
     doctorIndex: 0,
     patient: 'Anna Brooks',
-    visitType: 'Follow-Up',
-    tags: ['Validated'],
-    tone: 'validated',
+    clinicalTag: 'follow-up',
+    statusKind: 'validated',
   },
   {
-    id: 'a2',
+    id: 'carlos',
     startFrom7: 30,
-    durationMin: 50,
+    durationMin: 45,
     doctorIndex: 1,
     patient: 'Carlos Vega',
-    visitType: 'Follow-Up',
-    tags: ['Co-Pay Due'],
-    tone: 'copay',
+    clinicalTag: 'follow-up',
+    statusKind: 'copay',
   },
   {
-    id: 'a3',
-    startFrom7: 75,
-    durationMin: 55,
+    id: 'sarah',
+    startFrom7: 30,
+    durationMin: 45,
     doctorIndex: 2,
     patient: 'Sarah Miller',
-    visitType: 'Evaluation',
-    tags: ['Evaluation', 'Validated'],
-    tone: 'evaluation',
+    clinicalTag: 'evaluation',
+    statusKind: 'validated',
   },
   {
-    id: 'a4',
-    startFrom7: 120,
-    durationMin: 40,
+    id: 'sasha',
+    startFrom7: 75,
+    durationMin: 45,
     doctorIndex: 0,
     patient: 'Sasha Kyle',
-    visitType: 'Follow-Up',
-    tags: ['Validated'],
-    tone: 'validated',
+    clinicalTag: 'follow-up',
+    statusKind: 'validated',
   },
   {
-    id: 'a5',
-    startFrom7: 105,
+    id: 'sophia',
+    startFrom7: 75,
     durationMin: 45,
     doctorIndex: 1,
     patient: 'Sophia Lewis',
-    visitType: 'Follow-Up',
-    tags: ['Co-Pay Due'],
-    tone: 'copay',
+    clinicalTag: 'follow-up',
+    statusKind: 'validated',
   },
   {
-    id: 'a6',
-    startFrom7: 150,
-    durationMin: 50,
+    id: 'ethan',
+    startFrom7: 75,
+    durationMin: 45,
     doctorIndex: 2,
     patient: 'Ethan Hall',
-    visitType: 'Follow-Up',
-    tags: ['Co-Pay Due', 'Evaluation'],
-    tone: 'copay',
+    clinicalTag: 'evaluation',
+    statusKind: 'copay',
   },
   {
-    id: 'a7',
-    startFrom7: 180,
+    id: 'isabella',
+    startFrom7: 135,
     durationMin: 45,
     doctorIndex: 0,
     patient: 'Isabella Clark',
-    visitType: 'Follow-Up',
-    tags: ['Co-Pay Due'],
-    tone: 'copay',
+    clinicalTag: 'evaluation',
+    statusKind: 'copay',
   },
   {
-    id: 'a8',
-    startFrom7: 165,
-    durationMin: 40,
-    doctorIndex: 1,
-    patient: 'James Martin',
-    visitType: 'Evaluation',
-    tags: ['Evaluation'],
-    tone: 'evaluation',
-  },
-  {
-    id: 'a9',
-    startFrom7: 200,
-    durationMin: 50,
+    id: 'liam',
+    startFrom7: 135,
+    durationMin: 45,
     doctorIndex: 2,
     patient: 'Liam Johnson',
-    visitType: 'Follow-Up',
-    tags: ['Validated'],
-    tone: 'validated',
+    clinicalTag: 'follow-up',
+    statusKind: 'validated',
   },
   {
-    id: 'a10',
-    startFrom7: 225,
-    durationMin: 50,
-    doctorIndex: 1,
+    id: 'james',
+    startFrom7: 195,
+    durationMin: 45,
+    doctorIndex: 0,
+    patient: 'James Martin',
+    clinicalTag: 'evaluation',
+    statusKind: 'copay',
+  },
+  {
+    id: 'aiden',
+    startFrom7: 195,
+    durationMin: 45,
+    doctorIndex: 2,
     patient: 'Aiden Lee',
-    visitType: 'Follow-Up',
-    tags: ['Overdue Balance'],
-    tone: 'overdue',
+    clinicalTag: 'follow-up',
+    statusKind: 'overdue',
   },
 ];

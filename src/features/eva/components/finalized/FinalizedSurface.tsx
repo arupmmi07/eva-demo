@@ -59,7 +59,7 @@ export function FinalizedSurface({ clarificationApplied }: { clarificationApplie
             </div>
             <div>
               <p className="font-['Inter',sans-serif] text-[34px] font-semibold leading-[40px] tracking-tight text-[var(--ds-text-primary)]">
-                Visit 1 of 7 complete - Sarah Kim
+                Visit 1 of 7 complete - Sarah Chen
               </p>
               <p className="mt-[4px] font-['Inter',sans-serif] text-[15px] leading-[24px] text-[var(--ds-text-secondary)]">
                 Left ACL Tear <span className="mx-[8px] text-[var(--ds-border)]">•</span>
