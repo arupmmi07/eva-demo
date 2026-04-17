@@ -437,25 +437,25 @@ export function SoapSurface({
                 <div data-soap-stream-anchor={SOAP_STEP.PLAN_GOALS_1}>
                   <InfoBlock label="Goals Established">
                     <GoalText title="Shoulder Flexion (Right ROM)">
-                      Diane will demonstrate improved active right shoulder flexion from 68° to 150° within 12 visits to allow overhead reach into kitchen cabinets and
+                      Sarah will demonstrate improved active right shoulder flexion from 68° to 150° within 12 visits to allow overhead reach into kitchen cabinets and
                       return to gardening without pain limitation.
                     </GoalText>
                     <GoalText title="Shoulder Abduction (Right ROM)">
-                      Diane will demonstrate improved active right shoulder abduction from 54° to 140° within 12 visits to support bilateral overhead reaching for daily
+                      Sarah will demonstrate improved active right shoulder abduction from 54° to 140° within 12 visits to support bilateral overhead reaching for daily
                       household tasks.
                     </GoalText>
                     {vis(SOAP_STEP.PLAN_GOALS_2) && (
                       <div data-soap-stream-anchor={SOAP_STEP.PLAN_GOALS_2}>
                         <GoalText title="Shoulder External Rotation (Right ROM)">
-                          Diane will demonstrate improved active right shoulder external rotation from 22° to 60° within 12 visits to enable functional reaching and
+                          Sarah will demonstrate improved active right shoulder external rotation from 22° to 60° within 12 visits to enable functional reaching and
                           independent dressing with her dominant arm.
                         </GoalText>
                         <GoalText title="Pain with Movement">
-                          Diane will report decreased pain with movement from 8/10 to ≤2/10 within 12 visits to allow full participation in her home exercise program and
+                          Sarah will report decreased pain with movement from 8/10 to ≤2/10 within 12 visits to allow full participation in her home exercise program and
                           daily activities.
                         </GoalText>
                         <GoalText title="DASH Score">
-                          Diane will demonstrate an improved DASH score from 72 to ≤30 within 12 visits, reflecting reduced disability and return toward prior level of
+                          Sarah will demonstrate an improved DASH score from 72 to ≤30 within 12 visits, reflecting reduced disability and return toward prior level of
                           function for home and gardening tasks.
                         </GoalText>
                       </div>
@@ -463,11 +463,11 @@ export function SoapSurface({
                     {vis(SOAP_STEP.PLAN_INTERVENTION) && (
                       <div data-soap-stream-anchor={SOAP_STEP.PLAN_INTERVENTION}>
                         <GoalText title="Functional Outcome">
-                          Diane will progress from unable to independent with overhead reaching for kitchen tasks and light gardening within 12 visits, without pain or
+                          Sarah will progress from unable to independent with overhead reaching for kitchen tasks and light gardening within 12 visits, without pain or
                           compensatory movement patterns.
                         </GoalText>
                         <GoalText title="Rotator Cuff Strength (Right)">
-                          Diane will improve right rotator cuff strength to 4+/5 or greater across all planes within 12 visits, sufficient to perform overhead reaching and
+                          Sarah will improve right rotator cuff strength to 4+/5 or greater across all planes within 12 visits, sufficient to perform overhead reaching and
                           gardening without substitution patterns or fatigue.
                         </GoalText>
                       </div>

@@ -32,10 +32,10 @@ export function PatientSummaryPanel({ onBeginSession }: PatientSummaryPanelProps
         {/* Patient info bar */}
         <div className="flex items-center gap-4">
           <div className="relative shrink-0 w-16 h-16 rounded-2xl overflow-hidden border border-[#f1f5f9] shadow-inner">
-            <img src={imgPatient} alt="Diane M" className="w-full h-full object-cover" />
+            <img src={imgPatient} alt="Sarah Chen" className="w-full h-full object-cover" />
           </div>
           <div className="flex-1">
-            <h3 className="text-[18px] font-medium text-[#0f172b] tracking-tight">Diane M</h3>
+            <h3 className="text-[18px] font-medium text-[#0f172b] tracking-tight">Sarah Chen</h3>
             <div className="flex items-center gap-2 mt-0.5">
               <span className="text-[12px] font-medium text-[#90a1b9]">ID: #1123-K</span>
               <span className="w-1 h-1 rounded-full bg-[#e2e8f0]" />
@@ -80,7 +80,7 @@ export function PatientSummaryPanel({ onBeginSession }: PatientSummaryPanelProps
               <span className="text-[11px] font-medium text-[#2e04e8]">Chief complaint</span>
             </div>
             <p className="text-[12px] text-[#1d293d] leading-relaxed">
-              Severe right shoulder pain and limited range of motion following a fall 3 days ago. Patient reports sharp pain (8/10) with overhead movements and difficulty sleeping on right side.
+            Intense left knee pain and restricted movement after a fall three days ago. The patient describes a sharp pain (8/10) during activities like climbing stairs and has trouble sleeping on the left side.
             </p>
           </div>
           <div className="w-[120px] shrink-0 bg-white border border-[#e2e8f0] rounded-2xl p-4">

@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import type { SchedulerExpandedPanel, WorkflowStage } from '../../types';
+import type { WorkflowStage } from '../../types';
 import type { UnconfirmedId } from '../../scheduler/schedulerData';
 import type { CtaHintId } from '../../utils/ctaHints';
 import { SchedulerRightPane, type SchedulerToast } from '../../scheduler/SchedulerRightPane';
@@ -8,86 +8,93 @@ import { FinalizedSurface } from '../finalized/FinalizedSurface';
 import { ReferralDrawer } from '../summary/ReferralDrawer';
 import { SummarySurface } from '../summary/SummarySurface';
 import { SoapSurface } from '../soap/SoapSurface';
+import { ClinicalSplitRightPane } from '@/moments/ClinicalSplitRightPane';
+import { FrontDeskCheckInInvoice } from '@/moments/FrontDeskCheckInInvoice';
+import { Moment3SchedulerHero } from '@/moments/Moment3SchedulerHero';
+import type { RightPaneProps } from './rightPaneProps';
 
-export function RightPane({
-  stage,
-  referralOpen,
-  topSetupVisible,
-  recordingActive,
-  sessionPaused,
-  sessionSeconds,
-  showHighlight,
-  sleepTableVisible,
-  sleepDisturbanceAccepted,
-  chiefComplaint,
-  chiefComplaintFocused,
-  mentionVisible,
-  clarificationApplied,
-  leftPanelCollapsed,
-  schedulerExpanded,
-  schedulerReminders,
-  schedulerSamMoved,
-  schedulerGoodNews,
-  schedulerToasts,
-  onSchedulerExpand,
-  onSchedulerResend,
-  onSchedulerMarkSamNoShow,
-  onSchedulerDismissToast,
-  onOpenSummary,
-  onOpenReferral,
-  onCloseReferral,
-  onBeginSession,
-  onSleepPosition,
-  onAcceptSleep,
-  onPause,
-  onStop,
-  onChiefComplaintChange,
-  onChiefComplaintFocus,
-  onSelectMention,
-  onDismissClinicalTags,
-  ctaHints,
-}: {
-  stage: WorkflowStage;
-  referralOpen: boolean;
-  topSetupVisible: boolean;
-  recordingActive: boolean;
-  sessionPaused: boolean;
-  sessionSeconds: number;
-  showHighlight: boolean;
-  sleepTableVisible: boolean;
-  sleepDisturbanceAccepted: boolean;
-  chiefComplaint: string;
-  chiefComplaintFocused: boolean;
-  mentionVisible: boolean;
-  clarificationApplied: boolean;
-  leftPanelCollapsed: boolean;
-  schedulerExpanded: SchedulerExpandedPanel;
-  schedulerReminders: Record<UnconfirmedId, boolean>;
-  schedulerSamMoved: boolean;
-  schedulerGoodNews: boolean;
-  schedulerToasts: SchedulerToast[];
-  onSchedulerExpand: (panel: SchedulerExpandedPanel) => void;
-  onSchedulerResend: (id: UnconfirmedId) => void;
-  onSchedulerMarkSamNoShow: () => void;
-  onSchedulerDismissToast: (id: string) => void;
-  onOpenSummary: () => void;
-  onOpenReferral: () => void;
-  onCloseReferral: () => void;
-  onBeginSession: (includeUserMessage?: boolean) => void;
-  onSleepPosition: () => void;
-  onAcceptSleep: () => void;
-  onPause: () => void;
-  onStop: () => void;
-  onChiefComplaintChange: (value: string) => void;
-  onChiefComplaintFocus: (focused: boolean) => void;
-  onSelectMention: (value: string) => void;
-  onDismissClinicalTags: () => void;
-  ctaHints: ReadonlySet<CtaHintId>;
-}) {
+const CLINICAL_DUAL_STAGES: readonly WorkflowStage[] = [
+  'summary',
+  'summaryCustomizing',
+  'summaryReady',
+  'summaryAnswered',
+  'session',
+  'sessionAccepted',
+  'sessionStopped',
+];
+
+export function RightPane(props: RightPaneProps) {
   const soapScrollRef = useRef<HTMLDivElement | null>(null);
+  const {
+    stage,
+    referralOpen,
+    topSetupVisible,
+    recordingActive,
+    sessionPaused,
+    sessionSeconds,
+    showHighlight,
+    sleepTableVisible,
+    sleepDisturbanceAccepted,
+    chiefComplaint,
+    chiefComplaintFocused,
+    mentionVisible,
+    clarificationApplied,
+    leftPanelCollapsed,
+    schedulerExpanded,
+    schedulerReminders,
+    schedulerSamMoved,
+    schedulerGoodNews,
+    schedulerToasts,
+    onSchedulerExpand,
+    onSchedulerResend,
+    onSchedulerMarkSamNoShow,
+    onSchedulerDismissToast,
+    onOpenSummary,
+    onOpenReferral,
+    onCloseReferral,
+    onBeginSession,
+    onSleepPosition,
+    onAcceptSleep,
+    onPause,
+    onStop,
+    onChiefComplaintChange,
+    onChiefComplaintFocus,
+    onSelectMention,
+    onDismissClinicalTags,
+    ctaHints,
+    clinicalDualRight,
+    schedulerRightSlot,
+    momentId,
+    m3CheckInInvoiceOpen,
+    m3InvoiceInstanceKey,
+    onM3OpenCheckInFromPanel,
+    onM3CompleteCheckIn,
+  } = props;
+
+  if (clinicalDualRight && CLINICAL_DUAL_STAGES.includes(stage)) {
+    return <ClinicalSplitRightPane {...props} />;
+  }
 
   if (stage === 'scheduler') {
-    return (
+    if (momentId === 'moment3' && m3CheckInInvoiceOpen) {
+      return (
+        <FrontDeskCheckInInvoice key={m3InvoiceInstanceKey} onCompleteCheckIn={onM3CompleteCheckIn} />
+      );
+    }
+    if (schedulerRightSlot === 'invoice') {
+      return (
+        <div
+          data-name="InvoiceSlotPlaceholder"
+          className="flex h-full min-h-0 flex-col items-center justify-center gap-3 bg-transparent px-6 text-center font-['Inter',sans-serif]"
+        >
+          <p className="text-[15px] font-semibold text-[var(--ds-text-primary)]">Invoices</p>
+          <p className="max-w-md text-[13px] leading-relaxed text-[var(--ds-text-secondary)]">
+            Invoice slot is reserved for future moments.
+          </p>
+        </div>
+      );
+    }
+    const schedulerPane = (
       <SchedulerRightPane
         expanded={schedulerExpanded}
         onExpand={onSchedulerExpand}
@@ -101,6 +108,19 @@ export function RightPane({
         onOpenPreVisitSummary={onOpenSummary}
       />
     );
+
+    // if (momentId === 'moment3') {
+    //   return (
+    //     <div className="flex h-full min-h-0 flex-col overflow-hidden">
+    //       <div className="shrink-0 px-5 pb-2 pt-5">
+    //         <Moment3SchedulerHero onCheckIn={onM3OpenCheckInFromPanel} />
+    //       </div>
+    //       <div className="min-h-0 flex-1 overflow-hidden">{schedulerPane}</div>
+    //     </div>
+    //   );
+    // }
+
+    return schedulerPane;
   }
 
   if (stage === 'dashboard') {

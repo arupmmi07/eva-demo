@@ -1,3 +1,4 @@
+import type { MomentId } from '@/moments/momentTypes';
 import { AppRail } from './components/layout/AppRail';
 import { CenterDock } from './components/layout/CenterDock';
 import { TopHeader } from './components/layout/TopHeader';
@@ -5,13 +6,13 @@ import { ChatPane } from './components/chat/ChatPane';
 import { RightPane } from './components/panels/RightPane';
 import { useEvaWorkflow } from './hooks/useEvaWorkflow';
 
-export function EvaWorkflowApp() {
-  const workflow = useEvaWorkflow();
+export function EvaWorkflowApp({ momentId }: { momentId: MomentId }) {
+  const workflow = useEvaWorkflow({ momentId });
 
   return (
     <div
       data-name="EvaWorkflowApp"
-      className="h-screen overflow-hidden bg-[var(--ds-bg-secondary)] font-['Inter',sans-serif] text-[var(--ds-text-primary)]"
+      className="h-screen overflow-hidden bg-[#fcfcfd] font-['Inter',sans-serif] text-[var(--ds-text-primary)]"
     >
       <div className="flex h-full">
         <AppRail />
@@ -26,6 +27,7 @@ export function EvaWorkflowApp() {
             setupVisible={workflow.topSetupVisible}
             onSetupResolve={workflow.resolveCustomization}
             ctaHints={workflow.ctaHints}
+            momentId={momentId}
           />
 
           <div className="relative flex min-h-0 flex-1 overflow-hidden">
@@ -36,15 +38,9 @@ export function EvaWorkflowApp() {
                   : workflow.panelMode === 'leftOnly'
                     ? 'grid-cols-[minmax(0,1fr)_0px]'
                     : 'grid-cols-[0px_minmax(0,1fr)]'
-              }`}
+              } bg-[#fcfcfd]${workflow.panelMode === 'both' ? ' gap-2 p-2' : ''}`}
             >
-              <section
-                className={`relative flex h-full min-h-0 min-w-0 flex-col overflow-hidden border-r ${
-                  workflow.stage === 'scheduler'
-                    ? 'border-[rgba(0,9,50,0.1)] bg-[#eef2f7]'
-                    : 'border-[var(--ds-border)] bg-[var(--ds-bg-primary)]'
-                }`}
-              >
+              <section className="relative flex h-full min-h-0 min-w-0 flex-col overflow-hidden border-transparent bg-[#fcfcfd]">
                 <ChatPane
                   chatItems={workflow.chatItems}
                   chatInput={workflow.chatInput}
@@ -56,15 +52,14 @@ export function EvaWorkflowApp() {
                   onOpenSummary={workflow.openSummaryFromUser}
                   onSchedulerViewUnconfirmed={() => workflow.expandSchedulerPanel('unconfirmed')}
                   onSchedulerViewNoShow={() => workflow.expandSchedulerPanel('potentialNoShow')}
+                  onMoment3CheckIn={momentId === 'moment3' ? () => workflow.openM3CheckIn() : undefined}
+                  figmaWorkspaceShell
                   ctaHints={workflow.ctaHints}
+                  schedulerChrome={workflow.shellSchedulerChrome}
                 />
               </section>
 
-              <section
-                className={`relative min-h-0 min-w-0 overflow-hidden ${
-                  workflow.stage === 'scheduler' ? 'bg-[#fafbfc]' : 'bg-[var(--ds-bg-secondary)]'
-                }`}
-              >
+              <section className="relative min-h-0 min-w-0 overflow-hidden rounded-[12px] bg-[#f8fafc]">
                 <RightPane
                   stage={workflow.stage}
                   referralOpen={workflow.referralOpen}
@@ -102,6 +97,13 @@ export function EvaWorkflowApp() {
                   onSelectMention={workflow.insertMention}
                   onDismissClinicalTags={workflow.dismissClinicalTags}
                   ctaHints={workflow.ctaHints}
+                  schedulerRightSlot={workflow.momentUi.schedulerRightSlot}
+                  clinicalDualRight={workflow.momentUi.clinicalDualRight}
+                  momentId={momentId}
+                  m3CheckInInvoiceOpen={workflow.m3CheckInInvoiceOpen}
+                  m3InvoiceInstanceKey={workflow.m3InvoiceInstanceKey}
+                  onM3OpenCheckInFromPanel={() => workflow.openM3CheckIn({ withUserEcho: true })}
+                  onM3CompleteCheckIn={workflow.completeM3CheckIn}
                 />
               </section>
             </div>
