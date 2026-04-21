@@ -88,7 +88,7 @@ export function RightPane(props: RightPaneProps) {
           className="flex h-full min-h-0 flex-col items-center justify-center gap-3 bg-transparent px-6 text-center font-['Inter',sans-serif]"
         >
           <p className="text-[15px] font-semibold text-[var(--ds-text-primary)]">Invoices</p>
-          <p className="max-w-md text-[13px] leading-relaxed text-[var(--ds-text-secondary)]">
+          <p className="max-w-md text-[14px] leading-relaxed text-[var(--ds-text-secondary)]">
             Invoice slot is reserved for future moments.
           </p>
         </div>

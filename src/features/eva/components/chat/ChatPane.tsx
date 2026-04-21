@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { ChevronDown, ChevronUp, History } from 'lucide-react';
 import { SendHorizontalIcon } from '../icons/SendHorizontalIcon';
-import type { ChatItem, WorkflowStage } from '../../types';
+import type { ChatItem, PanelMode, WorkflowStage } from '../../types';
 import type { CtaHintId } from '../../utils/ctaHints';
 import { CTA_HINT } from '../../utils/ctaHints';
 import { AudioControls } from '../audio/AudioControls';
@@ -21,6 +21,8 @@ export function ChatPane({
   onSchedulerViewNoShow,
   onMoment3CheckIn,
   figmaWorkspaceShell,
+  panelMode,
+  sharedScreenshotsLayout,
   ctaHints,
   schedulerChrome,
 }: {
@@ -38,6 +40,9 @@ export function ChatPane({
   onMoment3CheckIn?: () => void;
   /** Match `figma-make-moment3` chat workspace (header, transcript, Ask Eva). */
   figmaWorkspaceShell?: boolean;
+  panelMode?: PanelMode;
+  /** With `?sharedscreenshots` and Conversation mode, composer spans chat column width (transcript unchanged). */
+  sharedScreenshotsLayout?: boolean;
   ctaHints: ReadonlySet<CtaHintId>;
   /** When set, use scheduler chat chrome even if `stage` is not `scheduler` (e.g. clinician moment). */
   schedulerChrome?: boolean;
@@ -63,6 +68,8 @@ export function ChatPane({
 
   const figmaWs = Boolean(figmaWorkspaceShell);
   const figmaChatHeaderVisible = figmaWs && showHistory && stage !== 'scheduler';
+  const conversationScreenshotComposerFullWidth =
+    figmaWs && panelMode === 'leftOnly' && Boolean(sharedScreenshotsLayout);
 
   return (
     <div
@@ -72,7 +79,7 @@ export function ChatPane({
       <div
         className={
           figmaWs
-            ? 'flex min-h-0 flex-1 flex-col overflow-hidden rounded-[12px] border border-[rgba(0,0,0,0.12)] bg-white shadow-[0px_12px_32px_-16px_rgba(0,0,51,0.06),0px_8px_40px_0px_rgba(0,0,0,0.05)]'
+            ? 'flex min-h-0 flex-1 flex-col overflow-hidden bg-[#ffffff]'
             : 'flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] shadow-[var(--ds-shadow-card)]'
         }
       >
@@ -80,17 +87,13 @@ export function ChatPane({
           <header
             className={
               figmaWs
-                ? 'relative z-[3] min-h-[64px] w-full shrink-0 bg-white'
+                ? 'relative z-[3] min-h-[64px] w-full shrink-0 bg-[#fcfcfd]'
                 : 'shrink-0 border-b border-[var(--ds-border)] bg-[var(--ds-bg-primary)] px-5 py-3'
             }
             data-name="ChatPaneHeader"
           >
             {figmaWs ? (
               <>
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 border-b border-solid border-[rgba(0,0,0,0.12)]"
-                />
                 <div className="relative flex min-h-[64px] w-full flex-row items-center">
                   <div className="flex size-full min-h-[inherit] items-center justify-between px-4 pb-[9px] pt-2">
                     <div className="flex min-w-0 flex-1 items-center gap-5">
@@ -149,11 +152,19 @@ export function ChatPane({
           </div>
         </div>
 
-        <div className={`shrink-0 ${figmaWs ? 'bg-white px-4 pb-4 pt-2' : 'space-y-2 px-5 pb-5 pt-2'}`}>
+        <div
+          className={`shrink-0 ${
+            figmaWs
+              ? `pb-4 pt-2 ${conversationScreenshotComposerFullWidth ? 'px-8' : 'px-4'}`
+              : 'space-y-2 px-5 pb-5 pt-2'
+          }`}
+        >
           <div
             className={
               figmaWs
-                ? 'mx-auto box-border flex h-[112px] w-full max-w-[720px] flex-col rounded-[12px] bg-[#f3f4f7] p-4'
+                ? conversationScreenshotComposerFullWidth
+                  ? 'box-border flex h-[112px] w-full min-w-0 flex-col rounded-[12px] bg-[#f3f4f7] p-4'
+                  : 'mx-auto box-border flex h-[112px] w-full max-w-full flex-col rounded-[12px] bg-[#f3f4f7] p-4'
                 : 'rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] px-4 pb-3 pt-3 shadow-[var(--ds-shadow-card)]'
             }
           >
@@ -185,7 +196,7 @@ export function ChatPane({
               <div className={`flex min-w-0 justify-start ${figmaWs ? '' : 'flex-1'}`} data-name="ChatPaneQuickActions">
                 <button
                   type="button"
-                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 text-[12px] font-medium transition ${figmaWs ? 'h-8 bg-[#eaecf0] text-[#64748b] shadow-sm hover:bg-[#e2e5ea]' : 'rounded-lg border border-[rgba(0,9,50,0.12)] bg-slate-50/80 py-1.5 font-semibold text-slate-700 shadow-sm hover:bg-slate-100'}`}
+                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 text-[14px] font-medium text-[#64748B] bg-[#eaecf0] h-8`}
                 >
                   Quick Actions
                   {figmaWs ? (
@@ -202,8 +213,8 @@ export function ChatPane({
                   onClick={() => onSubmit(chatInput)}
                   className={
                     figmaWs
-                      ? 'flex size-8 shrink-0 items-center justify-center rounded-[12px] bg-[var(--ds-bg-accent-purple)] text-[var(--ds-primary-action)] transition hover:bg-[#dfe8ff]'
-                      : 'flex size-[32px] shrink-0 items-center justify-center rounded-full bg-[var(--ds-primary-action)] text-white'
+                      ? 'flex size-8 shrink-0 items-center justify-center rounded-[12px] bg-[#4E37F6] opacity-30 text-[var(--ds-primary-action)]'
+                      : 'flex size-[32px] shrink-0 items-center justify-center rounded-full bg-[#4E37F6] opacity-30 text-white'
                   }
                   aria-label="Send message"
                 >

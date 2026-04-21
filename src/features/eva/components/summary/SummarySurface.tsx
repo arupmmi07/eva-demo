@@ -86,7 +86,7 @@ export function SummarySurface({
             <button
               type="button"
               disabled={disabledActions}
-              className="rounded-[var(--ds-radius-button)] border border-[var(--ds-border-accent)] px-4 py-2 font-['Inter',sans-serif] text-[13px] font-semibold leading-5 text-[var(--ds-primary-action)] disabled:opacity-40"
+              className="rounded-[var(--ds-radius-button)] border border-[var(--ds-border-accent)] px-4 py-2 font-['Inter',sans-serif] text-[14px] font-semibold leading-5 text-[var(--ds-primary-action)] disabled:opacity-40"
             >
               <span className="inline-flex items-center gap-1.5">
                 <User className="size-[14px]" strokeWidth={1.5} aria-hidden />
@@ -98,7 +98,7 @@ export function SummarySurface({
               disabled={disabledActions}
               onClick={() => onBeginSession()}
               {...(!disabledActions && ctaHints.has(CTA_HINT.BEGIN_SESSION) ? { 'data-cta-hint': CTA_HINT.BEGIN_SESSION } : {})}
-              className={`rounded-[var(--ds-radius-button)] bg-[var(--ds-primary-action)] px-4 py-2 font-['Inter',sans-serif] text-[13px] font-semibold leading-5 text-white disabled:opacity-40 ${ctaHighlightClass(!disabledActions && ctaHints.has(CTA_HINT.BEGIN_SESSION), 'card')}`}
+              className={`rounded-[var(--ds-radius-button)] bg-[var(--ds-primary-action)] px-4 py-2 font-['Inter',sans-serif] text-[14px] font-semibold leading-5 text-white disabled:opacity-40 ${ctaHighlightClass(!disabledActions && ctaHints.has(CTA_HINT.BEGIN_SESSION), 'card')}`}
             >
               <span className="inline-flex items-center gap-2">
                 <Play className="size-[14px] fill-white text-white" strokeWidth={0} aria-hidden />
@@ -147,7 +147,7 @@ export function SummarySurface({
               type="button"
               onClick={onOpenReferral}
               {...(ctaHints.has(CTA_HINT.VIEW_REFERRAL) ? { 'data-cta-hint': CTA_HINT.VIEW_REFERRAL } : {})}
-              className={`rounded-[var(--ds-radius-button)] bg-[var(--ds-bg-accent-purple)] px-4 py-2 font-['Inter',sans-serif] text-[13px] font-semibold leading-5 text-[var(--ds-primary-action)] ${ctaHighlightClass(ctaHints.has(CTA_HINT.VIEW_REFERRAL), 'button')}`}
+              className={`rounded-[var(--ds-radius-button)] bg-[var(--ds-bg-accent-purple)] px-4 py-2 font-['Inter',sans-serif] text-[14px] font-semibold leading-5 text-[var(--ds-primary-action)] ${ctaHighlightClass(ctaHints.has(CTA_HINT.VIEW_REFERRAL), 'button')}`}
             >
               View Referral Document
             </button>
@@ -168,7 +168,7 @@ export function SummarySurface({
             <p className="mt-1 font-['Inter',sans-serif] text-[14px] font-medium leading-5 text-[var(--ds-text-primary)]">Mar 12, 2026</p>
           </div>
         </div>
-        <div className="mt-4 rounded-[var(--ds-radius-card)] border border-[var(--ds-success)] bg-[var(--ds-success-bg)] p-4 font-['Inter',sans-serif] text-[13px] font-medium leading-5 text-[var(--ds-text-primary)]">
+        <div className="mt-4 rounded-[var(--ds-radius-card)] border border-[var(--ds-success)] bg-[var(--ds-success-bg)] p-4 font-['Inter',sans-serif] text-[14px] font-medium leading-5 text-[var(--ds-text-primary)]">
           Arthroscopic rotator cuff repair performed. Recommend conservative PT approach with reassessment in 6 weeks.
         </div>
       </div>
@@ -221,7 +221,7 @@ export function SummarySurface({
               <div className="flex justify-center py-1">
                 <img src={imgBodyDiagram} alt="Body diagram highlighting right shoulder" className="h-[200px] max-h-[240px] object-contain sm:h-[220px]" />
               </div>
-              <div className="mt-4 flex items-center gap-2 rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] px-4 py-3 font-['Inter',sans-serif] text-[13px] leading-5 text-[var(--ds-text-primary)]">
+              <div className="mt-4 flex items-center gap-2 rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] px-4 py-3 font-['Inter',sans-serif] text-[14px] leading-5 text-[var(--ds-text-primary)]">
                 <span className="size-2 shrink-0 rounded-full bg-[var(--ds-success)]" aria-hidden />
                 Right shoulder joint pain
               </div>
@@ -261,12 +261,12 @@ export function SummarySurface({
           <div className="mt-5 flex gap-3 rounded-[var(--ds-radius-card)] border border-amber-200/80 bg-[var(--ds-warning-surface)] p-4">
             <AlertTriangle className="mt-0.5 size-[18px] shrink-0 text-[var(--ds-warning-text)]" strokeWidth={2} aria-hidden />
             <div>
-              <p className="font-['Inter',sans-serif] text-[13px] font-semibold leading-5 text-[var(--ds-warning-text)]">Red flags screened</p>
-              <p className="mt-1 font-['Inter',sans-serif] text-[13px] leading-5 text-[var(--ds-text-primary)]">No contraindications to PT identified at intake.</p>
+              <p className="font-['Inter',sans-serif] text-[14px] font-semibold leading-5 text-[var(--ds-warning-text)]">Red flags screened</p>
+              <p className="mt-1 font-['Inter',sans-serif] text-[14px] leading-5 text-[var(--ds-text-primary)]">No contraindications to PT identified at intake.</p>
             </div>
           </div>
           {answered && (
-            <div className="mt-4 rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-secondary)] p-4 font-['Inter',sans-serif] text-[13px] leading-5 text-[var(--ds-text-primary)]">
+            <div className="mt-4 rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-secondary)] p-4 font-['Inter',sans-serif] text-[14px] leading-5 text-[var(--ds-text-primary)]">
               No significant comorbidities documented beyond the above.
             </div>
           )}
@@ -328,12 +328,12 @@ export function SummarySurface({
           <div className="rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] p-4">
             <span className="text-[11px] font-semibold uppercase leading-4 tracking-wide text-[#b45309]">Moderate probability</span>
             <p className="mt-2 font-['Inter',sans-serif] text-[15px] font-semibold leading-5 text-[var(--ds-text-primary)]">AC joint sprain</p>
-            <p className="mt-1.5 text-[13px] leading-5 text-[var(--ds-text-secondary)]">Consider if pain is superior and focal to AC line.</p>
+            <p className="mt-1.5 text-[14px] leading-5 text-[var(--ds-text-secondary)]">Consider if pain is superior and focal to AC line.</p>
           </div>
           <div className="rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] p-4">
             <span className="text-[11px] font-semibold uppercase leading-4 tracking-wide text-[var(--ds-text-secondary)]">Lower probability</span>
             <p className="mt-2 font-['Inter',sans-serif] text-[15px] font-semibold leading-5 text-[var(--ds-text-primary)]">Glenohumeral dislocation</p>
-            <p className="mt-1.5 text-[13px] leading-5 text-[var(--ds-text-secondary)]">Less likely without instability history or deformity.</p>
+            <p className="mt-1.5 text-[14px] leading-5 text-[var(--ds-text-secondary)]">Less likely without instability history or deformity.</p>
           </div>
         </div>
 
@@ -345,7 +345,7 @@ export function SummarySurface({
               'Educate on sleep positioning and activity modification for the first 1–2 weeks.',
               'Reassess irritability after initial intervention to calibrate progression.',
             ].map((line) => (
-              <li key={line} className="flex gap-2.5 font-['Inter',sans-serif] text-[13px] leading-5 text-[var(--ds-text-primary)]">
+              <li key={line} className="flex gap-2.5 font-['Inter',sans-serif] text-[14px] leading-5 text-[var(--ds-text-primary)]">
                 <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-[var(--ds-bg-accent-purple)] text-[var(--ds-primary-action)]">
                   <Check className="size-3" strokeWidth={2.5} aria-hidden />
                 </span>
@@ -363,7 +363,7 @@ export function SummarySurface({
             <Check className="size-[18px] text-[var(--ds-success)]" strokeWidth={2.5} aria-hidden />
           </div>
           <div>
-            <p className="font-['Inter',sans-serif] text-[13px] font-semibold leading-5 text-[var(--ds-text-primary)]">Insurance verified</p>
+            <p className="font-['Inter',sans-serif] text-[14px] font-semibold leading-5 text-[var(--ds-text-primary)]">Insurance verified</p>
             <p className="mt-0.5 font-['Inter',sans-serif] text-[12px] leading-[18px] text-[var(--ds-text-secondary)]">Aetna PPO — authorization pending</p>
           </div>
         </div>
@@ -374,7 +374,7 @@ export function SummarySurface({
           <div className="flex items-start gap-3">
             <CalendarClock className="mt-0.5 size-[18px] shrink-0 text-[var(--ds-primary-action)]" strokeWidth={1.75} aria-hidden />
             <div>
-              <p className="font-['Inter',sans-serif] text-[13px] font-semibold leading-5 text-[var(--ds-text-primary)]">Next session</p>
+              <p className="font-['Inter',sans-serif] text-[14px] font-semibold leading-5 text-[var(--ds-text-primary)]">Next session</p>
               <p className="mt-0.5 font-['Inter',sans-serif] text-[12px] leading-[18px] text-[var(--ds-text-secondary)]">Full evaluation scheduled</p>
             </div>
           </div>

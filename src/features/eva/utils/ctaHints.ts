@@ -201,5 +201,6 @@ export function ctaHighlightClass(
           : rounded === 'button'
             ? 'rounded-[var(--ds-radius-button)]'
             : '';
-  return `ds-cta-highlight ${radius}`;
+  // return `ds-cta-highlight ${radius}`;
+  return `${radius}`;
 }

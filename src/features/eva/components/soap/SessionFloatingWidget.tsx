@@ -34,7 +34,7 @@ export function SessionFloatingWidget({ sessionSeconds }: { sessionSeconds: numb
         <div className="flex size-[32px] items-center justify-center rounded-full bg-[var(--ds-bg-accent-purple)] text-[var(--ds-primary-action)]">
           <EvaLogo className="size-[14px]" decorative />
         </div>
-        <span className="flex-1 font-['Inter',sans-serif] text-[13px] leading-[20px]">Ask eva,,</span>
+        <span className="flex-1 font-['Inter',sans-serif] text-[14px] leading-[20px]">Ask eva,,</span>
         <AudioControls size="sm" gap="sm" />
         <button type="button" className="flex size-[28px] items-center justify-center rounded-full bg-[var(--ds-bg-tertiary)]" aria-label="Send">
           <Send className="size-[13px]" strokeWidth={1.5} />

@@ -404,7 +404,7 @@ function ScheduleChangeMergedCard({ pair }: { pair: ScheduleChangePair }) {
                     />
                   </div>
                   <span
-                    className="shrink-0 text-[13px] font-semibold tabular-nums"
+                    className="shrink-0 text-[14px] font-semibold tabular-nums"
                     style={{ color: SCHEDULE_PROGRESS_FILL }}
                   >
                     {filled.progressPct}%
@@ -499,7 +499,7 @@ function UnconfirmedRow({
               <div className="absolute right-0 top-9 z-30 min-w-[200px] rounded-lg border border-[rgba(0,9,50,0.12)] bg-white py-1">
                 <button
                   type="button"
-                  className="block w-full px-3 py-2.5 text-left text-[13px] text-slate-800 hover:bg-slate-50"
+                  className="block w-full px-3 py-2.5 text-left text-[14px] text-slate-800 hover:bg-slate-50"
                   onClick={() => {
                     setMenuOpen(false);
                     onMenuMarkNoShow?.();
@@ -794,7 +794,7 @@ export function SchedulerRightPane({
                         <div className="rounded-xl border border-[rgba(0,9,50,0.08)] bg-white px-4 py-3.5">
                           <div className="flex items-start justify-between gap-3">
                             <div className="min-w-0">
-                              <p className="text-[13px] font-semibold text-slate-900">{t.patient}</p>
+                              <p className="text-[14px] font-semibold text-slate-900">{t.patient}</p>
                               <p className="mt-1 text-[12px] leading-snug text-slate-600">{t.preview}</p>
                             </div>
                             <span className="shrink-0 text-[11px] font-medium text-slate-400">{t.timeLabel}</span>
@@ -811,8 +811,8 @@ export function SchedulerRightPane({
                       <li key={c.id} className="min-w-0">
                         <div className="rounded-xl border border-[rgba(0,9,50,0.08)] bg-white px-4 py-3.5">
                           <div className="flex items-baseline justify-between gap-3">
-                            <span className="text-[13px] font-semibold text-slate-900">{c.patient}</span>
-                            <span className="text-[13px] font-semibold text-slate-800">{c.amount}</span>
+                            <span className="text-[14px] font-semibold text-slate-900">{c.patient}</span>
+                            <span className="text-[14px] font-semibold text-slate-800">{c.amount}</span>
                           </div>
                           <p className="mt-1 text-[11px] font-medium text-slate-500">{c.daysPast} days past due</p>
                         </div>
@@ -907,7 +907,7 @@ function TodayPatientRow({
           <div className="absolute right-0 top-10 z-30 min-w-[200px] rounded-xl border border-[rgba(0,9,50,0.12)] bg-white py-1">
             <button
               type="button"
-              className="block w-full px-4 py-2.5 text-left text-[13px] text-slate-800 hover:bg-slate-50"
+              className="block w-full px-4 py-2.5 text-left text-[14px] text-slate-800 hover:bg-slate-50"
               onClick={() => {
                 setOpen(false);
                 onOpenPreVisitSummary();

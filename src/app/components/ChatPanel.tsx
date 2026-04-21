@@ -115,7 +115,7 @@ function SessionWidget({
       <p className="text-[11px] font-semibold text-[#1d293d] mb-2">Session Started</p>
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
-          <span className="text-[13px] font-mono text-[#1d293d] tabular-nums shrink-0">
+          <span className="text-[14px] font-mono text-[#1d293d] tabular-nums shrink-0">
             {mins}:{secs}
           </span>
           <WaveBars active={mode === 'recording'} />
@@ -436,7 +436,7 @@ export function ChatPanel({
             return (
               <div key={msg.id} className="flex flex-col items-end">
                 <div
-                  className="rounded-bl-[16px] rounded-br-[6px] rounded-tl-[16px] rounded-tr-[16px] px-5 py-2.5 text-[13px] text-white"
+                  className="rounded-bl-[16px] rounded-br-[6px] rounded-tl-[16px] rounded-tr-[16px] px-5 py-2.5 text-[14px] text-white"
                   style={{ background: 'linear-gradient(168deg, #615fff 0%, #7f22fe 100%)' }}
                 >
                   {msg.content}

@@ -151,7 +151,7 @@ export function SoapSurface({
           SOAP Note
         </h2>
         <div className="flex items-center gap-[12px]">
-          <div className="rounded-[var(--ds-radius-pill)] border border-[var(--ds-danger-soft-bg)] px-[16px] py-[6px] font-['Inter',sans-serif] text-[13px] font-semibold leading-[20px] text-[var(--ds-danger)]">
+          <div className="rounded-[var(--ds-radius-pill)] border border-[var(--ds-danger-soft-bg)] px-[16px] py-[6px] font-['Inter',sans-serif] text-[14px] font-semibold leading-[20px] text-[var(--ds-danger)]">
             <span className="mr-[8px] inline-block size-[8px] rounded-full bg-[var(--ds-danger)]" aria-hidden />
             REC {formatSessionClock(sessionSeconds)}
           </div>
@@ -160,7 +160,7 @@ export function SoapSurface({
               <button
                 type="button"
                 onClick={onPause}
-                className="rounded-[var(--ds-radius-button)] border border-[var(--ds-border)] px-[16px] py-[8px] font-['Inter',sans-serif] text-[13px] leading-[20px] text-[var(--ds-text-secondary)]"
+                className="rounded-[var(--ds-radius-button)] border border-[var(--ds-border)] px-[16px] py-[8px] font-['Inter',sans-serif] text-[14px] leading-[20px] text-[var(--ds-text-secondary)]"
               >
                 {sessionPaused ? 'Resume' : 'Pause'}
               </button>
@@ -168,7 +168,7 @@ export function SoapSurface({
                 type="button"
                 onClick={onStop}
                 {...(ctaHints.has(CTA_HINT.STOP_SESSION) ? { 'data-cta-hint': CTA_HINT.STOP_SESSION } : {})}
-                className={`rounded-[var(--ds-radius-button)] border border-[var(--ds-border)] px-[16px] py-[8px] font-['Inter',sans-serif] text-[13px] leading-[20px] text-[var(--ds-text-secondary)] ${ctaHighlightClass(ctaHints.has(CTA_HINT.STOP_SESSION), 'button')}`}
+                className={`rounded-[var(--ds-radius-button)] border border-[var(--ds-border)] px-[16px] py-[8px] font-['Inter',sans-serif] text-[14px] leading-[20px] text-[var(--ds-text-secondary)] ${ctaHighlightClass(ctaHints.has(CTA_HINT.STOP_SESSION), 'button')}`}
               >
                 Stop
               </button>
@@ -185,12 +185,12 @@ export function SoapSurface({
       <div ref={subjectiveRef} className="scroll-mt-[24px] rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] shadow-[var(--ds-shadow-card)]">
         <div className="flex items-center justify-between border-b border-[var(--ds-border)] px-[20px] py-[16px]">
           <div className="flex items-center gap-[12px]">
-            <div className="flex size-[28px] items-center justify-center rounded-full bg-[var(--ds-primary-action)] font-['Inter',sans-serif] text-[13px] font-semibold text-white">
+            <div className="flex size-[28px] items-center justify-center rounded-full bg-[var(--ds-primary-action)] font-['Inter',sans-serif] text-[14px] font-semibold text-white">
               S
             </div>
             <p className="font-['Inter',sans-serif] text-[18px] font-semibold leading-[28px] text-[var(--ds-text-primary)]">Subjective</p>
           </div>
-          <div className="flex items-center gap-[8px] font-['Inter',sans-serif] text-[13px] text-[var(--ds-text-secondary)]">
+          <div className="flex items-center gap-[8px] font-['Inter',sans-serif] text-[14px] text-[var(--ds-text-secondary)]">
             3 items
             <ChevronDown className="size-[14px]" strokeWidth={1.5} aria-hidden />
           </div>
@@ -201,7 +201,7 @@ export function SoapSurface({
             className="border-b border-[var(--ds-border)] px-[20px] py-[12px]"
             data-soap-stream-anchor={SOAP_STEP.AI_SUGGESTIONS}
           >
-            <p className="mb-[8px] font-['Inter',sans-serif] text-[13px] font-semibold leading-[20px] text-[var(--ds-primary-accent)]">
+            <p className="mb-[8px] font-['Inter',sans-serif] text-[14px] font-semibold leading-[20px] text-[var(--ds-primary-accent)]">
               AI Suggestions
             </p>
             <div className="flex flex-wrap gap-[8px]">
@@ -224,7 +224,7 @@ export function SoapSurface({
         <div className="space-y-[20px] px-[20px] py-[16px]">
           {sleepTableVisible && (
             <div className="overflow-hidden rounded-[var(--ds-radius-card)] border border-[var(--ds-border)]">
-              <div className="flex items-center justify-between bg-[var(--ds-bg-secondary)] px-[16px] py-[8px] font-['Inter',sans-serif] text-[13px] font-semibold leading-[20px] text-[var(--ds-text-primary)]">
+              <div className="flex items-center justify-between bg-[var(--ds-bg-secondary)] px-[16px] py-[8px] font-['Inter',sans-serif] text-[14px] font-semibold leading-[20px] text-[var(--ds-text-primary)]">
                 Sleep Disturbance
                 <button
                   type="button"

@@ -27,7 +27,7 @@ function FinalSection({
           </div>
           <p className="font-['Inter',sans-serif] text-[22px] font-semibold leading-[28px] text-[var(--ds-text-primary)]">{title}</p>
         </div>
-        <button type="button" className="font-['Inter',sans-serif] text-[13px] font-semibold leading-[20px] text-[var(--ds-primary-action)]">
+        <button type="button" className="font-['Inter',sans-serif] text-[14px] font-semibold leading-[20px] text-[var(--ds-primary-action)]">
           Edit section
         </button>
       </div>
@@ -94,7 +94,7 @@ export function FinalizedSurface({ clarificationApplied }: { clarificationApplie
           </div>
           SOAP Documentation
         </div>
-        <div className="font-['Inter',sans-serif] text-[13px] font-semibold uppercase leading-[20px] tracking-[0.08em] text-[var(--ds-success)]">
+        <div className="font-['Inter',sans-serif] text-[14px] font-semibold uppercase leading-[20px] tracking-[0.08em] text-[var(--ds-success)]">
           Verified 4/4
         </div>
       </div>

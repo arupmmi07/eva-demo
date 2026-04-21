@@ -24,8 +24,8 @@ function MetricCard({ icon, title, subtitle, value, badge, onClick }: MetricCard
         {icon}
       </div>
       <div>
-        <p className="text-[13px] font-medium text-[#020617] tracking-tight">{title}</p>
-        <p className="text-[13px] font-medium text-[#64748b] mt-0.5">{subtitle}</p>
+        <p className="text-[14px] font-medium text-[#020617] tracking-tight">{title}</p>
+        <p className="text-[14px] font-medium text-[#64748b] mt-0.5">{subtitle}</p>
       </div>
       <p className="text-[19.5px] font-medium text-[#2e04e8]">{value}</p>
     </button>
@@ -53,7 +53,7 @@ export function DashboardPanel({ onOpenPatientSummary }: DashboardPanelProps) {
     <div className="flex flex-col h-full overflow-y-auto px-8 py-10">
       {/* Greeting */}
       <div className="text-center mb-10">
-        <p className="text-[13px] text-[#90a1b9] mb-2">Good afternoon, Maya</p>
+        <p className="text-[14px] text-[#90a1b9] mb-2">Good afternoon, Maya</p>
         <h1 className="text-[36px] font-medium text-[#1d293d] leading-tight">
           What is your{' '}
           <em
@@ -101,8 +101,8 @@ export function DashboardPanel({ onOpenPatientSummary }: DashboardPanelProps) {
             <Plus size={18} className="text-[#45556c]" />
           </div>
           <div>
-            <p className="text-[13px] font-medium text-[#020617] tracking-tight">Add New Widget</p>
-            <p className="text-[13px] font-medium text-[#64748b] mt-0.5">Customize dashboard</p>
+            <p className="text-[14px] font-medium text-[#020617] tracking-tight">Add New Widget</p>
+            <p className="text-[14px] font-medium text-[#64748b] mt-0.5">Customize dashboard</p>
           </div>
         </button>
       </div>

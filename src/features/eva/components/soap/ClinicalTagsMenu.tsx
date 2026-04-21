@@ -124,7 +124,7 @@ export function ClinicalTagsMenu({
             setSelectedIndex(0);
           }}
           placeholder="Search tags…"
-          className="mt-[8px] w-full rounded-[var(--ds-radius-input)] border border-[var(--ds-border)] bg-[var(--ds-bg-secondary)] px-[8px] py-[6px] font-['Inter',sans-serif] text-[13px] font-normal leading-[20px] text-[var(--ds-text-primary)] outline-none placeholder:text-[var(--ds-text-muted)] focus:border-[var(--ds-border-accent)]"
+          className="mt-[8px] w-full rounded-[var(--ds-radius-input)] border border-[var(--ds-border)] bg-[var(--ds-bg-secondary)] px-[8px] py-[6px] font-['Inter',sans-serif] text-[14px] font-normal leading-[20px] text-[var(--ds-text-primary)] outline-none placeholder:text-[var(--ds-text-muted)] focus:border-[var(--ds-border-accent)]"
           aria-label="Search clinical tags"
           autoFocus
         />
@@ -132,7 +132,7 @@ export function ClinicalTagsMenu({
 
       <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain py-[4px]">
         {flatRows.length === 0 ? (
-          <p className="px-[12px] py-[16px] font-['Inter',sans-serif] text-[13px] text-[var(--ds-text-secondary)]">No tags match your search.</p>
+          <p className="px-[12px] py-[16px] font-['Inter',sans-serif] text-[14px] text-[var(--ds-text-secondary)]">No tags match your search.</p>
         ) : (
           indexedSections.map((section) => (
             <div key={section.title} className="mb-[4px]">
@@ -158,7 +158,7 @@ export function ClinicalTagsMenu({
                         e.preventDefault();
                         onSelect(row.label);
                       }}
-                      className={`flex w-full items-center justify-between gap-[8px] rounded-[var(--ds-radius-button)] px-[10px] py-[10px] text-left font-['Inter',sans-serif] text-[13px] font-normal leading-[20px] transition-colors ${
+                      className={`flex w-full items-center justify-between gap-[8px] rounded-[var(--ds-radius-button)] px-[10px] py-[10px] text-left font-['Inter',sans-serif] text-[14px] font-normal leading-[20px] transition-colors ${
                         isActive
                           ? 'bg-[var(--ds-primary-brand)] text-white'
                           : 'text-[var(--ds-text-primary)] hover:bg-[var(--ds-bg-accent-purple)]/60'

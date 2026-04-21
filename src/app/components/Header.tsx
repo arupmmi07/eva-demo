@@ -17,7 +17,7 @@ export function Header({ view, onSaveDraft, onReviewFinalize }: HeaderProps) {
         <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#2e04e8] text-white">
           <span className="text-[9px] font-semibold">M</span>
         </div>
-        <span className="text-[13px] font-semibold text-[#1d293d]">My Dashboard</span>
+        <span className="text-[14px] font-semibold text-[#1d293d]">My Dashboard</span>
       </div>
 
       <div className="flex items-center gap-2">

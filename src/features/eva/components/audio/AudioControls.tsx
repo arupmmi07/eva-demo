@@ -24,7 +24,7 @@ export function AudioControls({
       <div data-name="AudioControls" className={`flex items-center text-[#64748b] ${className}`}>
         <button
           type="button"
-          className="flex size-8 shrink-0 items-center justify-center rounded-[12px] p-0 transition hover:bg-black/5"
+          className="flex size-8 shrink-0 items-center justify-center rounded-[12px] p-0"
           aria-label="Voice input"
         >
           <Mic className="size-4" strokeWidth={1.25} aria-hidden />

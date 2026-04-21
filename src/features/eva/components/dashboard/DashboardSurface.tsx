@@ -38,7 +38,7 @@ function DashboardCard({
           <div>
             <p className="font-['Inter',sans-serif] text-[14px] font-semibold leading-[20px] text-[var(--ds-text-primary)]">{title}</p>
             {subtitle && (
-              <p className="mt-[4px] font-['Inter',sans-serif] text-[13px] font-normal leading-[20px] text-[var(--ds-text-secondary)]">
+              <p className="mt-[4px] font-['Inter',sans-serif] text-[14px] font-normal leading-[20px] text-[var(--ds-text-secondary)]">
                 {subtitle}
               </p>
             )}

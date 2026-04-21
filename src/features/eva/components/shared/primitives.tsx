@@ -61,7 +61,7 @@ export function SmallChip({
       type="button"
       data-name="SmallChip"
       onClick={onClick}
-      className={`rounded-[var(--ds-radius-button)] border px-[12px] py-[6px] font-['Inter',sans-serif] text-[13px] font-medium leading-[20px] transition-colors ${
+      className={`rounded-[var(--ds-radius-button)] border px-[12px] py-[6px] font-['Inter',sans-serif] text-[14px] font-medium leading-[20px] transition-colors ${
         active
           ? 'border-[var(--ds-border-accent)] text-[var(--ds-primary-action)]'
           : 'border-[var(--ds-border)] text-[var(--ds-text-secondary)] hover:border-[var(--ds-border-accent)]'
@@ -84,8 +84,8 @@ export function SummaryFact({ label, value }: { label: string; value: string }) 
 export function SleepTableRow({ label, value }: { label: string; value: string }) {
   return (
     <tr className="border-t border-[var(--ds-border)]">
-      <td className="w-[140px] px-[16px] py-[8px] font-['Inter',sans-serif] text-[13px] text-[var(--ds-text-secondary)]">{label}</td>
-      <td className="px-[16px] py-[8px] font-['Inter',sans-serif] text-[13px] text-[var(--ds-text-primary)]">{value}</td>
+      <td className="w-[140px] px-[16px] py-[8px] font-['Inter',sans-serif] text-[14px] text-[var(--ds-text-secondary)]">{label}</td>
+      <td className="px-[16px] py-[8px] font-['Inter',sans-serif] text-[14px] text-[var(--ds-text-primary)]">{value}</td>
     </tr>
   );
 }
@@ -94,7 +94,7 @@ export function ClinicalTable({ title, headers, rows }: { title: string; headers
   return (
     <div className="overflow-hidden rounded-[var(--ds-radius-card)] border border-[var(--ds-border)]" data-name="ClinicalTable">
       <div className="flex items-center justify-between bg-[var(--ds-bg-tertiary)] px-[16px] py-[12px]">
-        <span className="font-['Inter',sans-serif] text-[13px] font-semibold leading-[20px] text-[var(--ds-text-primary)]">{title}</span>
+        <span className="font-['Inter',sans-serif] text-[14px] font-semibold leading-[20px] text-[var(--ds-text-primary)]">{title}</span>
         <span className="size-[6px] rounded-full bg-[var(--ds-primary-brand)]" aria-hidden />
       </div>
       <table className="w-full text-left">
@@ -139,7 +139,7 @@ export function GoalText({ title, children }: { title: string; children: ReactNo
 export function SuggestionRow({ items }: { items: string[] }) {
   return (
     <div data-name="SuggestionRow">
-      <p className="mb-[8px] font-['Inter',sans-serif] text-[13px] font-semibold leading-[20px] text-[var(--ds-primary-accent)]">
+      <p className="mb-[8px] font-['Inter',sans-serif] text-[14px] font-semibold leading-[20px] text-[var(--ds-primary-accent)]">
         AI Suggestions
       </p>
       <div className="flex flex-wrap gap-[8px]">

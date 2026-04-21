@@ -126,7 +126,7 @@ const UNCONFIRMED_CARD_SHELL =
   'box-border flex w-full min-w-0 flex-col overflow-hidden rounded-[12px] border border-[rgba(0,9,50,0.12)] bg-white text-left font-[\'Inter\',sans-serif]';
 
 const UNCONFIRMED_CARD_HEADER =
-  'flex h-[70px] shrink-0 items-center border-b border-[rgba(0,9,50,0.12)] bg-white px-5';
+  'flex h-[70px] shrink-0 items-center border-b border-[rgba(0,9,50,0.12)] bg-[rgba(0,0,85,0.01)] px-5';
 
 /** 216 − 70 header = 146px list band; bottom padding balances 3×48px rows to spec height. */
 const UNCONFIRMED_CARD_LIST =
@@ -488,7 +488,7 @@ export function ChatBubble({
     return (
       <div
         data-name="ChatInsight"
-        className="w-full p-[16px] font-['Inter',sans-serif] text-[13px] font-normal leading-[24px] text-[var(--ds-text-primary)]"
+        className="w-full p-[16px] font-['Inter',sans-serif] text-[14px] font-normal leading-[24px] text-[var(--ds-text-primary)]"
       >
         {item.content}
         <div className="mt-[8px] text-[11px] leading-[16px] text-[var(--ds-text-muted)]">{item.timestamp}</div>

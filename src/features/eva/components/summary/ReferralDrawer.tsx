@@ -69,7 +69,7 @@ export function ReferralDrawer({ onClose, ctaHints }: { onClose: () => void; cta
             <p className="mb-[12px] font-['Inter',sans-serif] text-[12px] font-semibold uppercase leading-[18px] tracking-[0.08em] text-[var(--ds-text-secondary)]">
               Rehab Interventions
             </p>
-            <div className="grid grid-cols-2 gap-[12px] font-['Inter',sans-serif] text-[13px] leading-[20px] text-[var(--ds-text-primary)]">
+            <div className="grid grid-cols-2 gap-[12px] font-['Inter',sans-serif] text-[14px] leading-[20px] text-[var(--ds-text-primary)]">
               {[
                 'Therapeutic Exercise (Strength/Flexibility)',
                 'Neuromuscular Re-education',
@@ -91,7 +91,7 @@ export function ReferralDrawer({ onClose, ctaHints }: { onClose: () => void; cta
               Clinical Precautions &amp; Notes
             </p>
             <div className="h-[96px] rounded-[var(--ds-radius-card)] bg-[var(--ds-bg-tertiary)]" aria-hidden />
-            <div className="mt-[40px] flex items-center justify-between font-['Inter',sans-serif] text-[13px] text-[var(--ds-text-primary)]">
+            <div className="mt-[40px] flex items-center justify-between font-['Inter',sans-serif] text-[14px] text-[var(--ds-text-primary)]">
               <p className="font-serif text-[18px] italic text-[var(--ds-primary-brand)]">Samantha Wickram, MD</p>
               <p className="text-[26px] font-semibold">March 12, 2026</p>
             </div>

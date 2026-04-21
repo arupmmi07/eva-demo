@@ -17,7 +17,7 @@ export function Moment3SchedulerHero({ onCheckIn }: Moment3SchedulerHeroProps) {
           <p className="mt-1.5 font-['Inter',sans-serif] text-[15px] font-semibold leading-snug text-[var(--ds-text-primary)]">
             Sarah Chen
           </p>
-          <p className="mt-2 max-w-xl font-['Inter',sans-serif] text-[13px] font-normal leading-relaxed text-[var(--ds-text-secondary)]">
+          <p className="mt-2 max-w-xl font-['Inter',sans-serif] text-[14px] font-normal leading-relaxed text-[var(--ds-text-secondary)]">
             You have a new patient coming: Sarah Chen. Identity is verified and insurance is confirmed.
           </p>
           <p className="mt-2 font-['Inter',sans-serif] text-[12px] font-medium text-[var(--ds-text-muted)]">
@@ -27,7 +27,7 @@ export function Moment3SchedulerHero({ onCheckIn }: Moment3SchedulerHeroProps) {
         <button
           type="button"
           onClick={onCheckIn}
-          className="inline-flex h-10 shrink-0 items-center justify-center rounded-[var(--ds-radius-button)] bg-[var(--ds-primary-action)] px-5 font-['Inter',sans-serif] text-[13px] font-semibold text-white shadow-sm transition hover:opacity-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-cta-ring)]"
+          className="inline-flex h-10 shrink-0 items-center justify-center rounded-[var(--ds-radius-button)] bg-[var(--ds-primary-action)] px-5 font-['Inter',sans-serif] text-[14px] font-semibold text-white shadow-sm transition hover:opacity-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ds-cta-ring)]"
         >
           Check In
         </button>

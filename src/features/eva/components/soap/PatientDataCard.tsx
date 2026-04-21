@@ -19,11 +19,11 @@ export function PatientDataCard() {
         <img src={imgPatient} alt="Sarah Chen" className="size-[48px] rounded-[var(--ds-radius-card)] object-cover" />
         <div>
           <p className="font-['Inter',sans-serif] text-[18px] font-semibold leading-[28px] text-[var(--ds-text-primary)]">Sarah Chen</p>
-          <p className="font-['Inter',sans-serif] text-[13px] leading-[20px] text-[var(--ds-text-secondary)]">Age - 65 | Female</p>
+          <p className="font-['Inter',sans-serif] text-[14px] leading-[20px] text-[var(--ds-text-secondary)]">Age - 65 | Female</p>
         </div>
       </div>
 
-      <div className="grid gap-x-[32px] gap-y-[12px] font-['Inter',sans-serif] text-[13px] leading-[20px] text-[var(--ds-text-primary)] lg:grid-cols-2">
+      <div className="grid gap-x-[32px] gap-y-[12px] font-['Inter',sans-serif] text-[14px] leading-[20px] text-[var(--ds-text-primary)] lg:grid-cols-2">
         {patientDetails.map(([label, value], index) => (
           <div key={label} className={index >= 5 ? 'lg:col-span-2' : ''}>
             <span className="font-semibold text-[var(--ds-text-primary)]">{label}: </span>

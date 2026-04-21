@@ -1,5 +1,5 @@
 import { ChevronDown } from 'lucide-react';
-import type { MomentId } from '@/moments/momentTypes';
+import profileAvatar from '@/assets/nav-profile-avatar.png';
 import type { HeaderMode, PanelMode } from '../../types';
 import type { CtaHintId } from '../../utils/ctaHints';
 import { CTA_HINT, ctaHighlightClass } from '../../utils/ctaHints';
@@ -95,7 +95,7 @@ function WorkspaceModeSegment({
     <div
       role="tablist"
       aria-label="Workspace layout"
-      className="inline-flex items-center rounded-[10px] border border-[rgba(0,0,51,0.08)] bg-[#f1f5f9] p-[3px] shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]"
+      className="inline-flex items-center rounded-[10px] border border-[rgba(0,0,51,0.08)] bg-[#F7F9FC] p-[4px] shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]"
     >
       {segments.map(({ mode, label, Icon }) => {
         const active = panelMode === mode;
@@ -108,10 +108,10 @@ function WorkspaceModeSegment({
             aria-label={label}
             title={label}
             onClick={() => onPanelModeChange(mode)}
-            className={`flex items-center gap-1.5 rounded-[10px] px-3 py-1.5 font-['Inter',sans-serif] text-[13px] font-medium leading-5 transition ${
+            className={`flex items-center gap-1.5 rounded-[10px] px-3 py-1.5 font-['Inter',sans-serif] text-[14px] font-medium leading-5 transition ${
               active
-                ? 'bg-white text-[#020617] shadow-[0_1px_2px_rgba(0,0,0,0.06)]'
-                : 'text-[#64748b] hover:text-[#334155]'
+                ? 'bg-white text-[#1F2933]'
+                : 'text-[#A3ABB3]'
             }`}
           >
             <Icon className="size-4 shrink-0" />
@@ -133,7 +133,6 @@ export function TopHeader({
   onSetupResolve,
   ctaHints,
   figmaTopNav = true,
-  momentId,
   panelMode,
   onPanelModeChange,
 }: {
@@ -146,13 +145,10 @@ export function TopHeader({
   onSetupResolve: () => void;
   ctaHints: ReadonlySet<CtaHintId>;
   figmaTopNav?: boolean;
-  momentId?: MomentId;
   /** When set with `onPanelModeChange`, shows workspace mode switcher in the navbar (replaces CenterDock). */
   panelMode?: PanelMode;
   onPanelModeChange?: (mode: PanelMode) => void;
 }) {
-  const profileInitials = momentId === 'moment2' ? 'LP' : 'MJ';
-
   const btnBase =
     "rounded-[var(--ds-radius-button)] px-[12px] py-[8px] font-['Inter',sans-serif] text-[12px] font-medium leading-[18px] transition-opacity disabled:opacity-45";
   const btnGhost = `${btnBase} border border-[var(--ds-border)] text-[var(--ds-text-secondary)]`;
@@ -167,10 +163,10 @@ export function TopHeader({
   return (
     <header
       data-name="TopHeader"
-      className={`relative flex shrink-0 items-center border-b bg-white ${
+      className={`relative flex shrink-0 items-center ${
         figmaTopNav
-          ? 'min-h-[64px] border-[rgba(0,9,50,0.12)] px-6 py-2'
-          : 'min-h-[var(--ds-header-min-height)] bg-[var(--ds-bg-primary)] px-4 border-[var(--ds-border)]'
+          ? 'min-h-[64px] border-b-0 bg-[#ffffff] px-3 py-2 shadow-none'
+          : 'min-h-[var(--ds-header-min-height)] border-b bg-[#ffffff] px-4 border-[var(--ds-border)]'
       }`}
     >
       {!figmaTopNav ? (
@@ -235,12 +231,12 @@ export function TopHeader({
           <div className="flex min-w-0 flex-1 items-center justify-start">
             <button
               type="button"
-              className="inline-flex h-9 max-w-full shrink-0 items-center gap-2 rounded-[10px] border border-[rgba(0,0,51,0.08)] bg-white px-3 py-1.5 text-left shadow-sm transition hover:bg-[#f8fafc]"
+              className="inline-flex h-10 max-w-full shrink-0 items-center gap-2 rounded-[10px] border border-[rgba(0,0,51,0.08)] bg-white px-3 py-1.5 text-left hover:bg-[#f8fafc]"
               aria-haspopup="menu"
               aria-expanded="false"
             >
               <IconTodaysTasks className="size-4 shrink-0 text-[#64748b]" />
-              <span className="truncate font-['Inter',sans-serif] text-[13px] font-medium leading-5 text-[#020617]">
+              <span className="truncate font-['Inter',sans-serif] text-[14px] font-medium leading-5 text-[#616E7C]">
                 {"Today's Tasks"}
               </span>
               <ChevronDown className="size-4 shrink-0 text-[#64748b]" strokeWidth={1.5} aria-hidden />
@@ -256,15 +252,16 @@ export function TopHeader({
           <div className="flex min-w-0 flex-1 items-center justify-end gap-3">
             <button
               type="button"
-              className="inline-flex h-8 shrink-0 items-center gap-0.5 rounded-[10px] border border-[rgba(0,0,51,0.06)] bg-white py-1 pl-1 pr-1.5 transition hover:bg-[#f8fafc]"
+              className="inline-flex h-10 shrink-0 items-center gap-0.5 rounded-[10px] border border-[#0000000A] bg-white py-3 pl-1 pr-1.5 transition hover:bg-[#f8fafc]"
               aria-label="Account menu"
             >
-              <span
-                aria-hidden
-                className="flex size-7 items-center justify-center rounded-full bg-[#f7f9ff] text-[10px] font-semibold leading-none text-[#1e3a5f]"
-              >
-                {profileInitials}
-              </span>
+              <img
+                src={profileAvatar}
+                alt=""
+                width={32}
+                height={32}
+                className="size-8 shrink-0 rounded-[10px] object-cover"
+              />
               <ChevronDown className="size-3.5 shrink-0 text-[#64748b]" strokeWidth={2} aria-hidden />
             </button>
           </div>
@@ -324,15 +321,16 @@ export function TopHeader({
             )}
             <button
               type="button"
-              className="inline-flex h-8 shrink-0 items-center gap-0.5 rounded-[10px] border border-[rgba(0,0,51,0.06)] bg-white py-1 pl-1 pr-1.5 transition hover:bg-[#f8fafc]"
+              className="inline-flex h-10 shrink-0 items-center gap-0.5 rounded-[10px] border border-[#0000000A] bg-white py-3 pl-1 pr-1.5 transition hover:bg-[#f8fafc]"
               aria-label="Account menu"
             >
-              <span
-                aria-hidden
-                className="flex size-7 items-center justify-center rounded-full bg-[#f7f9ff] text-[10px] font-semibold leading-none text-[#1e3a5f]"
-              >
-                {profileInitials}
-              </span>
+              <img
+                src={profileAvatar}
+                alt=""
+                width={32}
+                height={32}
+                className="size-8 shrink-0 rounded-[10px] object-cover"
+              />
               <ChevronDown className="size-3.5 shrink-0 text-[#64748b]" strokeWidth={2} aria-hidden />
             </button>
           </div>
