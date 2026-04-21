@@ -24,7 +24,7 @@ export function getMomentUiConfig(id: MomentId): MomentUiConfig {
         schedulerRightSlot: 'calendar',
         clinicalDualRight: false,
         shellSchedulerChrome: false,
-        workspaceTitle: 'Cascade Orthopedics',
+        workspaceTitle: '',
       };
     case 'moment2':
       return {
@@ -33,7 +33,7 @@ export function getMomentUiConfig(id: MomentId): MomentUiConfig {
         schedulerRightSlot: 'calendar',
         clinicalDualRight: true,
         shellSchedulerChrome: true,
-        workspaceTitle: 'Cascade Orthopedics',
+        workspaceTitle: '',
       };
     case 'moment3':
       return {
@@ -42,7 +42,7 @@ export function getMomentUiConfig(id: MomentId): MomentUiConfig {
         schedulerRightSlot: 'calendar',
         clinicalDualRight: false,
         shellSchedulerChrome: false,
-        workspaceTitle: 'Cascade Orthopedics',
+        workspaceTitle: '',
       };
     default: {
       const _exhaustive: never = id;

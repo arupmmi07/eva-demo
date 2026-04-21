@@ -1,6 +1,4 @@
 import {
-  ChevronRight,
-  Search,
   LayoutDashboard,
   MessageCircle,
   Users,
@@ -30,22 +28,6 @@ interface LeftSidebarProps {
 export function LeftSidebar({ chatOpen, onToggleChat }: LeftSidebarProps) {
   return (
     <aside className="flex flex-col items-center w-[42px] bg-white border-r border-[#f1f5f9] py-3 gap-1 shrink-0 h-full">
-      <button
-        type="button"
-        className="flex items-center justify-center w-7 h-7 text-[#94a3b8] hover:text-[#475569] rounded-md hover:bg-[#f8fafc] transition-colors mb-1"
-        aria-label="Collapse"
-      >
-        <ChevronRight size={14} />
-      </button>
-
-      <button
-        type="button"
-        className="flex items-center justify-center w-7 h-7 text-[#94a3b8] hover:text-[#475569] rounded-md hover:bg-[#f8fafc] transition-colors mb-2"
-        aria-label="Search"
-      >
-        <Search size={14} />
-      </button>
-
       <nav className="flex flex-col gap-1 flex-1">
         {navItems.map(({ icon: Icon, key }) => {
           const isChat = key === 'chat';

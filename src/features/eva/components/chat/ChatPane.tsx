@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { ChevronDown, ChevronUp, History, ListChecks, MessageCircle } from 'lucide-react';
-import { EvaLogo } from '../icons/EvaLogo';
+import { ChevronDown, ChevronUp, History } from 'lucide-react';
 import { SendHorizontalIcon } from '../icons/SendHorizontalIcon';
 import type { ChatItem, WorkflowStage } from '../../types';
 import type { CtaHintId } from '../../utils/ctaHints';
@@ -63,6 +62,7 @@ export function ChatPane({
   }, [chatItems]);
 
   const figmaWs = Boolean(figmaWorkspaceShell);
+  const figmaChatHeaderVisible = figmaWs && showHistory && stage !== 'scheduler';
 
   return (
     <div
@@ -76,78 +76,54 @@ export function ChatPane({
             : 'flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] shadow-[var(--ds-shadow-card)]'
         }
       >
-        <header
-          className={
-            figmaWs
-              ? 'relative z-[3] min-h-[64px] w-full shrink-0 bg-white'
-              : 'shrink-0 border-b border-[var(--ds-border)] bg-[var(--ds-bg-primary)] px-5 py-3'
-          }
-          data-name="ChatPaneHeader"
-        >
-          {figmaWs ? (
-            <>
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 border-b border-solid border-[rgba(0,0,0,0.12)]"
-              />
-              <div className="relative flex min-h-[64px] w-full flex-row items-center">
-                <div className="flex size-full min-h-[inherit] items-center justify-between px-4 pb-[9px] pt-2">
-                  <div className="flex min-w-0 flex-1 items-center gap-5">
-                    <div className="flex min-w-0 items-center gap-3 pl-1">
-                      <EvaLogo decorative />
-                      <p className="shrink-0 whitespace-nowrap text-[16px] font-medium leading-6 text-[#020617]">
-                        AI Chat
-                      </p>
-                    </div>
-                    {showHistory && stage !== 'scheduler' ? (
+        {figmaWs && !figmaChatHeaderVisible ? null : (
+          <header
+            className={
+              figmaWs
+                ? 'relative z-[3] min-h-[64px] w-full shrink-0 bg-white'
+                : 'shrink-0 border-b border-[var(--ds-border)] bg-[var(--ds-bg-primary)] px-5 py-3'
+            }
+            data-name="ChatPaneHeader"
+          >
+            {figmaWs ? (
+              <>
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 border-b border-solid border-[rgba(0,0,0,0.12)]"
+                />
+                <div className="relative flex min-h-[64px] w-full flex-row items-center">
+                  <div className="flex size-full min-h-[inherit] items-center justify-between px-4 pb-[9px] pt-2">
+                    <div className="flex min-w-0 flex-1 items-center gap-5">
                       <div className="flex shrink-0 items-center gap-1.5 text-[14px] font-medium leading-5 text-[#64748b]">
                         <History className="size-4 shrink-0" strokeWidth={1.25} aria-hidden />
                         History
                       </div>
-                    ) : null}
+                    </div>
                   </div>
-                  {schedulerChromeVisual ? (
-                    <button
-                      type="button"
-                      className="inline-flex h-8 shrink-0 items-center gap-2 rounded-[12px] border border-[rgba(0,0,0,0.12)] bg-white px-[9px] transition hover:bg-slate-50"
-                    >
-                      <ListChecks className="size-4 shrink-0 text-[#64748b]" strokeWidth={1.25} aria-hidden />
-                      <span className="text-[14px] font-medium leading-6 text-[#020617]">Tasks</span>
-                    </button>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex min-w-0 items-center gap-5 text-[12px] font-medium leading-[18px]">
+                  {showHistory && stage !== 'scheduler' ? (
+                    <div className="flex items-center gap-1.5 pb-0.5 text-[var(--ds-text-secondary)]">
+                      <History className="size-[12px]" strokeWidth={1.5} aria-hidden />
+                      History
+                    </div>
                   ) : null}
                 </div>
-              </div>
-            </>
-          ) : (
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex min-w-0 items-center gap-5 text-[12px] font-medium leading-[18px]">
-                <div
-                  className={`flex items-center gap-1.5 pb-0.5 font-semibold ${schedulerChromeVisual
-                    ? 'text-indigo-600'
-                    : 'border-b-2 border-[var(--ds-primary-action)] text-[var(--ds-primary-action)]'
-                    }`}
-                >
-                  <MessageCircle className="size-[14px] shrink-0" strokeWidth={1.75} aria-hidden />
-                  <span className="truncate tracking-tight">AI Chat</span>
-                </div>
-                {showHistory && stage !== 'scheduler' ? (
-                  <div className="flex items-center gap-1.5 pb-0.5 text-[var(--ds-text-secondary)]">
-                    <History className="size-[12px]" strokeWidth={1.5} aria-hidden />
-                    History
-                  </div>
+                {schedulerChromeVisual ? (
+                  <button
+                    type="button"
+                    className="shrink-0 rounded-lg border border-[rgba(0,9,50,0.12)] bg-slate-50/90 px-3.5 py-2 text-[12px] font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100"
+                  >
+                    Tasks
+                  </button>
                 ) : null}
               </div>
-              {schedulerChromeVisual ? (
-                <button
-                  type="button"
-                  className="shrink-0 rounded-lg border border-[rgba(0,9,50,0.12)] bg-slate-50/90 px-3.5 py-2 text-[12px] font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100"
-                >
-                  Tasks
-                </button>
-              ) : null}
-            </div>
-          )}
-        </header>
+            )}
+          </header>
+        )}
 
         <div
           ref={chatScrollRef}

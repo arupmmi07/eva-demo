@@ -1,17 +1,7 @@
-import {
-  Calendar,
-  ChevronLeft,
-  Clock3,
-  FileText,
-  House,
-  MessageCircle,
-  Search,
-  Shield,
-  Users,
-} from 'lucide-react';
+import { Bell, Calendar, Clock3, FileText, HelpCircle, House, MessageCircle, Shield, Users } from 'lucide-react';
 import railLogo from '@/assets/sidebar-rail-logo.png';
 
-const icons = [ChevronLeft, Search, House, MessageCircle, Users, Calendar, FileText, Shield, Clock3];
+const icons = [House, MessageCircle, Users, Calendar, FileText, Shield, Clock3];
 
 /** `figma-make-moment3` Sidebarv2: 64px rail, tinted surface, logo tile, 20px menu icons. */
 export function AppRail() {
@@ -34,7 +24,7 @@ export function AppRail() {
       </div>
       <nav className="relative flex min-h-0 w-full flex-1 flex-col items-center overflow-y-auto overflow-x-hidden py-4">
         {icons.map((Icon, index) => {
-          const active = index === 2;
+          const active = index === 0;
           return (
             <button
               key={`rail-nav-${index}`}
@@ -51,10 +41,21 @@ export function AppRail() {
           );
         })}
       </nav>
-      <div className="relative flex w-full shrink-0 flex-col items-center px-4 py-4">
-        <div className="flex size-8 items-center justify-center rounded-full bg-[rgba(0,64,255,0.06)] font-['Inter',sans-serif] text-[10px] font-semibold leading-none text-[#3e63dd]">
-          AK
-        </div>
+      <div className="relative flex w-full shrink-0 flex-col items-center gap-1 border-t border-[rgba(0,9,50,0.12)] px-0 py-3">
+        <button
+          type="button"
+          className="flex w-full items-center justify-center p-4 text-[#64748b] transition-colors hover:bg-[rgba(0,0,0,0.03)]"
+          aria-label="Notifications"
+        >
+          <Bell className="size-5" strokeWidth={1.25} aria-hidden />
+        </button>
+        <button
+          type="button"
+          className="flex w-full items-center justify-center p-4 text-[#64748b] transition-colors hover:bg-[rgba(0,0,0,0.03)]"
+          aria-label="Help"
+        >
+          <HelpCircle className="size-5" strokeWidth={1.25} aria-hidden />
+        </button>
       </div>
     </aside>
   );

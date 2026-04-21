@@ -1,6 +1,5 @@
 import type { MomentId } from '@/moments/momentTypes';
 import { AppRail } from './components/layout/AppRail';
-import { CenterDock } from './components/layout/CenterDock';
 import { TopHeader } from './components/layout/TopHeader';
 import { ChatPane } from './components/chat/ChatPane';
 import { RightPane } from './components/panels/RightPane';
@@ -28,6 +27,8 @@ export function EvaWorkflowApp({ momentId }: { momentId: MomentId }) {
             onSetupResolve={workflow.resolveCustomization}
             ctaHints={workflow.ctaHints}
             momentId={momentId}
+            panelMode={workflow.panelMode}
+            onPanelModeChange={workflow.setPanelMode}
           />
 
           <div className="relative flex min-h-0 flex-1 overflow-hidden">
@@ -108,7 +109,6 @@ export function EvaWorkflowApp({ momentId }: { momentId: MomentId }) {
               </section>
             </div>
 
-            <CenterDock panelMode={workflow.panelMode} onPanelModeChange={workflow.setPanelMode} />
           </div>
         </div>
       </div>
