@@ -114,9 +114,24 @@ function UnconfirmedTaskRow({
 /** L-connector from parent card to child suggested actions (`figma-make-moment3` Frame4 + Arrow). */
 function SchedulerChildActionConnector() {
   return (
-    <div className="relative mt-1.5 h-[22px] w-3 shrink-0" aria-hidden>
-      <span className="absolute bottom-0 left-[7px] top-0 w-px bg-[rgba(0,9,50,0.12)]" />
-      <span className="absolute bottom-0 left-[7px] right-0 h-px bg-[rgba(0,9,50,0.12)]" />
+    <div className="relative flex w-4 shrink-0 flex-col self-stretch" aria-hidden>
+      <svg
+        className="block h-1/2 w-full min-h-0 shrink-0"
+        fill="none"
+        preserveAspectRatio="none"
+        viewBox="0 0 21.25 19.625"
+      >
+        <g id="Top">
+          <path
+            d="M0.624999 4V15C0.624999 17.2091 2.41586 19 4.625 19H20.625"
+            id="Divider"
+            stroke="var(--stroke-0, #000932)"
+            strokeLinecap="round"
+            strokeOpacity="0.121569"
+            strokeWidth="1.25"
+          />
+        </g>
+      </svg>
     </div>
   );
 }
@@ -337,9 +352,8 @@ export function ChatBubble({
     const body = (
       <>
         <p
-          className={`text-left text-[12px] font-medium leading-[18px] tracking-[0.04px] ${
-            schedulerChrome ? 'text-[#64748b]' : 'mb-3 text-[11px] leading-none tracking-wide text-[var(--ds-text-muted)]'
-          }`}
+          className={`text-left text-[12px] font-medium leading-[18px] tracking-[0.04px] ${schedulerChrome ? 'text-[#64748b]' : 'mb-3 text-[11px] leading-none tracking-wide text-[var(--ds-text-muted)]'
+            }`}
         >
           Suggested actions
         </p>
@@ -357,16 +371,14 @@ export function ChatBubble({
                   onClick={() => onQuickAction?.(label)}
                   {...(isHighlighted && hint ? { 'data-cta-hint': hint } : {})}
                   aria-label={label}
-                  className={`inline-flex min-h-0 max-w-full cursor-pointer items-center justify-start gap-2 font-['Inter',sans-serif] font-medium transition ${
-                    schedulerChrome
+                  className={`inline-flex min-h-0 max-w-full cursor-pointer items-center justify-start gap-2 font-['Inter',sans-serif] font-medium transition ${schedulerChrome
                       ? `rounded-xl border border-[rgba(0,9,50,0.12)] bg-[#f8fafc] px-[17px] py-[9px] text-left text-[14px] leading-5 text-[#020617] hover:bg-[#f1f5f9] ${ctaHighlightClass(isHighlighted, 'none')}`
                       : `inline-flex min-h-[40px] border border-[var(--ds-border-accent)] px-4 py-2 text-[12px] leading-snug text-[var(--ds-primary-action)] ${ctaHighlightClass(isHighlighted, 'pill')} rounded-[var(--ds-radius-pill)] bg-white hover:bg-[var(--ds-bg-secondary)]`
-                  }`}
+                    }`}
                 >
                   <span
-                    className={`inline-flex size-4 shrink-0 items-center justify-center ${
-                      schedulerChrome ? 'text-[#64748b]' : 'size-[18px] text-[var(--ds-primary-action)]'
-                    }`}
+                    className={`inline-flex size-4 shrink-0 items-center justify-center ${schedulerChrome ? 'text-[#64748b]' : 'size-[18px] text-[var(--ds-primary-action)]'
+                      }`}
                     aria-hidden
                   >
                     <Icon className={schedulerChrome ? 'size-4' : 'size-3.5'} strokeWidth={1.25} />
@@ -383,9 +395,8 @@ export function ChatBubble({
     return (
       <div
         data-name="ChatSuggestionChips"
-        className={`flex w-full min-w-0 flex-col justify-start text-left font-['Inter',sans-serif] ${
-          schedulerChrome ? '' : 'max-w-[min(100%,440px)]'
-        }`}
+        className={`flex w-full min-w-0 flex-col justify-start text-left font-['Inter',sans-serif] ${schedulerChrome ? '' : 'max-w-[min(100%,440px)]'
+          }`}
       >
         {body}
       </div>
@@ -558,36 +569,32 @@ export function ChatBubble({
       >
         {!isUser && (
           <div
-            className={`mb-2 flex items-center justify-between gap-3 font-['Inter',sans-serif] ${
-              figmaWorkspaceChat
+            className={`mb-2 flex items-center justify-between gap-3 font-['Inter',sans-serif] ${figmaWorkspaceChat
                 ? 'text-[14px] font-normal normal-case tracking-normal text-[#64748b]'
-                : `text-[11px] font-semibold uppercase leading-none tracking-[0.08em] ${
-                    schedulerChrome ? 'text-indigo-600' : 'text-[var(--ds-primary-accent)]'
-                  }`
-            }`}
+                : `text-[11px] font-semibold uppercase leading-none tracking-[0.08em] ${schedulerChrome ? 'text-indigo-600' : 'text-[var(--ds-primary-accent)]'
+                }`
+              }`}
           >
             <div className="flex min-w-0 items-center gap-2">
               <span
-                className={`flex shrink-0 items-center justify-center rounded-[12px] ${
-                  figmaWorkspaceChat
+                className={`flex shrink-0 items-center justify-center rounded-[12px] ${figmaWorkspaceChat
                     ? 'size-8 bg-[#ebf0ff] text-[#6e56cf]'
                     : schedulerChrome
                       ? 'size-5 rounded-full bg-indigo-100 text-indigo-700'
                       : 'size-5 rounded-full bg-[var(--ds-bg-accent-purple)] text-[var(--ds-primary-action)]'
-                }`}
+                  }`}
               >
                 <EvaLogo className={figmaWorkspaceChat ? 'size-[14px]' : 'size-[11px]'} decorative />
               </span>
             </div>
             {item.timestamp ? (
               <time
-                className={`shrink-0 font-normal normal-case tracking-normal ${
-                  figmaWorkspaceChat
+                className={`shrink-0 font-normal normal-case tracking-normal ${figmaWorkspaceChat
                     ? 'text-[14px] text-[#64748b] opacity-60'
                     : schedulerChrome
                       ? 'text-[11px] font-medium text-slate-400'
                       : 'text-[11px] font-medium text-[var(--ds-text-muted)]'
-                }`}
+                  }`}
               >
                 {item.timestamp}
               </time>
@@ -597,11 +604,10 @@ export function ChatBubble({
         <div
           className={
             isUser
-              ? `inline-block max-w-[80%] min-w-0 break-words text-left font-['Inter',sans-serif] text-[14px] font-normal leading-relaxed bg-[#eef2f7] px-4 py-3 text-[var(--ds-text-primary)] ${
-                  schedulerChrome
-                    ? 'rounded-2xl shadow-sm'
-                    : 'rounded-[var(--ds-radius-card)] shadow-[var(--ds-shadow-card)]'
-                }`
+              ? `inline-block max-w-[80%] min-w-0 break-words text-left font-['Inter',sans-serif] text-[14px] font-normal leading-relaxed bg-[#eef2f7] px-4 py-3 text-[var(--ds-text-primary)] ${schedulerChrome
+                ? 'rounded-2xl shadow-sm'
+                : 'rounded-[var(--ds-radius-card)] shadow-[var(--ds-shadow-card)]'
+              }`
               : figmaWorkspaceChat
                 ? `whitespace-pre-wrap border-0 bg-transparent px-0 py-0 text-left font-['Inter',sans-serif] text-[16px] font-normal leading-[28px] text-[#020617] shadow-none`
                 : schedulerChrome
@@ -620,9 +626,8 @@ export function ChatBubble({
         </div>
         {isUser && item.timestamp ? (
           <div
-            className={`max-w-[80%] text-[11px] font-medium text-right ${
-              schedulerChrome ? 'text-slate-400' : 'text-[var(--ds-text-muted)]'
-            }`}
+            className={`max-w-[80%] text-[11px] font-medium text-right ${schedulerChrome ? 'text-slate-400' : 'text-[var(--ds-text-muted)]'
+              }`}
           >
             {item.timestamp}
           </div>
