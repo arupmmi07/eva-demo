@@ -1,18 +1,14 @@
 import type { MomentId } from '@/moments/momentTypes';
-import { useSearchParams } from 'react-router';
 import { AppRail } from './components/layout/AppRail';
 import { TopHeader } from './components/layout/TopHeader';
 import { ChatPane } from './components/chat/ChatPane';
 import { RightPane } from './components/panels/RightPane';
 import { useEvaWorkflow } from './hooks/useEvaWorkflow';
+import { useSharedScreenshotsLayout } from './hooks/useSharedScreenshotsLayout';
 
 export function EvaWorkflowApp({ momentId }: { momentId: MomentId }) {
   const workflow = useEvaWorkflow({ momentId });
-  const [searchParams] = useSearchParams();
-  /** When present (e.g. `#/moment1?sharedscreenshots`), Conversation mode uses a full-width chat composer for shared screenshots. */
-  const sharedScreenshotsLayout =
-    searchParams.has('sharedscreenshots') ||
-    (typeof window !== 'undefined' && /[#?&]sharedscreenshots(?:=[^&#]*)?(?:&|#|$)/.test(window.location.hash));
+  const sharedScreenshotsLayout = useSharedScreenshotsLayout();
 
   return (
     <div
@@ -43,33 +39,37 @@ export function EvaWorkflowApp({ momentId }: { momentId: MomentId }) {
                   ? 'grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-x-2'
                   : workflow.panelMode === 'leftOnly'
                     ? 'grid-cols-[minmax(0,1fr)_0px]'
-                    : 'grid-cols-[0px_minmax(0,1fr)]'
+                    : 'grid-cols-[minmax(0,1fr)]'
               }`}
             >
-              <section className="relative flex h-full min-h-0 min-w-0 flex-col overflow-hidden bg-[#ffffff]">
-                <ChatPane
-                  chatItems={workflow.chatItems}
-                  chatInput={workflow.chatInput}
-                  onInputChange={workflow.setChatInput}
-                  onSubmit={workflow.submitChat}
-                  onQuickAction={workflow.selectSuggestion}
-                  stage={workflow.stage}
-                  sessionSeconds={workflow.sessionSeconds}
-                  onOpenSummary={workflow.openSummaryFromUser}
-                  onSchedulerViewUnconfirmed={() => workflow.expandSchedulerPanel('unconfirmed')}
-                  onSchedulerViewNoShow={() => workflow.expandSchedulerPanel('potentialNoShow')}
-                  onMoment3CheckIn={momentId === 'moment3' ? () => workflow.openM3CheckIn() : undefined}
-                  figmaWorkspaceShell
-                  panelMode={workflow.panelMode}
-                  sharedScreenshotsLayout={sharedScreenshotsLayout}
-                  ctaHints={workflow.ctaHints}
-                  schedulerChrome={workflow.shellSchedulerChrome}
-                />
-              </section>
+              {workflow.panelMode !== 'rightOnly' ? (
+                <section className="relative flex h-full min-h-0 min-w-0 flex-col overflow-hidden bg-[#ffffff]">
+                  <ChatPane
+                    chatItems={workflow.chatItems}
+                    chatInput={workflow.chatInput}
+                    onInputChange={workflow.setChatInput}
+                    onSubmit={workflow.submitChat}
+                    onQuickAction={workflow.selectSuggestion}
+                    stage={workflow.stage}
+                    sessionSeconds={workflow.sessionSeconds}
+                    onOpenSummary={workflow.openSummaryFromUser}
+                    onSchedulerViewUnconfirmed={() => workflow.expandSchedulerPanel('unconfirmed')}
+                    onSchedulerViewNoShow={() => workflow.expandSchedulerPanel('potentialNoShow')}
+                    onMoment3CheckIn={momentId === 'moment3' ? () => workflow.openM3CheckIn() : undefined}
+                    figmaWorkspaceShell
+                    panelMode={workflow.panelMode}
+                    sharedScreenshotsLayout={sharedScreenshotsLayout}
+                    ctaHints={workflow.ctaHints}
+                    schedulerChrome={workflow.shellSchedulerChrome}
+                  />
+                </section>
+              ) : null}
 
               <section
                 className={`relative flex min-h-0 min-w-0 flex-col overflow-hidden ${
-                  workflow.panelMode === 'leftOnly' ? '' : 'box-border pb-[8px] pr-[8px] pt-[8px]'
+                  workflow.panelMode === 'leftOnly'
+                    ? ''
+                    : `box-border pb-[8px] pt-[8px] ${workflow.panelMode === 'rightOnly' ? 'pr-0' : 'pr-[8px]'}`
                 }`}
               >
                 <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-[12px] border border-solid border-[#0000001A] bg-[#F7F9FC]">
@@ -121,6 +121,31 @@ export function EvaWorkflowApp({ momentId }: { momentId: MomentId }) {
                 </div>
               </section>
             </div>
+
+            {workflow.panelMode === 'rightOnly' ? (
+              <div className="pointer-events-none absolute inset-0 z-30 flex items-end justify-start pb-6 pl-5 pr-4">
+                <div className="pointer-events-auto w-full max-w-[min(100%,560px)]">
+                  <ChatPane
+                    chatItems={workflow.chatItems}
+                    chatInput={workflow.chatInput}
+                    onInputChange={workflow.setChatInput}
+                    onSubmit={workflow.submitChat}
+                    onQuickAction={workflow.selectSuggestion}
+                    stage={workflow.stage}
+                    sessionSeconds={workflow.sessionSeconds}
+                    onOpenSummary={workflow.openSummaryFromUser}
+                    onSchedulerViewUnconfirmed={() => workflow.expandSchedulerPanel('unconfirmed')}
+                    onSchedulerViewNoShow={() => workflow.expandSchedulerPanel('potentialNoShow')}
+                    onMoment3CheckIn={momentId === 'moment3' ? () => workflow.openM3CheckIn() : undefined}
+                    figmaWorkspaceShell
+                    panelMode={workflow.panelMode}
+                    sharedScreenshotsLayout={sharedScreenshotsLayout}
+                    ctaHints={workflow.ctaHints}
+                    schedulerChrome={workflow.shellSchedulerChrome}
+                  />
+                </div>
+              </div>
+            ) : null}
 
           </div>
         </div>

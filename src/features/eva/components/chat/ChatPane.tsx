@@ -68,22 +68,35 @@ export function ChatPane({
 
   const figmaWs = Boolean(figmaWorkspaceShell);
   const figmaChatHeaderVisible = figmaWs && showHistory && stage !== 'scheduler';
+  /** Focused mode: composer only, bottom-left floating overlay (see EvaWorkflowApp). */
+  const focusedComposerOnly = figmaWs && panelMode === 'rightOnly';
+  const focusedComposerPlaceholder =
+    'Ask Eva anything: Patients, insurance, schedule...';
   const conversationScreenshotComposerFullWidth =
     figmaWs && panelMode === 'leftOnly' && Boolean(sharedScreenshotsLayout);
+  const skipFigmaHeader = figmaWs && (!figmaChatHeaderVisible || focusedComposerOnly);
 
   return (
     <div
       data-name="ChatPane"
-      className={`box-border flex min-h-0 flex-1 flex-col font-['Inter',sans-serif] ${figmaWs ? 'm-0' : 'm-3'}`}
+      className={`box-border font-['Inter',sans-serif] ${
+        figmaWs
+          ? focusedComposerOnly
+            ? 'm-0 w-full'
+            : 'm-0 flex min-h-0 flex-1 flex-col'
+          : 'm-3 flex min-h-0 flex-1 flex-col'
+      }`}
     >
       <div
         className={
           figmaWs
-            ? 'flex min-h-0 flex-1 flex-col overflow-hidden bg-[#ffffff]'
+            ? focusedComposerOnly
+              ? 'flex w-full flex-col bg-transparent'
+              : 'flex min-h-0 flex-1 flex-col overflow-hidden bg-[#ffffff]'
             : 'flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] shadow-[var(--ds-shadow-card)]'
         }
       >
-        {figmaWs && !figmaChatHeaderVisible ? null : (
+        {skipFigmaHeader ? null : (
           <header
             className={
               figmaWs
@@ -130,7 +143,7 @@ export function ChatPane({
 
         <div
           ref={chatScrollRef}
-          className={`min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain [scrollbar-gutter:stable] ${figmaWs ? 'px-8 py-6' : 'space-y-[16px] px-[50px] py-4'}`}
+          className={`min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain [scrollbar-gutter:stable] ${figmaWs ? 'px-8 py-6' : 'space-y-[16px] px-[50px] py-4'} ${focusedComposerOnly ? 'hidden' : ''}`}
         >
           <div className={figmaWs ? 'mx-auto flex w-full max-w-[720px] flex-col gap-10' : 'contents'}>
             {chatItems.map((item) => (
@@ -155,7 +168,7 @@ export function ChatPane({
         <div
           className={`shrink-0 ${
             figmaWs
-              ? `pb-4 pt-2 ${conversationScreenshotComposerFullWidth ? 'px-8' : 'px-4'}`
+              ? `pb-2 pt-2 ${focusedComposerOnly ? 'bg-transparent px-0' : `${conversationScreenshotComposerFullWidth ? 'px-8' : 'px-4'}`}`
               : 'space-y-2 px-5 pb-5 pt-2'
           }`}
         >
@@ -164,64 +177,96 @@ export function ChatPane({
               figmaWs
                 ? conversationScreenshotComposerFullWidth
                   ? 'box-border flex h-[112px] w-full min-w-0 flex-col rounded-[12px] bg-[#f3f4f7] p-4'
-                  : 'mx-auto box-border flex h-[112px] w-full max-w-full flex-col rounded-[12px] bg-[#f3f4f7] p-4'
+                  : focusedComposerOnly
+                    ? 'box-border flex w-full min-w-0 flex-row items-center gap-3 rounded-[12px] border border-[#E2E8F0] bg-white px-4 py-4 shadow-[0px_4px_20px_rgba(15,23,42,0.08)]'
+                    : 'mx-auto box-border flex h-[112px] w-full max-w-full flex-col rounded-[12px] bg-[#f3f4f7] p-4'
                 : 'rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] px-4 pb-3 pt-3 shadow-[var(--ds-shadow-card)]'
             }
           >
-            <textarea
-              value={chatInput}
-              onChange={(event) => onInputChange(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' && !event.shiftKey) {
-                  event.preventDefault();
-                  onSubmit(chatInput);
-                }
-              }}
-              {...(figmaWs ? { rows: 1 as const } : {})}
-              className={
-                figmaWs
-                  ? 'box-border h-[28px] min-h-[28px] w-full resize-none overflow-hidden border-none bg-transparent py-0 font-["Inter",sans-serif] text-[16px] font-normal leading-[28px] text-[#020617] outline-none placeholder:text-[#64748b]'
-                  : 'min-h-[64px] w-full resize-none border-none bg-transparent font-["Inter",sans-serif] text-[14px] font-normal leading-[20px] text-[var(--ds-text-primary)] outline-none placeholder:text-[var(--ds-text-muted)]'
-              }
-              placeholder={finalInputPlaceholder}
-              aria-label="Message Eva"
-            />
-            <div
-              className={
-                figmaWs
-                  ? 'mt-5 flex h-8 min-h-8 shrink-0 items-center justify-between gap-2'
-                  : 'mt-2 flex items-center justify-end gap-4 pt-2'
-              }
-            >
-              <div className={`flex min-w-0 justify-start ${figmaWs ? '' : 'flex-1'}`} data-name="ChatPaneQuickActions">
-                <button
-                  type="button"
-                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 text-[14px] font-medium text-[#64748B] bg-[#eaecf0] h-8`}
-                >
-                  Quick Actions
-                  {figmaWs ? (
-                    <ChevronUp className="size-3.5 opacity-70" strokeWidth={2} aria-hidden />
-                  ) : (
-                    <ChevronDown className="size-3.5 opacity-70" strokeWidth={2} aria-hidden />
-                  )}
-                </button>
-              </div>
-              <div className={`flex shrink-0 items-center ${figmaWs ? 'gap-2' : 'gap-4'}`}>
-                <AudioControls size="md" variant={figmaWs ? 'micOnly' : 'full'} />
+            {focusedComposerOnly ? (
+              <>
+                <textarea
+                  value={chatInput}
+                  onChange={(event) => onInputChange(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' && !event.shiftKey) {
+                      event.preventDefault();
+                      onSubmit(chatInput);
+                    }
+                  }}
+                  rows={1}
+                  className="box-border min-h-[28px] min-w-0 flex-1 resize-none overflow-hidden border-none bg-transparent py-0.5 font-['Inter',sans-serif] text-[16px] font-normal leading-[28px] text-[#020617] outline-none placeholder:text-[#64748b]"
+                  placeholder={focusedComposerPlaceholder}
+                  aria-label="Message Eva"
+                />
+                <AudioControls size="md" variant="micOnly" />
                 <button
                   type="button"
                   onClick={() => onSubmit(chatInput)}
-                  className={
-                    figmaWs
-                      ? 'flex size-8 shrink-0 items-center justify-center rounded-[12px] bg-[#4E37F6] opacity-30 text-[var(--ds-primary-action)]'
-                      : 'flex size-[32px] shrink-0 items-center justify-center rounded-full bg-[#4E37F6] opacity-30 text-white'
-                  }
+                  className="flex size-9 shrink-0 items-center justify-center rounded-[10px] bg-[#C4B5FD] text-white transition hover:bg-[#A78BFA]"
                   aria-label="Send message"
                 >
                   <SendHorizontalIcon className="size-4" />
                 </button>
-              </div>
-            </div>
+              </>
+            ) : (
+              <>
+                <textarea
+                  value={chatInput}
+                  onChange={(event) => onInputChange(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' && !event.shiftKey) {
+                      event.preventDefault();
+                      onSubmit(chatInput);
+                    }
+                  }}
+                  {...(figmaWs ? { rows: 1 as const } : {})}
+                  className={
+                    figmaWs
+                      ? 'box-border h-[28px] min-h-[28px] w-full resize-none overflow-hidden border-none bg-transparent py-0 font-["Inter",sans-serif] text-[16px] font-normal leading-[28px] text-[#020617] outline-none placeholder:text-[#64748b]'
+                      : 'min-h-[64px] w-full resize-none border-none bg-transparent font-["Inter",sans-serif] text-[14px] font-normal leading-[20px] text-[var(--ds-text-primary)] outline-none placeholder:text-[var(--ds-text-muted)]'
+                  }
+                  placeholder={finalInputPlaceholder}
+                  aria-label="Message Eva"
+                />
+                <div
+                  className={
+                    figmaWs
+                      ? 'mt-5 flex h-8 min-h-8 shrink-0 items-center justify-between gap-2'
+                      : 'mt-2 flex items-center justify-end gap-4 pt-2'
+                  }
+                >
+                  <div className={`flex min-w-0 justify-start ${figmaWs ? '' : 'flex-1'}`} data-name="ChatPaneQuickActions">
+                    <button
+                      type="button"
+                      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 text-[14px] font-medium text-[#64748B] bg-[#eaecf0] h-8`}
+                    >
+                      Quick Actions
+                      {figmaWs ? (
+                        <ChevronUp className="size-3.5 opacity-70" strokeWidth={2} aria-hidden />
+                      ) : (
+                        <ChevronDown className="size-3.5 opacity-70" strokeWidth={2} aria-hidden />
+                      )}
+                    </button>
+                  </div>
+                  <div className={`flex shrink-0 items-center ${figmaWs ? 'gap-2' : 'gap-4'}`}>
+                    <AudioControls size="md" variant={figmaWs ? 'micOnly' : 'full'} />
+                    <button
+                      type="button"
+                      onClick={() => onSubmit(chatInput)}
+                      className={
+                        figmaWs
+                          ? 'flex size-8 shrink-0 items-center justify-center rounded-[12px] bg-[#4E37F6] opacity-30 text-white transition hover:bg-[#4338ca]'
+                          : 'flex size-[32px] shrink-0 items-center justify-center rounded-full bg-[#4E37F6] opacity-30 text-white transition hover:bg-[#4338ca]'
+                      }
+                      aria-label="Send message"
+                    >
+                      <SendHorizontalIcon className="size-4" />
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

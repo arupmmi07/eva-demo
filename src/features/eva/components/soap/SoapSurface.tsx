@@ -18,7 +18,6 @@ import {
 import { EditableChiefComplaint } from './EditableChiefComplaint';
 import { IntakeSummaryStrip } from './IntakeSummaryStrip';
 import { PatientDataCard } from './PatientDataCard';
-import { SessionFloatingWidget } from './SessionFloatingWidget';
 import { SoapSectionCard } from './SoapSectionCard';
 import { SoapSectionNav } from './SoapSectionNav';
 import { SoapStreamingFeedback } from './SoapStreamingFeedback';
@@ -519,9 +518,6 @@ export function SoapSurface({
         </>
       )}
 
-      {leftPanelCollapsed && (stage === 'session' || stage === 'sessionAccepted') && (
-        <SessionFloatingWidget sessionSeconds={sessionSeconds} />
-      )}
     </div>
   );
 }
