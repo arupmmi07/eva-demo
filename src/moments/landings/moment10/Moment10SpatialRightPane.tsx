@@ -1,230 +1,371 @@
-import './moment10_right.css';
+import type { ReactNode } from 'react';
+import { MoreVertical } from 'lucide-react';
+import { Badge } from '@/app/components/ui/badge';
+import { Button } from '@/app/components/ui/button';
+import { Card, CardContent } from '@/app/components/ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/app/components/ui/dropdown-menu';
+import { cn } from '@/app/components/ui/utils';
 
-function MenuButton() {
+function CardMenuTrigger() {
   return (
-    <button className="m10-menu-btn" type="button" aria-label="More options">
-      <span />
-      <span />
-      <span />
-    </button>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          className="size-7 shrink-0 rounded-xl border-[rgba(0,9,50,0.08)] bg-background"
+          aria-label="More options"
+        >
+          <MoreVertical className="size-3.5 text-muted-foreground" strokeWidth={1.5} />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem>Details</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
-/** Moment10 right pane — from `public/moment10/moment10.html` / `right.png`; responsive + app typography. */
+function PanelCard({
+  title,
+  children,
+  showViewAll = true,
+}: {
+  title: string;
+  children: ReactNode;
+  showViewAll?: boolean;
+}) {
+  return (
+    <Card className="gap-0 overflow-hidden rounded-xl border border-[rgba(0,9,50,0.12)] bg-card shadow-[0px_1px_2px_rgba(15,23,42,0.04)]">
+      <div className="flex items-start justify-between gap-3 border-b border-[rgba(0,9,50,0.08)] px-4 pb-3 pt-4">
+        <h2 className="font-[Inter,sans-serif] text-[15px] font-semibold leading-5 tracking-tight text-[var(--ds-text-primary)]">
+          {title}
+        </h2>
+        <div className="flex shrink-0 items-center gap-2">
+          {showViewAll ? (
+            <Button
+              type="button"
+              variant="link"
+              className="h-auto p-0 font-[Inter,sans-serif] text-[12px] font-semibold text-[var(--ds-primary-action)]"
+            >
+              View all
+            </Button>
+          ) : null}
+          <CardMenuTrigger />
+        </div>
+      </div>
+      <CardContent className="gap-0 px-4 pb-4 pt-3">{children}</CardContent>
+    </Card>
+  );
+}
+
+function MetricQuad() {
+  const cells = [
+    { label: 'Visits', value: '216' },
+    { label: 'Providers', value: '18' },
+    { label: 'Utilization', value: '82%' },
+    { label: 'Open slots', value: '12' },
+  ];
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      {cells.map((c) => (
+        <div
+          key={c.label}
+          className="min-h-0 rounded-[10px] border border-[rgba(0,9,50,0.08)] bg-slate-50 px-3 py-2.5"
+        >
+          <p className="mb-1 font-[Inter,sans-serif] text-[11px] font-medium leading-4 text-[var(--ds-text-secondary)]">
+            {c.label}
+          </p>
+          <p className="font-[Inter,sans-serif] text-[clamp(16px,2.8vw,20px)] font-semibold tabular-nums leading-none tracking-tight text-[var(--ds-text-primary)]">
+            {c.value}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function DocNotesRows() {
+  const rows = [
+    { label: 'Doc completion', value: '74%' },
+    { label: 'Notes on-time', value: '68%' },
+  ];
+  return (
+    <div className="mt-2 border-t border-[rgba(0,9,50,0.08)]">
+      {rows.map((r, i) => (
+        <div
+          key={r.label}
+          className={cn(
+            'flex items-center justify-between gap-3 px-0 py-2.5 font-[Inter,sans-serif] text-[12px] leading-[18px]',
+            i > 0 && 'border-t border-[rgba(0,9,50,0.08)]',
+          )}
+        >
+          <span className="text-[var(--ds-text-secondary)]">{r.label}</span>
+          <span className="font-semibold tabular-nums text-[var(--ds-text-primary)]">{r.value}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function LocationBlock({
+  title,
+  visitsLine,
+  utilLine,
+  alert,
+}: {
+  title: string;
+  visitsLine: string;
+  utilLine: ReactNode;
+  alert?: string;
+}) {
+  return (
+    <div className="flex items-start justify-between gap-2">
+      <div className="min-w-0 flex-1">
+        <p className="font-[Inter,sans-serif] text-[14px] font-semibold leading-5 text-[var(--ds-text-primary)]">
+          {title}
+        </p>
+        <p className="mt-1 font-[Inter,sans-serif] text-[12px] font-normal leading-[18px] text-[var(--ds-text-secondary)]">
+          {visitsLine}
+        </p>
+        <div className="mt-2.5 inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-1.5 rounded-[10px] border border-[rgba(0,9,50,0.08)] bg-slate-50 px-2.5 py-2 font-[Inter,sans-serif] text-[11px] font-medium leading-4 text-[var(--ds-text-secondary)]">
+          {utilLine}
+        </div>
+        {alert ? (
+          <p className="mt-2 font-[Inter,sans-serif] text-[12px] font-semibold leading-4 text-[var(--ds-warning-text)]">
+            {alert}
+          </p>
+        ) : null}
+      </div>
+      <Button
+        type="button"
+        variant="outline"
+        size="icon"
+        className="size-9 shrink-0 rounded-[10px] border-[var(--ds-border)] bg-background text-lg leading-none text-muted-foreground"
+        aria-label="Open location"
+      >
+        ›
+      </Button>
+    </div>
+  );
+}
+
+function PayerRow({
+  name,
+  clean,
+  pay,
+  denial,
+  badge,
+  badgeClassName,
+}: {
+  name: string;
+  clean: string;
+  pay: string;
+  denial: string;
+  badge: string;
+  badgeClassName: string;
+}) {
+  return (
+    <div className="flex flex-wrap items-start justify-between gap-2 border-b border-[rgba(0,9,50,0.08)] px-1 py-3 last:border-b-0">
+      <div className="min-w-0 flex-1">
+        <p className="mb-1 font-[Inter,sans-serif] text-[14px] font-semibold leading-5 text-[var(--ds-text-primary)]">
+          {name}
+        </p>
+        <p className="font-[Inter,sans-serif] text-[11px] font-medium leading-4 text-[var(--ds-text-secondary)]">
+          Clean <span className="font-semibold text-[var(--ds-text-primary)]">{clean}</span>
+          <span className="mx-1 text-slate-300">·</span>
+          Pay <span className="font-semibold text-[var(--ds-text-primary)]">{pay}</span>
+          <span className="mx-1 text-slate-300">·</span>
+          Denial <span className="font-semibold text-[var(--ds-text-primary)]">{denial}</span>
+        </p>
+      </div>
+      <Badge variant="outline" className={cn('mt-0.5 shrink-0 text-[10px] font-bold uppercase tracking-wide', badgeClassName)}>
+        {badge}
+      </Badge>
+    </div>
+  );
+}
+
+function ClaimStatGrid() {
+  const cells = [
+    { label: 'Submitted', value: '142', attention: false },
+    { label: 'Adjudication', value: '68', attention: false },
+    { label: 'Pending', value: '31', attention: false },
+    { label: 'Attention', value: '6', attention: true },
+  ];
+  return (
+    <div className="grid grid-cols-2 gap-2 px-0.5 pb-2 pt-0">
+      {cells.map((c) => (
+        <div
+          key={c.label}
+          className={cn(
+            'min-h-0 rounded-[10px] border px-3 py-2.5',
+            c.attention
+              ? 'border-red-500/25 bg-[var(--ds-danger-soft-bg)]'
+              : 'border-[rgba(0,9,50,0.08)] bg-slate-50',
+          )}
+        >
+          <p
+            className={cn(
+              'mb-1 font-[Inter,sans-serif] text-[11px] font-medium leading-4',
+              c.attention ? 'text-[var(--ds-danger)]' : 'text-[var(--ds-text-secondary)]',
+            )}
+          >
+            {c.label}
+          </p>
+          <p
+            className={cn(
+              'font-[Inter,sans-serif] text-[clamp(16px,2.8vw,20px)] font-semibold tabular-nums leading-none tracking-tight',
+              c.attention ? 'text-[var(--ds-danger)]' : 'text-[var(--ds-text-primary)]',
+            )}
+          >
+            {c.value}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ClaimFooterRows() {
+  return (
+    <div className="border-t border-[rgba(0,9,50,0.08)]">
+      <div className="flex items-center justify-between gap-3 px-3.5 py-2.5 font-[Inter,sans-serif] text-[12px] leading-[18px] text-[var(--ds-text-secondary)]">
+        <span>Avg velocity</span>
+        <span className="font-semibold tabular-nums text-[var(--ds-text-primary)]">14 days</span>
+      </div>
+      <div className="flex items-center justify-between gap-3 border-t border-[rgba(0,9,50,0.08)] px-3.5 py-2.5 font-[Inter,sans-serif] text-[12px] leading-[18px] text-[var(--ds-text-secondary)]">
+        <span>Denial rate (90d)</span>
+        <span className="font-semibold tabular-nums text-[var(--ds-success)]">4.2% ↓</span>
+      </div>
+    </div>
+  );
+}
+
+/** Moment10 right pane — Radix UI + Tailwind (`public/moment10` reference); no separate CSS. */
 export function Moment10SpatialRightPane() {
   return (
-    <div className="m10-right-root min-h-full w-full" data-name="Moment10SpatialRightPane">
-      <div className="m10-canvas">
-        <section className="m10-top-grid" aria-label="Operations overview">
-          <article className="m10-panel">
-            <header className="m10-section-header">
-              <h2>Today · Cascade PT</h2>
-              <div className="m10-header-actions">
-                <button className="m10-link-btn" type="button">
-                  View all
-                </button>
-                <MenuButton />
-              </div>
-            </header>
-            <div className="m10-card">
-              <div className="m10-stats-grid">
-                <div className="m10-stat-box">
-                  <p>Visits</p>
-                  <strong>216</strong>
-                </div>
-                <div className="m10-stat-box">
-                  <p>Providers</p>
-                  <strong>18</strong>
-                </div>
-                <div className="m10-stat-box">
-                  <p>Utilization</p>
-                  <strong>82%</strong>
-                </div>
-                <div className="m10-stat-box">
-                  <p>Open slots</p>
-                  <strong>12</strong>
-                </div>
-              </div>
-              <div className="m10-metric-row">
-                <span>Doc completion</span>
-                <strong>74%</strong>
-              </div>
-              <div className="m10-metric-row">
-                <span>Notes on-time</span>
-                <strong>68%</strong>
-              </div>
-            </div>
-          </article>
+    <div
+      className="min-h-full w-full min-w-0 bg-[#f8f9fb] font-[Inter,sans-serif] text-[14px] leading-5 text-[var(--ds-text-primary)] antialiased"
+      data-name="Moment10SpatialRightPane"
+    >
+      <div className="mx-auto w-full max-w-full pb-[clamp(16px,3vw,32px)] pt-0">
+        <section className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6" aria-label="Operations overview">
+          <PanelCard title="Today · Cascade PT">
+            <MetricQuad />
+            <DocNotesRows />
+          </PanelCard>
 
-          <article className="m10-panel">
-            <header className="m10-section-header">
-              <h2>Locations &amp; Providers</h2>
-              <MenuButton />
-            </header>
-            <div className="m10-card m10-location-card">
-              <div className="m10-location-item">
-                <div className="m10-location-main">
-                  <h3>Location 1 · Downtown</h3>
-                  <p>108 visits · 9 providers</p>
-                  <div className="m10-pill-row">
-                    <span>
-                      Utilization <b>84%</b>
-                    </span>
-                    <span className="m10-dot" aria-hidden>
-                      ·
-                    </span>
-                    <span>
-                      Doc <b>78%</b>
-                    </span>
-                    <span className="m10-dot" aria-hidden>
-                      ·
-                    </span>
-                    <span>
-                      On-time <b>72%</b>
-                    </span>
-                  </div>
-                </div>
-                <button className="m10-arrow-btn" type="button" aria-label="Open location">
-                  ›
-                </button>
+          <PanelCard title="Locations & Providers" showViewAll={false}>
+            <div className="divide-y divide-[rgba(0,9,50,0.08)]">
+              <div className="pb-4">
+                <LocationBlock
+                  title="Location 1 · Downtown"
+                  visitsLine="108 visits · 9 providers"
+                  utilLine={
+                    <>
+                      Utilization <span className="font-semibold text-[var(--ds-text-primary)]">84%</span>
+                      <span className="text-slate-300"> · </span>
+                      Doc <span className="font-semibold text-[var(--ds-text-primary)]">78%</span>
+                      <span className="text-slate-300"> · </span>
+                      On-time <span className="font-semibold text-[var(--ds-text-primary)]">72%</span>
+                    </>
+                  }
+                />
               </div>
-              <div className="m10-location-item">
-                <div className="m10-location-main">
-                  <h3>Location 2 · Westside</h3>
-                  <p>108 visits · 9 providers</p>
-                  <div className="m10-pill-row">
-                    <span>
-                      Utilization <b>80%</b>
-                    </span>
-                    <span className="m10-dot" aria-hidden>
-                      ·
-                    </span>
-                    <span>
-                      Doc <b>70%</b>
-                    </span>
-                    <span className="m10-dot" aria-hidden>
-                      ·
-                    </span>
-                    <span>
-                      On-time <b>64%</b>
-                    </span>
-                  </div>
-                  <p className="m10-warning">Doc completion ↓ 3 weeks</p>
-                </div>
-                <button className="m10-arrow-btn" type="button" aria-label="Open location">
-                  ›
-                </button>
+              <div className="pt-4">
+                <LocationBlock
+                  title="Location 2 · Westside"
+                  visitsLine="108 visits · 9 providers"
+                  utilLine={
+                    <>
+                      Utilization <span className="font-semibold text-[var(--ds-text-primary)]">80%</span>
+                      <span className="text-slate-300"> · </span>
+                      Doc <span className="font-semibold text-[var(--ds-text-primary)]">70%</span>
+                      <span className="text-slate-300"> · </span>
+                      On-time <span className="font-semibold text-[var(--ds-text-primary)]">64%</span>
+                    </>
+                  }
+                  alert="Doc completion ↓ 3 weeks"
+                />
               </div>
             </div>
-          </article>
+          </PanelCard>
 
-          <article className="m10-panel">
-            <header className="m10-section-header">
-              <h2>Payer Performance</h2>
-              <div className="m10-header-actions">
-                <button className="m10-link-btn" type="button">
-                  View all
-                </button>
-                <MenuButton />
-              </div>
-            </header>
-            <div className="m10-card m10-payer-card">
-              <div className="m10-payer-row">
-                <div>
-                  <h3>Aetna PPO</h3>
-                  <p>
-                    Clean <b>94%</b> · Pay <b>12d</b> · Denial <b>3%</b>
-                  </p>
-                </div>
-                <span className="m10-badge m10-green">Healthy</span>
-              </div>
-              <div className="m10-payer-row">
-                <div>
-                  <h3>BCBS PPO</h3>
-                  <p>
-                    Clean <b>89%</b> · Pay <b>18d</b> · Denial <b>6%</b>
-                  </p>
-                </div>
-                <span className="m10-badge m10-gray">Normal</span>
-              </div>
-              <div className="m10-payer-row">
-                <div>
-                  <h3>Medicare Part B</h3>
-                  <p>
-                    Clean <b>96%</b> · Pay <b>22d</b> · Denial <b>2%</b>
-                  </p>
-                </div>
-                <span className="m10-badge m10-gray">Normal</span>
-              </div>
+          <PanelCard title="Payer Performance">
+            <div className="-mx-1">
+              <PayerRow
+                name="Aetna PPO"
+                clean="94%"
+                pay="12d"
+                denial="3%"
+                badge="Healthy"
+                badgeClassName="border-emerald-200 bg-emerald-50 text-emerald-800"
+              />
+              <PayerRow
+                name="BCBS PPO"
+                clean="89%"
+                pay="18d"
+                denial="6%"
+                badge="Normal"
+                badgeClassName="border-slate-200 bg-slate-100 text-slate-700"
+              />
+              <PayerRow
+                name="Medicare Part B"
+                clean="96%"
+                pay="22d"
+                denial="2%"
+                badge="Normal"
+                badgeClassName="border-slate-200 bg-slate-100 text-slate-700"
+              />
             </div>
-          </article>
+          </PanelCard>
 
-          <article className="m10-panel">
-            <header className="m10-section-header">
-              <h2>Claims Overview</h2>
-              <div className="m10-header-actions">
-                <button className="m10-link-btn" type="button">
-                  View all
-                </button>
-                <MenuButton />
-              </div>
-            </header>
-            <div className="m10-card">
-              <div className="m10-claim-stats">
-                <div className="m10-claim-box">
-                  <p>Submitted</p>
-                  <strong>142</strong>
-                </div>
-                <div className="m10-claim-box">
-                  <p>Adjudication</p>
-                  <strong>68</strong>
-                </div>
-                <div className="m10-claim-box">
-                  <p>Pending</p>
-                  <strong>31</strong>
-                </div>
-                <div className="m10-claim-box m10-attention">
-                  <p>Attention</p>
-                  <strong>6</strong>
-                </div>
-              </div>
-              <div className="m10-claim-row">
-                <span>Avg velocity</span>
-                <strong>14 days</strong>
-              </div>
-              <div className="m10-claim-row">
-                <span>Denial rate (90d)</span>
-                <strong className="m10-down">4.2% ↓</strong>
-              </div>
+          <PanelCard title="Claims Overview">
+            <div className="overflow-hidden rounded-xl border border-[rgba(0,9,50,0.08)] bg-card shadow-[0px_1px_2px_rgba(15,23,42,0.04)]">
+              <ClaimStatGrid />
+              <ClaimFooterRows />
             </div>
-          </article>
+          </PanelCard>
         </section>
 
-        <section className="m10-anomaly-section" aria-label="Anomaly">
-          <header className="m10-section-header m10-anomaly-title">
-            <h2>Anomaly Detected</h2>
-            <div className="m10-header-actions">
-              <button className="m10-link-btn" type="button">
-                View all
-              </button>
-              <MenuButton />
+        <section className="mt-5 md:mt-[clamp(20px,3vw,32px)]" aria-label="Anomaly">
+          <PanelCard title="Anomaly Detected">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0 space-y-2">
+                <h3 className="font-[Inter,sans-serif] text-[14px] font-semibold leading-5 text-[var(--ds-text-primary)]">
+                  Aetna PPO
+                </h3>
+                <p className="font-[Inter,sans-serif] text-[14px] font-normal leading-[22px] text-slate-700">
+                  Pattern present for 3 consecutive weeks.
+                </p>
+                <p className="font-[Inter,sans-serif] text-[14px] font-normal leading-[22px] text-slate-700">
+                  Unsigned notes recurring for 2 providers at Location 2.
+                </p>
+              </div>
+              <div className="flex shrink-0 flex-wrap gap-2.5">
+                <Button
+                  type="button"
+                  className="h-9 min-h-9 rounded-[10px] bg-[var(--ds-primary-action)] px-4 font-[Inter,sans-serif] text-[13px] font-semibold leading-[18px] text-white hover:brightness-[0.95]"
+                >
+                  Open trend
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-9 min-h-9 rounded-[10px] border-[var(--ds-border)] bg-background px-4 font-[Inter,sans-serif] text-[13px] font-semibold leading-[18px] text-[var(--ds-text-secondary)] hover:bg-[var(--ds-bg-tertiary)]"
+                >
+                  Notify clinic director
+                </Button>
+              </div>
             </div>
-          </header>
-          <article className="m10-card m10-anomaly-card">
-            <div className="m10-anomaly-text">
-              <h3>Aetna PPO</h3>
-              <p>Pattern present for 3 consecutive weeks.</p>
-              <p>Unsigned notes recurring for 2 providers at Location 2.</p>
-            </div>
-            <div className="m10-anomaly-actions">
-              <button className="m10-primary" type="button">
-                Open trend
-              </button>
-              <button className="m10-secondary" type="button">
-                Notify clinic director
-              </button>
-            </div>
-          </article>
+          </PanelCard>
         </section>
       </div>
     </div>
