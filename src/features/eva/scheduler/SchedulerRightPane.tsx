@@ -5,7 +5,6 @@ import {
   CalendarDays,
   Check,
   ChevronDown,
-  ChevronUp,
   CircleSlash2,
   DollarSign,
   MessageSquareDot,
@@ -275,7 +274,6 @@ function ExpandedKpiUnified({
   count,
   sub,
   badgeCount,
-  listLabel,
   onCollapse,
   Icon,
   children,
@@ -284,7 +282,6 @@ function ExpandedKpiUnified({
   count: number | string;
   sub?: string;
   badgeCount?: number;
-  listLabel: string;
   onCollapse: () => void;
   Icon: LucideIcon;
   children: ReactNode;
@@ -305,15 +302,6 @@ function ExpandedKpiUnified({
     </section>
   );
 }
-
-const LIST_LABEL_BY_PANEL: Partial<Record<SchedulerExpandedPanel, string>> = {
-  unconfirmed: 'Appointments',
-  potentialNoShow: 'Patients',
-  scheduleChanges: 'Next 72 hours',
-  todaysPatients: 'Appointments',
-  unansweredMessages: 'Threads',
-  outstandingCopays: 'Accounts',
-};
 
 interface SchedulerRightPaneProps {
   expanded: SchedulerExpandedPanel;
@@ -705,6 +693,7 @@ export function SchedulerRightPane({
             {[0, 1, 2].map((rowIdx) => {
               const left = kpiDefs[rowIdx * 2];
               const right = kpiDefs[rowIdx * 2 + 1];
+              if (!left || !right) return null;
               const leftOpen = expanded === left.panel;
               const rightOpen = expanded === right.panel;
               const rowOpen = leftOpen || rightOpen;
@@ -736,7 +725,6 @@ export function SchedulerRightPane({
 
               const activeDef = leftOpen ? left : right;
               const siblingDef = leftOpen ? right : left;
-              const listLabel = (LIST_LABEL_BY_PANEL[expanded] ?? 'Items') as string;
 
               let expandedChildren: ReactNode = null;
               if (expanded === 'unconfirmed') {
@@ -830,7 +818,6 @@ export function SchedulerRightPane({
                       count={activeDef.count}
                       sub={activeDef.sub}
                       badgeCount={activeDef.badge}
-                      listLabel={listLabel}
                       Icon={activeDef.Icon}
                       onCollapse={() => onExpand('none')}
                     >

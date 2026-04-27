@@ -11,9 +11,15 @@ type EvaLogoProps = {
  * Eva product mark (vector). Replace the inner `<path>` with the SVG exported from Figma
  * (PoV file → node `1705:22360`): copy the main `<path d="...">` from Dev Mode and keep `viewBox` in sync.
  */
-export function EvaLogo({ className, decorative, title = 'Eva' }: EvaLogoProps) {
+export function EvaLogo({ className = '', decorative, title = 'Eva' }: EvaLogoProps) {
   return (
-    <div className="bg-[#ebf0ff] content-stretch flex items-center justify-center relative rounded-[12px] shrink-0 size-[32px]" data-name="Icon">
+    <div
+      className={`bg-[#ebf0ff] content-stretch flex items-center justify-center relative rounded-[12px] shrink-0 size-[32px] ${className}`}
+      data-name="Icon"
+      {...(decorative === true
+        ? { 'aria-hidden': true as const }
+        : { role: 'img' as const, 'aria-label': title })}
+    >
       <div className="overflow-clip relative shrink-0 size-[16px]" data-name="AI/ Logo">
         <div className="absolute inset-[0.35%_50.26%_0.3%_0.25%]">
           <div className="absolute inset-[-3.93%_-7.89%_-3.93%_-0.61%]">

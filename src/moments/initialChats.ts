@@ -3,6 +3,18 @@ import { SC1_EVA_MESSAGE } from '@/features/eva/constants/schedulerCopy';
 import { COMORBIDITIES_CHIP } from '@/features/eva/utils/ctaHints';
 import type { MomentId } from './momentTypes';
 import { MOMENT3_EVA_INTRO } from './moment3Copy';
+import {
+  MOMENT10_INITIAL,
+  MOMENT11_INITIAL,
+  MOMENT12_INITIAL,
+  MOMENT13_INITIAL,
+  MOMENT4_INITIAL,
+  MOMENT5_INITIAL,
+  MOMENT6_INITIAL,
+  MOMENT7_INITIAL,
+  MOMENT8_INITIAL,
+  MOMENT9_INITIAL,
+} from './moment4to13Chats';
 
 const SCHEDULER_SC1_CHIP_LABELS = [
   'Get updates from the weekend',
@@ -52,6 +64,26 @@ export function getInitialChatItems(momentId: MomentId): ChatItem[] {
       return moment3FrontDeskInitialChat;
     case 'moment2':
       return clinicianInitialChat;
+    case 'moment4':
+      return MOMENT4_INITIAL;
+    case 'moment5':
+      return MOMENT5_INITIAL;
+    case 'moment6':
+      return MOMENT6_INITIAL;
+    case 'moment7':
+      return MOMENT7_INITIAL;
+    case 'moment8':
+      return MOMENT8_INITIAL;
+    case 'moment9':
+      return MOMENT9_INITIAL;
+    case 'moment10':
+      return MOMENT10_INITIAL;
+    case 'moment11':
+      return MOMENT11_INITIAL;
+    case 'moment12':
+      return MOMENT12_INITIAL;
+    case 'moment13':
+      return MOMENT13_INITIAL;
     default: {
       const _exhaustive: never = momentId;
       return _exhaustive;

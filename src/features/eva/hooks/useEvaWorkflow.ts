@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { MomentId } from '@/moments/momentTypes';
+import { isLandingOnlyMoment } from '@/moments/momentLandings';
 import { getMomentUiConfig } from '@/moments/momentConfig';
 import { getInitialChatItems } from '@/moments/initialChats';
 import type { ChatItem, HeaderMode, PanelMode, SchedulerExpandedPanel, WorkflowStage } from '../types';
@@ -21,12 +22,6 @@ import { MOMENT3_CHECK_IN_CHIP } from '@/moments/moment3Copy';
 /** Moment 2 — user free-text; matched with `normalizeText`. */
 const M2_SLEEPING_POSITION_REMINDER_QUERY =
   'I have a question about sleeping position that I want to explore in person. Remind me to ask later in the session with Sarah.';
-
-const SCHEDULER_SC1_CHIP_LABELS = [
-  'Get updates from the weekend',
-  'Request confirmations',
-  'View details of unconfirmed',
-] as const;
 
 const SCHEDULER_SAM_DECISION_CHIP_LABELS = ['Move Sam to Potential No-show', 'Keep Sam as Unconfirmed'] as const;
 
@@ -512,6 +507,16 @@ export function useEvaWorkflow({ momentId }: { momentId: MomentId }) {
 
       appendChat({ id: `user-${Date.now()}`, kind: 'user', content: text, timestamp: '07:48 am' });
 
+      if (isLandingOnlyMoment(momentId)) {
+        appendChat({
+          id: `eva-landing-${Date.now()}`,
+          kind: 'eva',
+          content: 'Storyline for this moment is not connected yet — landing UI only for now.',
+          timestamp: '07:48 am',
+        });
+        return;
+      }
+
       const unconfirmedPhrase = normalizeText('Give me more details about the Unconfirmed Appointments');
       const schedulePhrase = normalizeText('Give me an update on schedule changes for the next 72 hrs');
       const moveSamNorm = normalizeText(MOVE_SAM_PREFIX);
@@ -675,6 +680,15 @@ export function useEvaWorkflow({ momentId }: { momentId: MomentId }) {
   const selectSuggestion = (label: string) => {
     if (stage === 'scheduler') {
       appendUserChipEcho(label, '07:48 am');
+      if (isLandingOnlyMoment(momentId)) {
+        appendChat({
+          id: `eva-landing-chip-${Date.now()}`,
+          kind: 'eva',
+          content: 'Suggested actions will drive the storyline here once this moment is connected.',
+          timestamp: '07:48 am',
+        });
+        return;
+      }
       if (label === 'View details of unconfirmed') {
         handleSchedulerExpand('unconfirmed');
         return;

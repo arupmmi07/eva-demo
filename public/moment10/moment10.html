@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moment 10</title>
+  <link rel="stylesheet" href="moment10.css" />
+</head>
+<body>
+  <main class="canvas">
+    <section class="grid top-grid">
+      <article class="panel today-panel">
+        <header class="section-header outside">
+          <h2>Today · Cascade PT</h2>
+          <div class="header-actions">
+            <button class="link-btn">View all</button>
+            <button class="menu-btn" aria-label="More options"><span></span><span></span><span></span></button>
+          </div>
+        </header>
+        <div class="card today-card">
+          <div class="stats-grid">
+            <div class="stat-box"><p>Visits</p><strong>216</strong></div>
+            <div class="stat-box"><p>Providers</p><strong>18</strong></div>
+            <div class="stat-box"><p>Utilization</p><strong>82%</strong></div>
+            <div class="stat-box"><p>Open slots</p><strong>12</strong></div>
+          </div>
+          <div class="metric-row"><span>Doc completion</span><strong>74%</strong></div>
+          <div class="metric-row"><span>Notes on-time</span><strong>68%</strong></div>
+        </div>
+      </article>
+
+      <article class="panel locations-panel">
+        <header class="section-header outside">
+          <h2>Locations &amp; Providers</h2>
+          <button class="menu-btn" aria-label="More options"><span></span><span></span><span></span></button>
+        </header>
+        <div class="card location-card">
+          <div class="location-item">
+            <div class="location-main">
+              <h3>Location 1 · Downtown</h3>
+              <p>108 visits · 9 providers</p>
+              <div class="pill-row"><span>Utilization <b>84%</b></span><i>·</i><span>Doc <b>78%</b></span><i>·</i><span>On-time <b>72%</b></span></div>
+            </div>
+            <button class="arrow-btn">›</button>
+          </div>
+          <div class="location-item second">
+            <div class="location-main">
+              <h3>Location 2 · Westside</h3>
+              <p>108 visits · 9 providers</p>
+              <div class="pill-row"><span>Utilization <b>80%</b></span><i>·</i><span>Doc <b>70%</b></span><i>·</i><span>On-time <b>64%</b></span></div>
+              <p class="warning">Doc completion ↓ 3 weeks</p>
+            </div>
+            <button class="arrow-btn">›</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel payer-panel">
+        <header class="section-header outside">
+          <h2>Payer Performance</h2>
+          <div class="header-actions">
+            <button class="link-btn">View all</button>
+            <button class="menu-btn" aria-label="More options"><span></span><span></span><span></span></button>
+          </div>
+        </header>
+        <div class="card payer-card">
+          <div class="payer-row"><div><h3>Aetna PPO</h3><p>Clean <b>94%</b> · Pay <b>12d</b> · Denial <b>3%</b></p></div><span class="badge green">Healthy</span></div>
+          <div class="payer-row"><div><h3>BCBS PPO</h3><p>Clean <b>89%</b> · Pay <b>18d</b> · Denial <b>6%</b></p></div><span class="badge gray">Normal</span></div>
+          <div class="payer-row"><div><h3>Medicare Part B</h3><p>Clean <b>96%</b> · Pay <b>22d</b> · Denial <b>2%</b></p></div><span class="badge gray">Normal</span></div>
+        </div>
+      </article>
+
+      <article class="panel claims-panel">
+        <header class="section-header outside">
+          <h2>Claims Overview</h2>
+          <div class="header-actions">
+            <button class="link-btn">View all</button>
+            <button class="menu-btn" aria-label="More options"><span></span><span></span><span></span></button>
+          </div>
+        </header>
+        <div class="card claims-card">
+          <div class="claim-stats">
+            <div class="claim-box"><p>Submitted</p><strong>142</strong></div>
+            <div class="claim-box"><p>Adjudication</p><strong>68</strong></div>
+            <div class="claim-box"><p>Pending</p><strong>31</strong></div>
+            <div class="claim-box attention"><p>Attention</p><strong>6</strong></div>
+          </div>
+          <div class="claim-row"><span>Avg velocity</span><strong>14 days</strong></div>
+          <div class="claim-row"><span>Denial rate (90d)</span><strong class="down">4.2% ↓</strong></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="anomaly-section">
+      <header class="section-header outside anomaly-title">
+        <h2>Anomaly Detected</h2>
+        <div class="header-actions">
+          <button class="link-btn">View all</button>
+          <button class="menu-btn" aria-label="More options"><span></span><span></span><span></span></button>
+        </div>
+      </header>
+      <article class="card anomaly-card">
+        <div class="anomaly-text">
+          <h3>Aetna PPO</h3>
+          <p>Pattern present for 3 consecutive weeks.</p>
+          <p>Unsigned notes recurring for 2 providers at Location 2.</p>
+        </div>
+        <div class="anomaly-actions">
+          <button class="primary">Open trend</button>
+          <button class="secondary">Notify clinic director</button>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

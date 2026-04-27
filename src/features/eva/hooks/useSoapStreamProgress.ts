@@ -46,6 +46,6 @@ export function useSoapStreamProgress(isStreaming: boolean, isPaused: boolean, f
 
   return {
     step,
-    progress: SOAP_STREAM_TOTAL_STEPS === 0 ? 0 : Math.min(1, step / SOAP_STREAM_TOTAL_STEPS),
+    progress: Math.min(1, step / SOAP_STREAM_TOTAL_STEPS),
   };
 }

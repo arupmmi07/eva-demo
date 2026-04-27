@@ -1,8 +1,6 @@
 import { useRef } from 'react';
 import type { WorkflowStage } from '../../types';
-import type { UnconfirmedId } from '../../scheduler/schedulerData';
-import type { CtaHintId } from '../../utils/ctaHints';
-import { SchedulerRightPane, type SchedulerToast } from '../../scheduler/SchedulerRightPane';
+import { SchedulerRightPane } from '../../scheduler/SchedulerRightPane';
 import { DashboardSurface } from '../dashboard/DashboardSurface';
 import { FinalizedSurface } from '../finalized/FinalizedSurface';
 import { ReferralDrawer } from '../summary/ReferralDrawer';
@@ -10,7 +8,8 @@ import { SummarySurface } from '../summary/SummarySurface';
 import { SoapSurface } from '../soap/SoapSurface';
 import { ClinicalSplitRightPane } from '@/moments/ClinicalSplitRightPane';
 import { FrontDeskCheckInInvoice } from '@/moments/FrontDeskCheckInInvoice';
-import { Moment3SchedulerHero } from '@/moments/Moment3SchedulerHero';
+import { isLandingOnlyMoment } from '@/moments/momentLandings';
+import { MomentLandingSurface } from '@/moments/landings/MomentLandingSurface';
 import type { RightPaneProps } from './rightPaneProps';
 
 const CLINICAL_DUAL_STAGES: readonly WorkflowStage[] = [
@@ -39,7 +38,6 @@ export function RightPane(props: RightPaneProps) {
     chiefComplaintFocused,
     mentionVisible,
     clarificationApplied,
-    leftPanelCollapsed,
     schedulerExpanded,
     schedulerReminders,
     schedulerSamMoved,
@@ -67,7 +65,6 @@ export function RightPane(props: RightPaneProps) {
     momentId,
     m3CheckInInvoiceOpen,
     m3InvoiceInstanceKey,
-    onM3OpenCheckInFromPanel,
     onM3CompleteCheckIn,
   } = props;
 
@@ -76,6 +73,16 @@ export function RightPane(props: RightPaneProps) {
   }
 
   if (stage === 'scheduler') {
+    if (isLandingOnlyMoment(momentId)) {
+      return (
+        <div
+          className="min-h-0 min-w-0 flex-1 overflow-y-auto px-5 py-5"
+          data-name="RightPaneMomentLanding"
+        >
+          <MomentLandingSurface momentId={momentId} />
+        </div>
+      );
+    }
     if (momentId === 'moment3' && m3CheckInInvoiceOpen) {
       return (
         <FrontDeskCheckInInvoice key={m3InvoiceInstanceKey} onCompleteCheckIn={onM3CompleteCheckIn} />
@@ -172,7 +179,6 @@ export function RightPane(props: RightPaneProps) {
           chiefComplaint={chiefComplaint}
           chiefComplaintFocused={chiefComplaintFocused}
           mentionVisible={mentionVisible}
-          leftPanelCollapsed={leftPanelCollapsed}
           onSleepPosition={onSleepPosition}
           onAcceptSleep={onAcceptSleep}
           onPause={onPause}

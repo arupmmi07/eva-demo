@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { ChevronDown, ChevronUp, History } from 'lucide-react';
+import { ChevronUp, History } from 'lucide-react';
 import { SendHorizontalIcon } from '../icons/SendHorizontalIcon';
 import type { ChatItem, PanelMode, WorkflowStage } from '../../types';
 import type { CtaHintId } from '../../utils/ctaHints';
@@ -7,7 +7,7 @@ import { CTA_HINT } from '../../utils/ctaHints';
 import { AudioControls } from '../audio/AudioControls';
 import { ChatBubble } from './ChatBubble';
 
-/** One chat shell for every workflow stage — only copy and optional chrome differ. */
+/** Chat shell for the Eva workspace (`figma-make-moment3` layout: header, transcript, Ask Eva). */
 export function ChatPane({
   chatItems,
   chatInput,
@@ -20,7 +20,6 @@ export function ChatPane({
   onSchedulerViewUnconfirmed,
   onSchedulerViewNoShow,
   onMoment3CheckIn,
-  figmaWorkspaceShell,
   panelMode,
   sharedScreenshotsLayout,
   ctaHints,
@@ -36,10 +35,7 @@ export function ChatPane({
   onOpenSummary: () => void;
   onSchedulerViewUnconfirmed?: () => void;
   onSchedulerViewNoShow?: () => void;
-  /** Moment3: primary action on the new-patient chat card. */
   onMoment3CheckIn?: () => void;
-  /** Match `figma-make-moment3` chat workspace (header, transcript, Ask Eva). */
-  figmaWorkspaceShell?: boolean;
   panelMode?: PanelMode;
   /** With `?sharedscreenshots` and Conversation mode, composer spans chat column width (transcript unchanged). */
   sharedScreenshotsLayout?: boolean;
@@ -66,86 +62,52 @@ export function ChatPane({
     });
   }, [chatItems]);
 
-  const figmaWs = Boolean(figmaWorkspaceShell);
-  const figmaChatHeaderVisible = figmaWs && showHistory && stage !== 'scheduler';
+  const figmaChatHeaderVisible = showHistory;
   /** Focused mode: composer only, bottom-left floating overlay (see EvaWorkflowApp). */
-  const focusedComposerOnly = figmaWs && panelMode === 'rightOnly';
+  const focusedComposerOnly = panelMode === 'rightOnly';
   const focusedComposerPlaceholder =
     'Ask Eva anything: Patients, insurance, schedule...';
   const conversationScreenshotComposerFullWidth =
-    figmaWs && panelMode === 'leftOnly' && Boolean(sharedScreenshotsLayout);
-  const skipFigmaHeader = figmaWs && (!figmaChatHeaderVisible || focusedComposerOnly);
+    panelMode === 'leftOnly' && Boolean(sharedScreenshotsLayout);
+  const skipFigmaHeader = !figmaChatHeaderVisible || focusedComposerOnly;
 
   return (
     <div
       data-name="ChatPane"
       className={`box-border font-['Inter',sans-serif] ${
-        figmaWs
-          ? focusedComposerOnly
-            ? 'm-0 w-full'
-            : 'm-0 flex min-h-0 flex-1 flex-col'
-          : 'm-3 flex min-h-0 flex-1 flex-col'
+        focusedComposerOnly ? 'm-0 w-full' : 'm-0 flex min-h-0 flex-1 flex-col'
       }`}
     >
       <div
         className={
-          figmaWs
-            ? focusedComposerOnly
-              ? 'flex w-full flex-col bg-transparent'
-              : 'flex min-h-0 flex-1 flex-col overflow-hidden bg-[#ffffff]'
-            : 'flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] shadow-[var(--ds-shadow-card)]'
+          focusedComposerOnly
+            ? 'flex w-full flex-col bg-transparent'
+            : 'flex min-h-0 flex-1 flex-col overflow-hidden bg-[#ffffff]'
         }
       >
         {skipFigmaHeader ? null : (
           <header
-            className={
-              figmaWs
-                ? 'relative z-[3] min-h-[64px] w-full shrink-0 bg-[#fcfcfd]'
-                : 'shrink-0 border-b border-[var(--ds-border)] bg-[var(--ds-bg-primary)] px-5 py-3'
-            }
+            className="relative z-[3] min-h-[64px] w-full shrink-0 bg-[#fcfcfd]"
             data-name="ChatPaneHeader"
           >
-            {figmaWs ? (
-              <>
-                <div className="relative flex min-h-[64px] w-full flex-row items-center">
-                  <div className="flex size-full min-h-[inherit] items-center justify-between px-4 pb-[9px] pt-2">
-                    <div className="flex min-w-0 flex-1 items-center gap-5">
-                      <div className="flex shrink-0 items-center gap-1.5 text-[14px] font-medium leading-5 text-[#64748b]">
-                        <History className="size-4 shrink-0" strokeWidth={1.25} aria-hidden />
-                        History
-                      </div>
-                    </div>
+            <div className="relative flex min-h-[64px] w-full flex-row items-center">
+              <div className="flex size-full min-h-[inherit] items-center justify-between px-4 pb-[9px] pt-2">
+                <div className="flex min-w-0 flex-1 items-center gap-5">
+                  <div className="flex shrink-0 items-center gap-1.5 text-[14px] font-medium leading-5 text-[#64748b]">
+                    <History className="size-4 shrink-0" strokeWidth={1.25} aria-hidden />
+                    History
                   </div>
                 </div>
-              </>
-            ) : (
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex min-w-0 items-center gap-5 text-[12px] font-medium leading-[18px]">
-                  {showHistory && stage !== 'scheduler' ? (
-                    <div className="flex items-center gap-1.5 pb-0.5 text-[var(--ds-text-secondary)]">
-                      <History className="size-[12px]" strokeWidth={1.5} aria-hidden />
-                      History
-                    </div>
-                  ) : null}
-                </div>
-                {schedulerChromeVisual ? (
-                  <button
-                    type="button"
-                    className="shrink-0 rounded-lg border border-[rgba(0,9,50,0.12)] bg-slate-50/90 px-3.5 py-2 text-[12px] font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100"
-                  >
-                    Tasks
-                  </button>
-                ) : null}
               </div>
-            )}
+            </div>
           </header>
         )}
 
         <div
           ref={chatScrollRef}
-          className={`min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain [scrollbar-gutter:stable] ${figmaWs ? 'px-8 py-6' : 'space-y-[16px] px-[50px] py-4'} ${focusedComposerOnly ? 'hidden' : ''}`}
+          className={`min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain [scrollbar-gutter:stable] px-8 py-6 ${focusedComposerOnly ? 'hidden' : ''}`}
         >
-          <div className={figmaWs ? 'mx-auto flex w-full max-w-[720px] flex-col gap-10' : 'contents'}>
+          <div className="mx-auto flex w-full max-w-[720px] flex-col gap-10">
             {chatItems.map((item) => (
               <ChatBubble
                 key={item.id}
@@ -156,7 +118,6 @@ export function ChatPane({
                 onSchedulerViewUnconfirmed={onSchedulerViewUnconfirmed}
                 onSchedulerViewNoShow={onSchedulerViewNoShow}
                 onMoment3CheckIn={onMoment3CheckIn}
-                figmaWorkspaceChat={figmaWs}
                 schedulerChrome={schedulerChromeVisual}
                 onQuickAction={onQuickAction}
                 ctaHints={ctaHints}
@@ -166,21 +127,15 @@ export function ChatPane({
         </div>
 
         <div
-          className={`shrink-0 ${
-            figmaWs
-              ? `pb-2 pt-2 ${focusedComposerOnly ? 'bg-transparent px-0' : `${conversationScreenshotComposerFullWidth ? 'px-8' : 'px-4'}`}`
-              : 'space-y-2 px-5 pb-5 pt-2'
-          }`}
+          className={`shrink-0 pb-2 pt-2 ${focusedComposerOnly ? 'bg-transparent px-0' : `${conversationScreenshotComposerFullWidth ? 'px-8' : 'px-4'}`}`}
         >
           <div
             className={
-              figmaWs
-                ? conversationScreenshotComposerFullWidth
-                  ? 'box-border flex h-[112px] w-full min-w-0 flex-col rounded-[12px] bg-[#f3f4f7] p-4'
-                  : focusedComposerOnly
-                    ? 'box-border flex w-full min-w-0 flex-row items-center gap-3 rounded-[12px] border border-[#E2E8F0] bg-white px-4 py-4 shadow-[0px_4px_20px_rgba(15,23,42,0.08)]'
-                    : 'mx-auto box-border flex h-[112px] w-full max-w-full flex-col rounded-[12px] bg-[#f3f4f7] p-4'
-                : 'rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] px-4 pb-3 pt-3 shadow-[var(--ds-shadow-card)]'
+              conversationScreenshotComposerFullWidth
+                ? 'box-border flex h-[112px] w-full min-w-0 flex-col rounded-[12px] bg-[#f3f4f7] p-4'
+                : focusedComposerOnly
+                  ? 'box-border flex w-full min-w-0 flex-row items-center gap-3 rounded-[12px] border border-[#E2E8F0] bg-white px-4 py-4 shadow-[0px_4px_20px_rgba(15,23,42,0.08)]'
+                  : 'mx-auto box-border flex h-[112px] w-full max-w-full flex-col rounded-[12px] bg-[#f3f4f7] p-4'
             }
           >
             {focusedComposerOnly ? (
@@ -220,45 +175,27 @@ export function ChatPane({
                       onSubmit(chatInput);
                     }
                   }}
-                  {...(figmaWs ? { rows: 1 as const } : {})}
-                  className={
-                    figmaWs
-                      ? 'box-border h-[28px] min-h-[28px] w-full resize-none overflow-hidden border-none bg-transparent py-0 font-["Inter",sans-serif] text-[16px] font-normal leading-[28px] text-[#020617] outline-none placeholder:text-[#64748b]'
-                      : 'min-h-[64px] w-full resize-none border-none bg-transparent font-["Inter",sans-serif] text-[14px] font-normal leading-[20px] text-[var(--ds-text-primary)] outline-none placeholder:text-[var(--ds-text-muted)]'
-                  }
+                  rows={1}
+                  className='box-border h-[28px] min-h-[28px] w-full resize-none overflow-hidden border-none bg-transparent py-0 font-["Inter",sans-serif] text-[16px] font-normal leading-[28px] text-[#020617] outline-none placeholder:text-[#64748b]'
                   placeholder={finalInputPlaceholder}
                   aria-label="Message Eva"
                 />
-                <div
-                  className={
-                    figmaWs
-                      ? 'mt-5 flex h-8 min-h-8 shrink-0 items-center justify-between gap-2'
-                      : 'mt-2 flex items-center justify-end gap-4 pt-2'
-                  }
-                >
-                  <div className={`flex min-w-0 justify-start ${figmaWs ? '' : 'flex-1'}`} data-name="ChatPaneQuickActions">
+                <div className="mt-5 flex h-8 min-h-8 shrink-0 items-center justify-between gap-2">
+                  <div className="flex min-w-0 justify-start" data-name="ChatPaneQuickActions">
                     <button
                       type="button"
-                      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 text-[14px] font-medium text-[#64748B] bg-[#eaecf0] h-8`}
+                      className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full bg-[#eaecf0] px-3 text-[14px] font-medium text-[#64748B]"
                     >
                       Quick Actions
-                      {figmaWs ? (
-                        <ChevronUp className="size-3.5 opacity-70" strokeWidth={2} aria-hidden />
-                      ) : (
-                        <ChevronDown className="size-3.5 opacity-70" strokeWidth={2} aria-hidden />
-                      )}
+                      <ChevronUp className="size-3.5 opacity-70" strokeWidth={2} aria-hidden />
                     </button>
                   </div>
-                  <div className={`flex shrink-0 items-center ${figmaWs ? 'gap-2' : 'gap-4'}`}>
-                    <AudioControls size="md" variant={figmaWs ? 'micOnly' : 'full'} />
+                  <div className="flex shrink-0 items-center gap-2">
+                    <AudioControls size="md" variant="micOnly" />
                     <button
                       type="button"
                       onClick={() => onSubmit(chatInput)}
-                      className={
-                        figmaWs
-                          ? 'flex size-8 shrink-0 items-center justify-center rounded-[12px] bg-[#4E37F6] opacity-30 text-white transition hover:bg-[#4338ca]'
-                          : 'flex size-[32px] shrink-0 items-center justify-center rounded-full bg-[#4E37F6] opacity-30 text-white transition hover:bg-[#4338ca]'
-                      }
+                      className="flex size-8 shrink-0 items-center justify-center rounded-[12px] bg-[#4E37F6] text-white transition hover:bg-[#4338ca]"
                       aria-label="Send message"
                     >
                       <SendHorizontalIcon className="size-4" />

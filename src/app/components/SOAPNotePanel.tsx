@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, Plus } from 'lucide-react';
-import { SOAPVariant } from '../types';
+import type { SOAPVariant } from '../types';
 import imgPatient from 'figma:asset/454e804c0c0a65927356b922ba37d88ac95d6327.png';
 
 interface SOAPNotePanelProps {

@@ -15,10 +15,6 @@ const PLAN = 'Blue Cross Blue Shield';
 /** Figma Make (`figma-make-moment3` imports): Spatial + Dashboard tokens. */
 const SPATIAL_BG = '#f8fafc';
 const PANEL_BORDER = 'rgba(0,9,50,0.12)';
-const MUTED_LABEL = '#62748e';
-const TEXT_PRIMARY = '#020617';
-const TEXT_TITLE = '#0f172a';
-const AMOUNT_COLOR = '#1c2024';
 const COLLECT_ENABLED = '#3c43ee';
 const VISA_FOCUS_RING = '#3e63dd';
 
