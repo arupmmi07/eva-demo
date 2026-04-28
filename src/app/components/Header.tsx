@@ -1,5 +1,5 @@
 import { Bell } from 'lucide-react';
-import { AppView } from '../types';
+import type { AppView } from '../types';
 
 interface HeaderProps {
   view: AppView;

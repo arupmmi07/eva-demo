@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { Mic, Timer, SlidersHorizontal, Send, Maximize2, List, Sparkles, Wand2, History } from 'lucide-react';
 import { EvaLogo } from '@/features/eva/components/icons/EvaLogo';
-import { ChatMessage, DemoPhase } from '../types';
+import type { ChatMessage, DemoPhase } from '../types';
 import imgPatient from 'figma:asset/454e804c0c0a65927356b922ba37d88ac95d6327.png';
 
 export interface ChatPanelProps {

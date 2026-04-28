@@ -33,7 +33,6 @@ export function SoapSurface({
   chiefComplaint,
   chiefComplaintFocused,
   mentionVisible,
-  leftPanelCollapsed,
   onSleepPosition,
   onAcceptSleep,
   onPause,
@@ -55,7 +54,6 @@ export function SoapSurface({
   chiefComplaint: string;
   chiefComplaintFocused: boolean;
   mentionVisible: boolean;
-  leftPanelCollapsed: boolean;
   onSleepPosition: () => void;
   onAcceptSleep: () => void;
   onPause: () => void;
@@ -78,14 +76,15 @@ export function SoapSurface({
 
   const vis = (minStep: number) => streamComplete || step >= minStep;
 
-  const [activeSoapSection, setActiveSoapSection] = useState('subjective');
+  type SoapNavSection = 'subjective' | 'objective' | 'assessment' | 'plan' | 'billing';
+  const [activeSoapSection, setActiveSoapSection] = useState<SoapNavSection>('subjective');
   const subjectiveRef = useRef<HTMLDivElement | null>(null);
   const objectiveRef = useRef<HTMLDivElement | null>(null);
   const assessmentRef = useRef<HTMLDivElement | null>(null);
   const planRef = useRef<HTMLDivElement | null>(null);
   const billingRef = useRef<HTMLDivElement | null>(null);
 
-  const scrollToSection = (section: string, sectionRef: RefObject<HTMLDivElement | null>) => {
+  const scrollToSection = (section: SoapNavSection, sectionRef: RefObject<HTMLDivElement | null>) => {
     setActiveSoapSection(section);
     sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
@@ -105,20 +104,26 @@ export function SoapSurface({
 
     const updateActiveSection = () => {
       const sectionOffset = scrollContainer.getBoundingClientRect().top + 32;
-      const sectionRefs = [
+      const base: [SoapNavSection, RefObject<HTMLDivElement | null>][] = [
         ['subjective', subjectiveRef],
         ['objective', objectiveRef],
         ['assessment', assessmentRef],
-        ...(showPlanInNav ? [['plan', planRef], ['billing', billingRef]] : []),
-      ] as const;
+      ];
+      const withPlan: [SoapNavSection, RefObject<HTMLDivElement | null>][] = showPlanInNav
+        ? [
+            ['plan', planRef],
+            ['billing', billingRef],
+          ]
+        : [];
+      const sectionRefs: [SoapNavSection, RefObject<HTMLDivElement | null>][] = [...base, ...withPlan];
 
-      let nextActive = sectionRefs[0][0];
-      sectionRefs.forEach(([section, sectionRef]) => {
+      let nextActive: SoapNavSection = 'subjective';
+      for (const [section, sectionRef] of sectionRefs) {
         const element = sectionRef.current;
         if (element && element.getBoundingClientRect().top <= sectionOffset) {
           nextActive = section;
         }
-      });
+      }
       setActiveSoapSection(nextActive);
     };
 

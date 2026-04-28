@@ -6,6 +6,12 @@ import { RightPane } from './components/panels/RightPane';
 import { useEvaWorkflow } from './hooks/useEvaWorkflow';
 import { useSharedScreenshotsLayout } from './hooks/useSharedScreenshotsLayout';
 
+/**
+ * Eva shell shared by every moment: left `AppRail`, inner chrome with `TopHeader` (titles + Conversation /
+ * Hybrid / Focused), and `ChatPane` stay the same across routes. Only `RightPane` (and workflow state from
+ * `useEvaWorkflow`) should vary by moment — add moment-specific UI there or via `momentUi` / `RightPaneProps`,
+ * not by forking this layout.
+ */
 export function EvaWorkflowApp({ momentId }: { momentId: MomentId }) {
   const workflow = useEvaWorkflow({ momentId });
   const sharedScreenshotsLayout = useSharedScreenshotsLayout();
@@ -56,7 +62,6 @@ export function EvaWorkflowApp({ momentId }: { momentId: MomentId }) {
                     onSchedulerViewUnconfirmed={() => workflow.expandSchedulerPanel('unconfirmed')}
                     onSchedulerViewNoShow={() => workflow.expandSchedulerPanel('potentialNoShow')}
                     onMoment3CheckIn={momentId === 'moment3' ? () => workflow.openM3CheckIn() : undefined}
-                    figmaWorkspaceShell
                     panelMode={workflow.panelMode}
                     sharedScreenshotsLayout={sharedScreenshotsLayout}
                     ctaHints={workflow.ctaHints}
@@ -137,7 +142,6 @@ export function EvaWorkflowApp({ momentId }: { momentId: MomentId }) {
                     onSchedulerViewUnconfirmed={() => workflow.expandSchedulerPanel('unconfirmed')}
                     onSchedulerViewNoShow={() => workflow.expandSchedulerPanel('potentialNoShow')}
                     onMoment3CheckIn={momentId === 'moment3' ? () => workflow.openM3CheckIn() : undefined}
-                    figmaWorkspaceShell
                     panelMode={workflow.panelMode}
                     sharedScreenshotsLayout={sharedScreenshotsLayout}
                     ctaHints={workflow.ctaHints}

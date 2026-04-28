@@ -44,6 +44,24 @@ export function getMomentUiConfig(id: MomentId): MomentUiConfig {
         shellSchedulerChrome: false,
         workspaceTitle: '',
       };
+    case 'moment4':
+    case 'moment5':
+    case 'moment6':
+    case 'moment7':
+    case 'moment8':
+    case 'moment9':
+    case 'moment10':
+    case 'moment11':
+    case 'moment12':
+    case 'moment13':
+      return {
+        id,
+        initialStage: 'scheduler',
+        schedulerRightSlot: 'calendar',
+        clinicalDualRight: false,
+        shellSchedulerChrome: true,
+        workspaceTitle: '',
+      };
     default: {
       const _exhaustive: never = id;
       return _exhaustive;

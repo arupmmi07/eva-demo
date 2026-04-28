@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AlarmClock, ArrowUpRight, ChevronDown, ChevronUp, User } from 'lucide-react';
+import { AlarmClock, ArrowUpRight, ChevronDown, ChevronUp } from 'lucide-react';
 import type { ChatItem } from '../../types';
 import { imgPatient } from '../../assets';
 import {
@@ -19,10 +19,6 @@ const FIGMA_CHAT_WIDGET_ACCORDION =
 
 /** Figma Header1 / Header2 strip above task rows (`bg-[rgba(0,0,85,0.01)]`). */
 const FIGMA_CASCADE_SECTION_HEADER = 'bg-[rgba(0,0,85,0.01)] border-b border-[rgba(0,9,50,0.12)]';
-
-/** Same chrome as patient-card / insight when thread is no longer on scheduler (archived KPI rows). */
-const THREAD_ARCHIVE_CARD =
-  'box-border w-full min-w-0 rounded-[var(--ds-radius-card)] border border-[var(--ds-border)] bg-[var(--ds-bg-primary)] p-4 text-left shadow-[var(--ds-shadow-card)]';
 
 function InlineReminderBellIcon() {
   return (
@@ -329,7 +325,6 @@ export function ChatBubble({
   onSchedulerViewUnconfirmed,
   onSchedulerViewNoShow,
   onMoment3CheckIn,
-  figmaWorkspaceChat = false,
   schedulerChrome = false,
   onQuickAction,
   ctaHints,
@@ -341,8 +336,6 @@ export function ChatBubble({
   onSchedulerViewUnconfirmed?: () => void;
   onSchedulerViewNoShow?: () => void;
   onMoment3CheckIn?: () => void;
-  /** Typography + chrome aligned with `figma-make-moment3` chat export. */
-  figmaWorkspaceChat?: boolean;
   schedulerChrome?: boolean;
   onQuickAction?: (label: string) => void;
   ctaHints?: ReadonlySet<CtaHintId>;
@@ -351,14 +344,11 @@ export function ChatBubble({
     const labels = item.suggestionLabels ?? [];
     const body = (
       <>
-        <p
-          className={`text-left text-[12px] font-medium leading-[18px] tracking-[0.04px] ${schedulerChrome ? 'text-[#64748b]' : 'mb-3 text-[11px] leading-none tracking-wide text-[var(--ds-text-muted)]'
-            }`}
-        >
+        <p className="text-left text-[12px] font-medium leading-[18px] tracking-[0.04px] text-[#64748b]">
           Suggested actions
         </p>
-        <div className={`flex ${schedulerChrome ? 'items-start gap-2 pt-3' : 'flex-wrap gap-2'}`}>
-          {schedulerChrome ? <SchedulerChildActionConnector /> : null}
+        <div className="flex items-start gap-2 pt-3">
+          <SchedulerChildActionConnector />
           <div className="flex min-w-0 flex-1 flex-wrap gap-2">
             {labels.map((label, idx) => {
               const hint = chatChipLabelToCtaHint(label);
@@ -371,17 +361,10 @@ export function ChatBubble({
                   onClick={() => onQuickAction?.(label)}
                   {...(isHighlighted && hint ? { 'data-cta-hint': hint } : {})}
                   aria-label={label}
-                  className={`inline-flex min-h-0 max-w-full cursor-pointer items-center justify-start gap-2 font-['Inter',sans-serif] font-medium transition ${schedulerChrome
-                      ? `rounded-xl border border-[rgba(0,9,50,0.12)] bg-[#f8fafc] px-[17px] py-[9px] text-left text-[14px] leading-5 text-[#020617] hover:bg-[#f1f5f9] ${ctaHighlightClass(isHighlighted, 'none')}`
-                      : `inline-flex min-h-[40px] border border-[var(--ds-border-accent)] px-4 py-2 text-[12px] leading-snug text-[var(--ds-primary-action)] ${ctaHighlightClass(isHighlighted, 'pill')} rounded-[var(--ds-radius-pill)] bg-white hover:bg-[var(--ds-bg-secondary)]`
-                    }`}
+                  className={`inline-flex min-h-0 max-w-full cursor-pointer items-center justify-start gap-2 rounded-xl border border-[rgba(0,9,50,0.12)] bg-[#f8fafc] px-[17px] py-[9px] text-left font-['Inter',sans-serif] text-[14px] font-medium leading-5 text-[#020617] transition hover:bg-[#f1f5f9] ${ctaHighlightClass(isHighlighted, 'none')}`}
                 >
-                  <span
-                    className={`inline-flex size-4 shrink-0 items-center justify-center ${schedulerChrome ? 'text-[#64748b]' : 'size-[18px] text-[var(--ds-primary-action)]'
-                      }`}
-                    aria-hidden
-                  >
-                    <Icon className={schedulerChrome ? 'size-4' : 'size-3.5'} strokeWidth={1.25} />
+                  <span className="inline-flex size-4 shrink-0 items-center justify-center text-[#64748b]" aria-hidden>
+                    <Icon className="size-4" strokeWidth={1.25} />
                   </span>
                   <span className="inline-flex min-w-0 items-center text-left">{label}</span>
                 </button>
@@ -395,8 +378,7 @@ export function ChatBubble({
     return (
       <div
         data-name="ChatSuggestionChips"
-        className={`flex w-full min-w-0 flex-col justify-start text-left font-['Inter',sans-serif] ${schedulerChrome ? '' : 'max-w-[min(100%,440px)]'
-          }`}
+        className="flex w-full min-w-0 flex-col justify-start text-left font-['Inter',sans-serif]"
       >
         {body}
       </div>
@@ -425,7 +407,7 @@ export function ChatBubble({
     return (
       <div
         data-name="InlineReminderCard"
-        className={`flex w-full min-w-0 justify-start font-['Inter',sans-serif] ${schedulerChrome ? '' : 'max-w-[min(100%,440px)]'}`}
+        className="flex w-full min-w-0 justify-start font-['Inter',sans-serif]"
       >
         <div className="flex w-full min-w-0 max-w-full items-center gap-3 rounded-xl border border-[rgba(0,9,50,0.12)] bg-white px-4 py-3 shadow-sm">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center" aria-hidden>
@@ -437,7 +419,7 @@ export function ChatBubble({
           </p>
           <button
             type="button"
-            className="shrink-0 rounded-lg border border-[rgba(0,9,50,0.14)] bg-white px-3 py-1.5 text-[12px] font-semibold text-slate-700 transition hover:bg-slate-50"
+            className="shrink-0 rounded-lg border border-[rgba(0,9,50,0.14)] bg-white px-3 py-1.5 text-[12px] font-semibold text-[#1F2933] transition hover:bg-slate-50"
           >
             View all
           </button>
@@ -569,32 +551,18 @@ export function ChatBubble({
       >
         {!isUser && (
           <div
-            className={`mb-2 flex items-center justify-between gap-3 font-['Inter',sans-serif] ${figmaWorkspaceChat
-                ? 'text-[14px] font-normal normal-case tracking-normal text-[#64748b]'
-                : `text-[11px] font-semibold uppercase leading-none tracking-[0.08em] ${schedulerChrome ? 'text-indigo-600' : 'text-[var(--ds-primary-accent)]'
-                }`
-              }`}
+            className="mb-2 flex items-center justify-between gap-3 font-['Inter',sans-serif] text-[14px] font-normal normal-case tracking-normal text-[#64748b]"
           >
             <div className="flex min-w-0 items-center gap-2">
               <span
-                className={`flex shrink-0 items-center justify-center rounded-[12px] ${figmaWorkspaceChat
-                    ? 'size-8 bg-[#ebf0ff] text-[#6e56cf]'
-                    : schedulerChrome
-                      ? 'size-5 rounded-full bg-indigo-100 text-indigo-700'
-                      : 'size-5 rounded-full bg-[var(--ds-bg-accent-purple)] text-[var(--ds-primary-action)]'
-                  }`}
+                className="flex size-8 shrink-0 items-center justify-center rounded-[12px] bg-[#ebf0ff] text-[#6e56cf]"
               >
-                <EvaLogo className={figmaWorkspaceChat ? 'size-[14px]' : 'size-[11px]'} decorative />
+                <EvaLogo className="size-[14px]" decorative />
               </span>
             </div>
             {item.timestamp ? (
               <time
-                className={`shrink-0 font-normal normal-case tracking-normal ${figmaWorkspaceChat
-                    ? 'text-[14px] text-[#64748b] opacity-60'
-                    : schedulerChrome
-                      ? 'text-[11px] font-medium text-slate-400'
-                      : 'text-[11px] font-medium text-[var(--ds-text-muted)]'
-                  }`}
+                className="shrink-0 text-[14px] font-normal normal-case tracking-normal text-[#64748b] opacity-60"
               >
                 {item.timestamp}
               </time>
@@ -604,20 +572,13 @@ export function ChatBubble({
         <div
           className={
             isUser
-              ? `inline-block max-w-[80%] min-w-0 break-words text-left font-['Inter',sans-serif] text-[14px] font-normal leading-relaxed bg-[#eef2f7] px-4 py-3 text-[var(--ds-text-primary)] ${schedulerChrome
-                ? 'rounded-2xl shadow-sm'
-                : 'rounded-[var(--ds-radius-card)] shadow-[var(--ds-shadow-card)]'
-              }`
-              : figmaWorkspaceChat
-                ? `whitespace-pre-wrap border-0 bg-transparent px-0 py-0 text-left font-['Inter',sans-serif] text-[16px] font-normal leading-[28px] text-[#020617] shadow-none`
-                : schedulerChrome
-                  ? `whitespace-pre-wrap border-0 bg-transparent px-0 py-2 text-left font-['Inter',sans-serif] text-[14px] font-normal leading-relaxed text-slate-800 shadow-none`
-                  : `box-border w-full min-w-0 p-4 font-['Inter',sans-serif] text-[14px] font-normal leading-relaxed text-[var(--ds-text-primary)]`
+              ? `inline-block max-w-[80%] min-w-0 break-words rounded-2xl bg-[#eef2f7] px-4 py-3 text-left font-['Inter',sans-serif] text-[14px] font-normal leading-relaxed text-[#020617] shadow-sm`
+              : `whitespace-pre-wrap border-0 bg-transparent px-0 py-0 text-left font-['Inter',sans-serif] text-[16px] font-normal leading-[28px] text-[#020617] shadow-none`
           }
         >
           {!isUser && item.contentIsHtml ? (
             <div
-              className="eva-html-content [&_b]:font-semibold [&_strong]:font-semibold [&_p]:m-0 [&_p+p]:mt-3 [&_br]:block"
+              className="eva-html-content [&_b]:font-semibold [&_strong]:font-semibold [&_p]:m-0 [&_p+p]:mt-3 [&_br]:block [&_ul]:mt-2 [&_ul]:mb-0 [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:leading-normal [&_ul]:space-y-0 [&_ul_li]:my-0 [&_ul_li]:py-0 [&_ul_li]:leading-[1.22]"
               dangerouslySetInnerHTML={{ __html: item.content ?? '' }}
             />
           ) : (
@@ -626,8 +587,7 @@ export function ChatBubble({
         </div>
         {isUser && item.timestamp ? (
           <div
-            className={`max-w-[80%] text-[11px] font-medium text-right ${schedulerChrome ? 'text-slate-400' : 'text-[var(--ds-text-muted)]'
-              }`}
+            className="max-w-[80%] text-right text-[11px] font-medium text-slate-400"
           >
             {item.timestamp}
           </div>

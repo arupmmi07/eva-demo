@@ -13,8 +13,6 @@ const CLINICAL_SUMMARY_STAGES: readonly WorkflowStage[] = [
   'summaryAnswered',
 ];
 
-const CLINICAL_SOAP_STAGES: readonly WorkflowStage[] = ['session', 'sessionAccepted', 'sessionStopped'];
-
 /** Clinician layout: patient summary until Begin session, then SOAP-only for the live note. */
 export function ClinicalSplitRightPane(props: RightPaneProps) {
   const soapScrollRef = useRef<HTMLDivElement | null>(null);
@@ -32,7 +30,6 @@ export function ClinicalSplitRightPane(props: RightPaneProps) {
     chiefComplaintFocused,
     mentionVisible,
     clarificationApplied,
-    leftPanelCollapsed,
     onOpenReferral,
     onCloseReferral,
     onBeginSession,
@@ -48,7 +45,6 @@ export function ClinicalSplitRightPane(props: RightPaneProps) {
   } = props;
 
   const showPatientSummary = CLINICAL_SUMMARY_STAGES.includes(stage);
-  const showSoapNote = CLINICAL_SOAP_STAGES.includes(stage);
 
   if (stage === 'finalized') {
     return (
@@ -91,7 +87,6 @@ export function ClinicalSplitRightPane(props: RightPaneProps) {
           chiefComplaint={chiefComplaint}
           chiefComplaintFocused={chiefComplaintFocused}
           mentionVisible={mentionVisible}
-          leftPanelCollapsed={leftPanelCollapsed}
           onSleepPosition={onSleepPosition}
           onAcceptSleep={onAcceptSleep}
           onPause={onPause}
