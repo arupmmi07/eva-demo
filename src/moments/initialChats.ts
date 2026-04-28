@@ -73,7 +73,7 @@ export function getInitialChatItems(momentId: MomentId): ChatItem[] {
     case 'moment7':
       return MOMENT7_INITIAL;
     case 'moment8':
-      return MOMENT8_INITIAL;
+      return [...MOMENT8_INITIAL];
     case 'moment9':
       return MOMENT9_INITIAL;
     case 'moment10':

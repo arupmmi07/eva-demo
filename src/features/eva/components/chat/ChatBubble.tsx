@@ -419,7 +419,7 @@ export function ChatBubble({
           </p>
           <button
             type="button"
-            className="shrink-0 rounded-lg border border-[rgba(0,9,50,0.14)] bg-white px-3 py-1.5 text-[12px] font-semibold text-slate-700 transition hover:bg-slate-50"
+            className="shrink-0 rounded-lg border border-[rgba(0,9,50,0.14)] bg-white px-3 py-1.5 text-[12px] font-semibold text-[#1F2933] transition hover:bg-slate-50"
           >
             View all
           </button>
@@ -578,7 +578,7 @@ export function ChatBubble({
         >
           {!isUser && item.contentIsHtml ? (
             <div
-              className="eva-html-content [&_b]:font-semibold [&_strong]:font-semibold [&_p]:m-0 [&_p+p]:mt-3 [&_br]:block [&_ul]:mt-3 [&_ul]:mb-0 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 [&_ul_li]:leading-snug"
+              className="eva-html-content [&_b]:font-semibold [&_strong]:font-semibold [&_p]:m-0 [&_p+p]:mt-3 [&_br]:block [&_ul]:mt-2 [&_ul]:mb-0 [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:leading-normal [&_ul]:space-y-0 [&_ul_li]:my-0 [&_ul_li]:py-0 [&_ul_li]:leading-[1.22]"
               dangerouslySetInnerHTML={{ __html: item.content ?? '' }}
             />
           ) : (

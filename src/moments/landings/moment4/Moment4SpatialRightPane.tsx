@@ -56,7 +56,7 @@ function PanelCard({
             <Button
               type="button"
               variant="link"
-              className="h-auto p-0 font-[Inter,sans-serif] text-[12px] font-semibold text-[var(--ds-primary-action)]"
+              className="h-auto p-0 font-[Inter,sans-serif] text-[12px] font-semibold text-[#1F2933]"
             >
               View all
             </Button>
@@ -81,7 +81,7 @@ function MetricQuad() {
       {cells.map((c) => (
         <div
           key={c.label}
-          className="rounded-[10px] border border-[rgba(0,9,50,0.08)] bg-slate-50 px-3 py-3"
+          className="rounded-[10px]ß bg-[#F9FAFB] px-3 py-3"
         >
           <p className="font-[Inter,sans-serif] text-[11px] font-medium leading-4 text-[var(--ds-text-secondary)]">
             {c.label}
@@ -139,7 +139,7 @@ function LocationBlock({
           <p className="mt-1 font-[Inter,sans-serif] text-[12px] font-normal leading-4 text-[var(--ds-text-secondary)]">
             {visitsLine}
           </p>
-          <div className="mt-3 inline-flex max-w-full flex-wrap items-center gap-x-1 rounded-[10px] border border-[rgba(0,9,50,0.08)] bg-slate-100 px-3 py-2 font-[Inter,sans-serif] text-[11px] font-medium leading-4 text-[var(--ds-text-secondary)]">
+          <div className="mt-3 inline-flex max-w-full flex-wrap items-center gap-x-1 rounded-[10px] bg-[#F9FAFB] px-3 py-2 font-[Inter,sans-serif] text-[11px] font-medium leading-4 text-[var(--ds-text-secondary)]">
             {utilLine}
           </div>
           {alert ? (

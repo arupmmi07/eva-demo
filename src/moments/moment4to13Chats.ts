@@ -44,106 +44,141 @@ export const MOMENT5_INITIAL: ChatItem[] = [
   },
 ];
 
+/** Opening thread from `public/moment6/Chat.png` (placeholder Eva copy). */
 export const MOMENT6_INITIAL: ChatItem[] = [
   {
     id: 'm6-e',
     kind: 'eva',
-    content: 'Good afternoon, Jordan. What can I help you with?',
+    contentIsHtml: true,
+    content: `<p>This is a placeholder message to show how Eva interacts and answers the user's request, giving context of what happens and suggesting follow-up actions.</p>`,
     timestamp: '08:56 am',
   },
 ];
 
+/** Opening thread from `public/moment7/Chat (1).png` — Eva copy + suggested actions. */
 export const MOMENT7_INITIAL: ChatItem[] = [
   {
     id: 'm7-e',
     kind: 'eva',
+    contentIsHtml: true,
     content:
-      "Here are Sarah Chen's check-in details. Co-pay is due. Would you like to charge the card on file?",
-    timestamp: '09:02 am',
+      '<p>Here are Sarah Chen\u2019s check-in details. Co-pay is due. Would you like to charge the card on file?</p>',
+    timestamp: '09:02am',
   },
   {
     id: 'm7-chips',
     kind: 'suggestion-chips',
     suggestionLabels: ['Run card on file', 'View other payment options'],
-    timestamp: '09:02 am',
+    timestamp: '09:02am',
   },
 ];
 
+/** Opening thread from `public/moment8/Chat.png` (placeholder copy + `08:56 am`). */
 export const MOMENT8_INITIAL: ChatItem[] = [
-  { id: 'm8-u', kind: 'user', content: 'Give me my end of day summary', timestamp: '05:12 pm' },
   {
     id: 'm8-e',
     kind: 'eva',
-    content:
-      '• 102 visits completed\n• 27 new patients\n• 4 cancellations\n• 6 referrals pending follow-up',
-    timestamp: '05:12 pm',
-  },
-  {
-    id: 'm8-chips',
-    kind: 'suggestion-chips',
-    suggestionLabels: ['Bring up the referrals'],
-    timestamp: '05:12 pm',
+    contentIsHtml: true,
+    content: `<p>This is a placeholder message to show how Eva interacts and answers the user\u2019s request, giving context of what happens and suggesting follow-up actions.</p>`,
+    timestamp: '08:56 am',
   },
 ];
 
+/** Opening thread from `public/moment9/Chat (1).png` — schedule Sarah + availability list + chips. */
 export const MOMENT9_INITIAL: ChatItem[] = [
+  {
+    id: 'm9-u',
+    kind: 'user',
+    content: 'Let\u2019s schedule Sarah to come in 2 times a week for the next 6 weeks',
+  },
   {
     id: 'm9-e',
     kind: 'eva',
-    content:
-      'Daily snapshot: visits are on track, two payer threads need attention, and the afternoon block has three open slots.',
-    timestamp: '02:18 pm',
+    contentIsHtml: true,
+    content: `<p>Here is some availability for Sarah based on her preferences:</p>
+<ul>
+<li>Session 01 \u2022 Tuesday 10 AM \u2022 April 28</li>
+<li>Session 02 \u2022 Thursday 9 AM \u2022 April 30</li>
+<li>Session 03 \u2022 Tuesday 10 AM \u2022 May 5</li>
+<li>Session 04 \u2022 Thursday 9 AM \u2022 May 7</li>
+<li>Session 05 \u2022 Tuesday 10 AM \u2022 May 12</li>
+<li>Session 06 \u2022 Thursday 9 AM \u2022 May 14</li>
+<li>Session 07 \u2022 Tuesday 10 AM \u2022 May 19</li>
+<li>Session 08 \u2022 Thursday 9 AM \u2022 May 21</li>
+<li>Session 09 \u2022 Tuesday 10 AM \u2022 May 26</li>
+<li>Session 10 \u2022 Thursday 9 AM \u2022 May 28</li>
+<li>Session 11 \u2022 Tuesday 10 AM \u2022 June 2</li>
+<li>Session 12 \u2022 Thursday 9 AM \u2022 June 4</li>
+</ul>`,
+    timestamp: '08:56 am',
   },
   {
     id: 'm9-chips',
     kind: 'suggestion-chips',
-    suggestionLabels: ['Call Marcus', 'Show me referral list', 'Show me the 11 flagged patients'],
-    timestamp: '02:18 pm',
+    suggestionLabels: ['Confirm', 'Show me more options'],
+    timestamp: '08:56 am',
   },
 ];
 
-export const MOMENT10_INITIAL: ChatItem[] = [
-  {
-    id: 'm10-e',
-    kind: 'eva',
-    content:
-      'SOAP workspace is ready. Start scribe when you begin the visit — I will structure Subjective first, then follow your sections.',
-    timestamp: '08:12 am',
-  },
-];
+/** Moment10 — chat thread intentionally empty; right pane matches moment9 (SOAP). */
+export const MOMENT10_INITIAL: ChatItem[] = [];
 
+/** Moment11 opening thread — hybrid chat: single Eva greeting + `08:56 am` (design screenshot). */
 export const MOMENT11_INITIAL: ChatItem[] = [
-  { id: 'm11-u', kind: 'user', content: 'Schedule Sarah for her next block of sessions.', timestamp: '11:05 am' },
   {
     id: 'm11-e',
     kind: 'eva',
-    content:
-      'Here are twelve available slots across the next three weeks. Pick one to hold, or ask me to narrow by provider.',
-    timestamp: '11:05 am',
-  },
-  {
-    id: 'm11-chips',
-    kind: 'suggestion-chips',
-    suggestionLabels: ['Confirm', 'Show me more options'],
-    timestamp: '11:05 am',
+    content: 'Good afternoon, Jordan. what can I help you with?',
+    timestamp: '08:56 am',
   },
 ];
 
-/** Prior moment5 payer brief — kept for moment12 while moment5 uses schedule + spatial UI. */
+/** Opening thread from `public/moment12/Chat (2).png` — end-of-day summary + suggested action. */
 export const MOMENT12_INITIAL: ChatItem[] = [
+  {
+    id: 'm12-u',
+    kind: 'user',
+    content: 'Give me my end of day summary.',
+  },
   {
     id: 'm12-e',
     kind: 'eva',
-    content:
-      'Here is a concise read on payer friction this week: Cigna authorization denials are up on therapy codes, and UnitedHealthcare is asking for Coordination of Benefits on three active cases.',
-    timestamp: '10:02 am',
+    contentIsHtml: true,
+    content: `<p>Here is the summary of today so far:</p>
+<ul>
+<li>Visits on Schedule: 102</li>
+<li>Visits Completed: 98</li>
+<li>Earnings Collected: $2,450</li>
+<li>100% of copays captured at check-in</li>
+<li>100 of card-on-file payments were processed automatically</li>
+<li>No remaining outstanding balances</li>
+</ul>
+<p>Regarding schedule changes, I managed 5 last-minute cancellations and they are all rescheduled for the next following days.</p>
+<p>15 Referrals arrived at Location 1, and they are all already being worked.</p>`,
+    timestamp: '02:30 pm',
   },
   {
     id: 'm12-chips',
     kind: 'suggestion-chips',
-    suggestionLabels: ['Flag front office', 'Show me my summary'],
-    timestamp: '10:02 am',
+    suggestionLabels: ['Bring up the refferals'],
+    timestamp: '02:30 pm',
   },
 ];
 
-export const MOMENT13_INITIAL: ChatItem[] = [...MOMENT6_INITIAL];
+/** Moment13 chat — prior moment10 operations + SOAP intro (moment10 chat is now empty). */
+export const MOMENT13_INITIAL: ChatItem[] = [
+  {
+    id: 'm13-e',
+    kind: 'eva',
+    contentIsHtml: true,
+    content: `<p>Good morning. Today's operations view is ready on the right: visits, locations, payer performance, and claims.</p>
+<p>When you start a visit, open SOAP from the header—I'll begin with <strong>Subjective</strong> and follow your sections.</p>`,
+    timestamp: '08:12 am',
+  },
+  {
+    id: 'm13-chips',
+    kind: 'suggestion-chips',
+    suggestionLabels: ['Open SOAP workspace', 'Summarize payer risks'],
+    timestamp: '08:12 am',
+  },
+];
